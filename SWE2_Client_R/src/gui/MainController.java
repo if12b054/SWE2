@@ -88,7 +88,7 @@ public class MainController extends AbstractController {
 		Businesslayer b = new Businesslayer();
 		
 		String action = "search/Rechnung";
-		searchAll = b.searchRechnung(action);
+//		searchAll = b.searchRechnung(action);
 		
 		
 		/*just a test if display is working*/

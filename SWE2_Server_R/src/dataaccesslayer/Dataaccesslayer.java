@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import businesslayer.Kunde;
-import businesslayer.Rechnungszeile;
 import businesslayer.RechnungszeileModel;
 
 public class Dataaccesslayer {

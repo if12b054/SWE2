@@ -3,13 +3,13 @@
 <?import java.lang.*?>
 <?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.control.cell.*?> 
 
-<AnchorPane prefHeight="651.0" prefWidth="433.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.MainController">
+<AnchorPane prefHeight="651.0" prefWidth="477.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.MainController">
   <!-- TODO Add Nodes -->
   <children>
     <TabPane prefHeight="450.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -20,7 +20,7 @@
               <children>
                 <TitledPane fx:id="firmaPane" animated="false" layoutX="14.0" layoutY="14.0" prefHeight="99.0" prefWidth="404.0" text="Firma">
                   <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="67.0" prefWidth="400.0">
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="73.0" prefWidth="447.0">
                       <children>
                         <GridPane id="GridPane" layoutX="16.0" layoutY="10.0" prefWidth="310.0" vgap="5.0">
                           <children>
@@ -42,7 +42,7 @@
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane fx:id="personPane" animated="false" layoutX="13.0" layoutY="128.0" prefHeight="184.0" prefWidth="404.0" text="Person">
+                <TitledPane fx:id="personPane" animated="false" layoutX="13.0" layoutY="128.0" prefHeight="184.0" prefWidth="451.0" text="Person">
                   <content>
                     <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="157.0" prefWidth="400.0">
                       <children>
@@ -82,9 +82,9 @@
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane animated="false" layoutX="14.0" layoutY="324.0" minWidth="103.0" prefHeight="229.0" prefWidth="404.0" text="Adresse">
+                <TitledPane animated="false" layoutX="14.0" layoutY="324.0" minWidth="103.0" prefHeight="229.0" prefWidth="447.0000999999975" text="Adresse">
                   <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="400.0">
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="203.0" prefWidth="447.0">
                       <children>
                         <Label layoutX="14.0" layoutY="10.0" text="Rechnungsadresse">
                           <font>
@@ -125,7 +125,7 @@
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
-                <TitledPane animated="false" layoutX="14.0" layoutY="14.0" prefHeight="264.0" prefWidth="405.0" text="Allgemein">
+                <TitledPane animated="false" layoutX="14.0" layoutY="14.0" prefHeight="264.0" prefWidth="449.0" text="Allgemein">
                   <content>
                     <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="238.0" prefWidth="401.0">
                       <children>
@@ -141,61 +141,71 @@
                         </ComboBox>
                         <Label layoutX="12.0" layoutY="70.0" text="Nachricht" />
                         <Label layoutX="12.0" layoutY="157.0" text="Kommentar" />
-                        <TextArea id="nachricht" fx:id="taNachricht" layoutX="92.0" layoutY="70.0" prefHeight="70.0" prefWidth="293.0" wrapText="true" />
-                        <TextArea id="kommentar" fx:id="taKommentar" layoutX="92.0" layoutY="157.0" prefHeight="70.0" prefWidth="293.0" wrapText="true" />
+                        <TextArea id="nachricht" fx:id="taNachricht" layoutX="92.0" layoutY="70.0" prefHeight="70.0" prefWidth="339.0" wrapText="true" />
+                        <TextArea id="kommentar" fx:id="taKommentar" layoutX="92.0" layoutY="157.0" prefHeight="70.0" prefWidth="339.0" wrapText="true" />
                         <Label layoutX="14.0" layoutY="43.0" text="Kunde" />
-                        <TextField id="tfPreisName" fx:id="tfKunde" layoutX="64.0" layoutY="40.0" prefWidth="177.0" />
-                        <ImageView id="imgCmpInput" fx:id="imgRechKundeInput" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="256.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
-                        <Button id="btn" fx:id="btnRechKundeSuche" layoutX="299.0" layoutY="41.0" mnemonicParsing="false" text="Suche" />
-                        <ImageView id="imgDelete" fx:id="imgRechKundeDelete" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="366.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
+                        <TextField id="tfPreisName" fx:id="tfKunde" layoutX="92.0" layoutY="40.0" prefWidth="206.0" />
+                        <ImageView id="imgCmpInput" fx:id="imgRechKundeInput" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="298.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
+                        <Button id="btn" fx:id="btnRechKundeSuche" layoutX="343.0" layoutY="41.0" mnemonicParsing="false" text="Suche" />
+                        <ImageView id="imgDelete" fx:id="imgRechKundeDelete" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="403.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
+                        <Label layoutX="195.0" layoutY="14.0" text="MWSt" />
+                        <ComboBox fx:id="boxMWSt" layoutX="255.0" layoutY="12.0">
+                          <items>
+                            <FXCollections fx:factory="observableArrayList">
+                              <String fx:value="Item 1" />
+                              <String fx:value="Item 2" />
+                              <String fx:value="Item 3" />
+                            </FXCollections>
+                          </items>
+                        </ComboBox>
                       </children>
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane animated="false" layoutX="14.0" layoutY="287.0" prefHeight="290.0" prefWidth="405.0" text="Rechnung">
+                <TitledPane animated="false" layoutX="14.0" layoutY="287.0" prefHeight="290.0" prefWidth="449.0" text="Rechnung">
                   <content>
                     <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="280.0" prefWidth="401.0">
                       <children>
-                        <Label layoutX="14.0" layoutY="14.0" text="Rechnungszeilen" />
-                        <ScrollPane id="ScrollPane" layoutX="14.0" layoutY="41.0" prefHeight="212.0" prefViewportHeight="200.0" prefViewportWidth="375.0">
+                        <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Rechnungszeilen" />
+                        <ScrollPane id="ScrollPane" layoutX="14.0" layoutY="41.0" prefHeight="212.0" prefViewportHeight="200.0" prefViewportWidth="375.0" prefWidth="417.0">
                           <content>
-	                          <TableView fx:id="tableRechnungen">
-								<columns>
-									<TableColumn text="Artikel">
-										<cellValueFactory>
-											<PropertyValueFactory property="artikel" />
-										</cellValueFactory>
-									</TableColumn>
-									<TableColumn text="Menge">
-										<cellValueFactory>
-											<PropertyValueFactory property="menge" />
-										</cellValueFactory>
-									</TableColumn>
-									<TableColumn text="Stückpreis">
-										<cellValueFactory>
-											<PropertyValueFactory property="stueckPreis" />
-										</cellValueFactory>
-									</TableColumn>
-									<TableColumn text="Netto">
-										<cellValueFactory>
-											<PropertyValueFactory property="netto" />
-										</cellValueFactory>
-									</TableColumn>
-									<TableColumn text="Brutto">
-										<cellValueFactory>
-											<PropertyValueFactory property="brutto" />
-										</cellValueFactory>
-									</TableColumn>
-								</columns>
-								</TableView>
+                            <TableView fx:id="tableRechnungen">
+                              <columns>
+                                <TableColumn text="Artikel">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="artikel" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Menge">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="menge" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Stückpreis">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="stueckPreis" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Netto">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="netto" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Brutto">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="brutto" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                              </columns>
+                            </TableView>
                           </content>
                         </ScrollPane>
-                        <Button id="hinzufuegen" fx:id="btnHinzufuegen" layoutX="309.0" layoutY="9.0" mnemonicParsing="false" onAction="#openNewRech" text="Hinzufügen" />
+                        <Button id="hinzufuegen" fx:id="btnHinzufuegen" layoutX="349.0" layoutY="9.0" mnemonicParsing="false" onAction="#openNewRech" text="Hinzufügen" />
                       </children>
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <Button fx:id="btnRechnungen" layoutX="346.0" layoutY="585.0" mnemonicParsing="false" text="Speichern" />
+                <Button fx:id="btnRechnungen" layoutX="390.0" layoutY="585.0" mnemonicParsing="false" text="Speichern" />
               </children>
             </AnchorPane>
           </content>
@@ -206,7 +216,7 @@
               <children>
                 <TitledPane animated="false" layoutX="14.0" layoutY="14.0" prefHeight="229.0" prefWidth="405.0" text="Rechnungssuche">
                   <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="199.0" prefWidth="401.0">
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="203.0" prefWidth="445.0">
                       <children>
                         <Label font="$x1" layoutX="14.0" layoutY="11.0" text="Datum" />
                         <HBox id="HBox" alignment="CENTER" layoutX="14.0" layoutY="31.0" spacing="15.0">
@@ -257,37 +267,36 @@
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane animated="false" layoutX="14.0" layoutY="257.0" prefWidth="405.0" text="Ergebnisse">
+                <TitledPane animated="false" layoutX="14.0" layoutY="257.0" prefWidth="449.0" text="Ergebnisse">
                   <content>
                     <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="325.0" prefWidth="401.0">
                       <children>
-                        <ScrollPane id="ScrollPane" layoutX="13.0" layoutY="10.0" prefViewportHeight="299.0" prefViewportWidth="373.0">
+                        <ScrollPane id="ScrollPane" layoutX="13.0" layoutY="10.0" prefViewportHeight="299.0" prefViewportWidth="373.0" prefWidth="420.0">
                           <content>
-                            <ListView id="listErgebnisse" fx:id="listSuche" prefHeight="299.0" prefWidth="373.0" />
-                            <TableView fx:id="tableSuche">
-								<columns>
-									<TableColumn text="Datum">
-										<cellValueFactory>
-											<PropertyValueFactory property="datum" />
-										</cellValueFactory>
-									</TableColumn>
-									<TableColumn text="Kunde">
-										<cellValueFactory>
-											<PropertyValueFactory property="kunde" />
-										</cellValueFactory>
-									</TableColumn>
-									<TableColumn text="Betrag">
-										<cellValueFactory>
-											<PropertyValueFactory property="betrag" />
-										</cellValueFactory>
-									</TableColumn>
-									<TableColumn text="Fälligkeit">
-										<cellValueFactory>
-											<PropertyValueFactory property="faelligkeit" />
-										</cellValueFactory>
-									</TableColumn>
-								</columns>
-							</TableView>
+                            <TableView fx:id="tableSuche" prefWidth="405.0000999999975">
+                              <columns>
+                                <TableColumn text="Datum">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="datum" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Kunde">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="kunde" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Betrag">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="betrag" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn text="Fälligkeit">
+                                  <cellValueFactory>
+                                    <PropertyValueFactory property="faelligkeit" />
+                                  </cellValueFactory>
+                                </TableColumn>
+                              </columns>
+                            </TableView>
                           </content>
                         </ScrollPane>
                       </children>
