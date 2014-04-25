@@ -7,11 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import businesslayer.Kunde;
-import businesslayer.RechnungszeileModel;
+import businessobjects.KontaktModel;
+import businessobjects.RechnungZeileModel;
 
 public class Dataaccesslayer {
-	public void insertKontakt(Kunde k) {
+	public void insertKontakt(KontaktModel k) {
 		Connection conn = connectDB("Schlepptop", "ErpDB");
 		
 		String sql = "INSERT INTO Kontakt VALUES (?,?,?,?,?,?,?,?,?)";
@@ -50,8 +50,8 @@ public class Dataaccesslayer {
 		return null;
 	}
 
-	public ArrayList<RechnungszeileModel> searchRechnung() {
-		ArrayList<RechnungszeileModel> searchAll = new ArrayList<RechnungszeileModel>();
+	public ArrayList<RechnungZeileModel> searchRechnung() {
+		ArrayList<RechnungZeileModel> searchAll = new ArrayList<RechnungZeileModel>();
 		Connection conn = connectDB("Schlepptop", "ErpDB");
 		ResultSet rd;
 		

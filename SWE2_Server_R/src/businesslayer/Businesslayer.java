@@ -2,17 +2,19 @@ package businesslayer;
 
 import java.util.ArrayList;
 
+import businessobjects.KontaktModel;
+import businessobjects.RechnungZeileModel;
 import dataaccesslayer.Dataaccesslayer;
 
 public class Businesslayer {
 	Dataaccesslayer d = new Dataaccesslayer();
 	
-	public void insertKontakt(Kunde k) {
+	public void insertKontakt(KontaktModel k) {
 		d.insertKontakt(k);
 	}
 
-	public ArrayList<RechnungszeileModel> searchRechnung() {
-		ArrayList<RechnungszeileModel> searchAll = new ArrayList<RechnungszeileModel>();
+	public ArrayList<RechnungZeileModel> searchRechnung() {
+		ArrayList<RechnungZeileModel> searchAll = new ArrayList<RechnungZeileModel>();
 		
 		searchAll = d.searchRechnung();
 		

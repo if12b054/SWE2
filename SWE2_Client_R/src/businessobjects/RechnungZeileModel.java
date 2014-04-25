@@ -1,4 +1,4 @@
-package businesslayer;
+package businessobjects;
 
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
@@ -7,21 +7,17 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class RechnungszeileModel {
+public class RechnungZeileModel {
+	private int idNumber;
 	private IntegerProperty menge = new SimpleIntegerProperty();
 	private FloatProperty stueckPreis = new SimpleFloatProperty();
-	private FloatProperty netto = new SimpleFloatProperty();
-	private FloatProperty MWSt = new SimpleFloatProperty();
 	private FloatProperty brutto = new SimpleFloatProperty();
 	private StringProperty artikel = new SimpleStringProperty();
 	
-	public RechnungszeileModel(String artikel, int newMenge, float newStuekPreis, float newMWSt) {
-		this.artikel.set(artikel);
+	public RechnungZeileModel(String newArtikel, int newMenge, float newStuekPreis, float newMWSt) {
+		this.artikel.set(newArtikel);
 		this.menge.set(newMenge);
 		this.stueckPreis.set(newStuekPreis);
-		this.netto.set(menge.get()*stueckPreis.get());
-		this.MWSt.set(newMWSt);
-		this.brutto.set(this.netto.get()-(this.netto.get()*this.MWSt.get()));
 	}
 	
 	public final StringProperty artikelProperty() {
@@ -30,10 +26,6 @@ public class RechnungszeileModel {
 
 	public final FloatProperty stueckPreisProperty() {
 		return stueckPreis;
-	}
-	
-	public final FloatProperty nettoProperty() {
-		return netto;
 	}
 
 	public final FloatProperty bruttoProperty() {
@@ -50,10 +42,6 @@ public class RechnungszeileModel {
 
 	public final float getStueckPreis() {
 		return stueckPreis.get();
-	}
-	
-	public final float getNetto() {
-		return netto.get();
 	}
 
 	public final float getBrutto() {

@@ -1,4 +1,4 @@
-package businesslayer;
+package businessobjects;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class RechnungModel {
-	private ArrayList<RechnungszeileModel> rechnungszeilen = new ArrayList<RechnungszeileModel>();
+	private ArrayList<RechnungZeileModel> rechnungszeilen = new ArrayList<RechnungZeileModel>();
 	private FloatProperty betrag = new SimpleFloatProperty();
 	private StringProperty datum = new SimpleStringProperty();
 	private StringProperty faelligkeit = new SimpleStringProperty();
@@ -16,7 +16,7 @@ public class RechnungModel {
 	private StringProperty nachricht = new SimpleStringProperty();
 	private StringProperty kommentar = new SimpleStringProperty();
 	
-	public RechnungModel(ArrayList<RechnungszeileModel> rechnungszeilen, String datum, String faelligkeit, String kunde, String nachricht, String kommentar) {
+	public RechnungModel(ArrayList<RechnungZeileModel> rechnungszeilen, String datum, String faelligkeit, String kunde, String nachricht, String kommentar) {
 		this.rechnungszeilen = rechnungszeilen;	
 		this.datum.set(datum);
 		this.faelligkeit.set(faelligkeit);
@@ -24,10 +24,9 @@ public class RechnungModel {
 		this.nachricht.set(nachricht);
 		this.nachricht.set(kommentar);
 		
-		for (RechnungszeileModel r : rechnungszeilen) {
+		for (RechnungZeileModel r : rechnungszeilen) {
 			betrag.set(betrag.get()+r.getBrutto());
 		}
-		
 	}
 	
 	public final FloatProperty betragProperty() {

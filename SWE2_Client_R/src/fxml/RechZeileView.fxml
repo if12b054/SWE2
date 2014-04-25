@@ -2,12 +2,13 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="431.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.newRechViewController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="451.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.RechZeileViewController">
   <children>
     <GridPane prefHeight="89.5" prefWidth="357.0" AnchorPane.bottomAnchor="45.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
@@ -21,12 +22,20 @@
         <Label font="$x1" text="Netto" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
         <Label font="$x1" text="MWSt" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
         <Label font="$x1" text="Brutto" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-        <TextField fx:id="tfArtikel" maxWidth="-Infinity" prefWidth="50.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
         <TextField fx:id="tfMenge" maxWidth="-Infinity" prefWidth="50.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <TextField fx:id="tfStuekPreis" maxWidth="-Infinity" prefWidth="50.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
         <Label fx:id="lblNetto" text="00.00" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <TextField fx:id="tfMWSt" maxWidth="-Infinity" prefWidth="50.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
         <Label fx:id="lblBrutto" text="00.00" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <ComboBox fx:id="cbArtikel" prefHeight="21.0" prefWidth="59.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ComboBox>
+        <Label fx:id="lblMWSt" text="00.00" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <Label id="lblMWSt" fx:id="lblStueckPreis" text="00.00" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -41,6 +50,6 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
-    <Button fx:id="btnAdd" layoutX="175.0" layoutY="97.0" mnemonicParsing="false" onAction="#doAdd" text="Rechnungszeile hinzufügen" />
+    <Button id="btnAdd" fx:id="btnSave" layoutX="359.0" layoutY="97.0" mnemonicParsing="false" onAction="#doSave" text="Speichern" />
   </children>
 </AnchorPane>

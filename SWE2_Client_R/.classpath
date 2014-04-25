@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="lib/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-benchmark-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-hibernate-1.4.7.jar"/>
+	<classpathentry kind="lib" path="lib/javafx-datepicker-0.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

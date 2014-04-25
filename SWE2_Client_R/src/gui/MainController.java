@@ -6,15 +6,21 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
+import java.util.Vector;
 
+import eu.schudt.javafx.controls.calendar.DatePicker;
+import proxy.Proxy;
 import applikation.AbstractController;
+import applikation.Parameter;
 import applikation.Utils;
-import businesslayer.Businesslayer;
-import businesslayer.Kunde;
-import businesslayer.RechnungModel;
-import businesslayer.RechnungszeileModel;
+import applikation.InputChecks;
+import businessobjects.Artikel;
+import businessobjects.KontaktModel;
+import businessobjects.RechnungModel;
+import businessobjects.RechnungZeileModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -22,6 +28,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -32,44 +39,36 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.util.StringConverter;
 
 public class MainController extends AbstractController {
 	
+	/* Allgmein benörigte Daten */
 	private static MainController firstInstance;
-	
 	private MainControllerModel model;
+	private Proxy proxy;
+	boolean isError = true; //because no input in beginning -> is an error
 	
-	@FXML private TitledPane firmaPane;
-	@FXML private TitledPane personPane;
+	private Image checkMark, noCheckMark, bin, emptyImg;
 	
-	/* "Kontakte" Page: */
-	@FXML private Button btnKontakte, btnKontakteSuche, btnDelete;
-	@FXML private TextField tfTitel, tfVname, tfNname, tfGebdatum, tfFirma;
-	@FXML private TextField tfFname, tfUID;
-	@FXML private TextField tfRAdresse, tfROrt, tfRPLZ;
-	@FXML private TextField tfLadresse, tfLOrt, tfLPLZ;
-	@FXML private ImageView imgFirmaInput, imgDelete;
+	/* for each table an ObservableList */
+	private static ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
+	private static ObservableList<RechnungModel> rechnungen = FXCollections.observableArrayList();
 	
-	/* "Rechnungen" Page: */
-	@FXML private Button btnRechnungen, btnHinzufuegen, btnRechKundeSuche;
-	@FXML private TextField tfKunde;
-	@FXML private TextArea taNachricht, taKommentar;
-	@FXML private TableView<RechnungszeileModel> tableRechnungen;
-	@FXML private ImageView imgRechKundeInput, imgRechnKundeDelete;
+	/* "Kontakte/Suche" Page: */
+	@FXML private TextField tfSucheVorname, tfSucheNachname, tfSucheFirma;
+	@FXML private TableView<KontaktModel> tableKontaktSuche;
 	
-	/* "Suche" Page: */
+	/* "Rechnungen/Suche" Page: */
 	@FXML private Button btnSuche, btnKundeSuche;
-	@FXML private TextField tfPreisVon, tfPreisBis, tfKundeName;
+	@FXML private TextField tfDatumVon, tfDatumBis, tfPreisVon, tfPreisBis, tfKontaktName;
 	@FXML private ImageView imgKundeInput, imgKundeDelete;
-	@FXML private TableView<RechnungModel> tableSuche;
+	@FXML private TableView<RechnungModel> tableRechnungSuche;
+	@FXML private Pane pDatumVon, pDatumBis;
 	
-	@FXML private void emptyFirmaField(ActionEvent event) {
-		tfFirma.setText(null);
-		imgFirmaInput.setImage(emptyImg);
-		System.out.println("DELETE");
-	}
+	private DatePicker vonDatePicker, bisDatePicker;
 	
 	@FXML private void openKontaktSearch(ActionEvent event) throws IOException {
 		showPriorityDialog("searchView.fxml", "Suche");
@@ -79,33 +78,90 @@ public class MainController extends AbstractController {
 		showPriorityDialog("newRechView.fxml", "Neue Rechnungszeile");
 	}
 	
-	private static ObservableList<RechnungModel> rechnungen = FXCollections.observableArrayList();
 	
-	@FXML private void showRechnungen(ActionEvent event) {
+	
+	/**
+	 * Triggered on click on "Suche" Butten in Rechnungen/Suche subtab
+	 * sends the current data from the textFields to Proxy, then receives the needed data in
+	 * form of an ArrayList<Rechnungen>, and then displays that data in TableView
+	 * @param event
+	 */
+	@FXML private void doRechnungenSuche(ActionEvent event) {
+		/* clear current data from table */
 		rechnungen.clear();
-		/* get values from fields and perform search(via server) HERE*/
-		ArrayList<RechnungszeileModel> searchAll = new ArrayList<RechnungszeileModel>();
-		Businesslayer b = new Businesslayer();
 		
-		String action = "search/Rechnung";
-//		searchAll = b.searchRechnung(action);
+		/* get search parms from TextFields */
+		Vector<String> searchParms = new Vector<String>();
+		searchParms.addElement(tfDatumVon.getText());
+		searchParms.addElement(tfDatumBis.getText());
+		searchParms.addElement(tfPreisVon.getText());
+		searchParms.addElement(tfPreisBis.getText());
+		searchParms.addElement(tfKontaktName.getText());
 		
+		/* get Rechnung objects from server according to searchParms */
+		ArrayList<RechnungModel> rechnungenResult = proxy.searchRechnung(searchParms);
 		
-		/*just a test if display is working*/
+		/* add results to observableList rechnungen */
+		for (RechnungModel r : rechnungenResult)
+			rechnungen.add(r);
+		
+		/* TEST */
 		System.out.println("WORKING..");
-		ArrayList<RechnungszeileModel> testRechnungszeilen = new ArrayList<RechnungszeileModel>();
-		testRechnungszeilen.add(new RechnungszeileModel("Artikel", 1, 1, 1));
+		ArrayList<RechnungZeileModel> testRechnungszeilen = new ArrayList<RechnungZeileModel>();
+		testRechnungszeilen.add(new RechnungZeileModel("Artikel", 1, 1, 1));
 		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
-		
-		
 		rechnungen.add(new RechnungModel(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
-		tableSuche.setItems(rechnungen);
+		/* TEST-ENDE */
+		
+		/* display rechnungen in table */
+		tableRechnungSuche.setItems(rechnungen);
 	}
 	
-	/* General */
-	private boolean rightSearchKontakte=false, rightSearchRechnungen=false, rightSearchSuche=false; //check for correct input in searches, when confirming a save or something
-	private Image checkMark, noCheckMark, bin, emptyImg;
-	private static ObservableList<RechnungszeileModel> rechnungszeilen = FXCollections.observableArrayList();
+	/**
+	 * happens on the fly, everytime a field on the Kontakt-page LOSES focus,
+	 * this function is called 
+	 * @param event
+	 * @throws IOException
+	 */
+	private void doKontaktSuche(ActionEvent event) throws IOException {
+		/* clear current data from table */
+		kontakte.clear();
+		
+		
+		
+		/* get search parms from TextFields */
+		Vector<Parameter> searchParms = new Vector<Parameter>();
+		searchParms.addElement(new Parameter(vonDatePicker.getSelectedDate()));
+		searchParms.addElement(new Parameter(bisDatePicker.getSelectedDate()));
+		searchParms.addElement(new Parameter (tfPreisVon.getText()));
+		searchParms.addElement(new Parameter(tfPreisBis.getText()));
+		searchParms.addElement(new Parameter(tfKontaktName.getText()));
+		
+		/* get Rechnung objects from server according to searchParms */
+		ArrayList<KontaktModel> kontakteResult = proxy.searchKontakt(searchParms);
+		
+		/* add results to observableList rechnungen */
+		for (KontaktModel k : kontakteResult)
+			kontakte.add(k);
+		
+		/* TEST */
+		System.out.println("WORKING..");
+		String typ="Person", firma="Smartass GmbH", vorname="Bart", nachname="Simpson";
+		KontaktModel testKontakt = new KontaktModel(firma, vorname, nachname, null, null);
+		kontakte.add(testKontakt);
+		/* TEST-ENDE */
+		
+		/* display kontakte in table */
+		tableKontaktSuche.setItems(kontakte);
+	}
+	
+	@FXML private void doKontaktAnzeigen(ActionEvent event) throws IOException {
+		
+	}
+	
+	@FXML private void doKontaktBearbeiten(ActionEvent event) throws IOException {
+		
+	}
     
     public static MainController getInstance() {
         return firstInstance;
@@ -114,19 +170,8 @@ public class MainController extends AbstractController {
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		firstInstance = this;
-		
 		model = new MainControllerModel();
-
-		tfVname.textProperty().bindBidirectional(model.vornameProperty());
-		tfNname.textProperty().bindBidirectional(model.nachnameProperty());
-		tfFirma.textProperty().bindBidirectional(model.firmaProperty());
-		tfGebdatum.textProperty().bindBidirectional(model.geburtsdatumProperty());
-		tfTitel.textProperty().bindBidirectional(model.titelProperty());
-		tfFname.textProperty().bindBidirectional(model.firmennameProperty());
-		tfUID.textProperty().bindBidirectional(model.UIDProperty());
-		
-		personPane.disableProperty().bind(model.disableEditPersonBinding());
-		firmaPane.disableProperty().bind(model.disableEditFirmaBinding());
+		proxy = new Proxy();
 		
 		/* load images */
 		checkMark = new Image("file:assets/check.png");
@@ -134,52 +179,21 @@ public class MainController extends AbstractController {
 		bin = new Image("file:assets/bin.png");
 		emptyImg = new Image("file:assets/transparent.png");
 		
-		/* set images */
-		imgDelete.setImage(bin);
-		
-		/* if firma-field becomes unfocused -> validate firm */
-		tfFirma.focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-		    @Override
-		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-		    {
-		        if (!newPropertyValue)
-		        {
-		        	if(tfFirma.getText() == null || tfFirma.getText().isEmpty()) {
-		        		imgFirmaInput.setImage(emptyImg);
-		        		rightSearchKontakte=false;
-		        		return;
-		        	}
-		        	//DB ABFRAGE ob es die Firma wirklich gibt!
-		        	//falls ja:
-		        	imgFirmaInput.setImage(checkMark);
-		        	
-		        	//sonst
-		        	//imgFirmaInput.setImage(noCheckMark);
-		        	
-		        	
-		        }
-		    }
-		});
-		
-	}
-	
-	public void insertKontakt() {
-		Kunde k = new Kunde();
-		
-		k.setTitel(tfTitel.getText());
-		k.setVorname(tfVname.getText());
-		k.setNachname(tfNname.getText());
-		
-		
-		k.setGeburtsdatum(alterDateType(tfGebdatum.getText()));
-		k.setFirma(tfFirma.getText());
-		k.setFirmenName(tfFname.getText());
-		
-		String action = "insert/Kontakt"; 
-		
-		Businesslayer b = new Businesslayer();
-		b.insertKontakt(k, action);
+		/* Initialize the DatePickers */
+		vonDatePicker = new DatePicker(Locale.GERMAN);
+		vonDatePicker.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		vonDatePicker.getCalendarView().todayButtonTextProperty().set("Today");
+		vonDatePicker.getCalendarView().setShowWeeks(false);
+		vonDatePicker.getStylesheets().add("fxml/datepicker.css");
+		bisDatePicker = new DatePicker(Locale.GERMAN);
+		bisDatePicker.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		bisDatePicker.getCalendarView().todayButtonTextProperty().set("Today");
+		bisDatePicker.getCalendarView().setShowWeeks(false);
+		bisDatePicker.getStylesheets().add("fxml/datepicker.css");
+
+		/* Add DatePickers to grid */
+		pDatumVon.getChildren().add(vonDatePicker);
+		pDatumBis.getChildren().add(bisDatePicker);
 		
 	}
 	
@@ -194,9 +208,25 @@ public class MainController extends AbstractController {
 		return null;
 	}
 	
-	public void addRechToList(RechnungszeileModel rechnungszeile) {
-		rechnungszeilen.add(rechnungszeile);
-		tableRechnungen.setItems(rechnungszeilen);
+	
+	/* GETTERs and SETTERs*/
+	
+	public Proxy getProxy() {
+		return this.proxy;
 	}
+	
+	ChangeListener<Date> dateListener = new ChangeListener<Date>() {
+		@Override
+		public void changed(ObservableValue<? extends Date> observable,
+				Date oldValue, Date newValue) {
+			if (newValue == null) {
+				isError = true;
+			} else {
+				if (bisDatePicker.invalidProperty().get()) {
+					isError = true;
+			    }
+			}
+		}
+	};
 	
 }

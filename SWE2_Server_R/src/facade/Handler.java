@@ -8,8 +8,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import businesslayer.Businesslayer;
-import businesslayer.Kunde;
-import businesslayer.RechnungszeileModel;
+import businessobjects.KontaktModel;
+import businessobjects.RechnungZeileModel;
 
 import com.sun.glass.ui.Platform;
 import com.thoughtworks.xstream.XStream;
@@ -28,8 +28,8 @@ public class Handler implements Runnable{
 	
 	@Override
 	public void run() {
-		Kunde k = null;
-		ArrayList<RechnungszeileModel> searchAll = new ArrayList<RechnungszeileModel>();
+		KontaktModel k = null;
+		ArrayList<RechnungZeileModel> searchAll = new ArrayList<RechnungZeileModel>();
 		try {
 			setNachricht(_client);
 			if(_xml != null) {
@@ -72,10 +72,10 @@ public class Handler implements Runnable{
 		_xml = content;
 	}
 	
-	public Kunde deserializeObject(String xml) {
+	public KontaktModel deserializeObject(String xml) {
 		XStream xstream = new XStream();
-		xstream.processAnnotations(Kunde.class);
-		Kunde k = (Kunde)xstream.fromXML(xml);
+		xstream.processAnnotations(KontaktModel.class);
+		KontaktModel k = (KontaktModel)xstream.fromXML(xml);
 		return k;
 	}
 	
