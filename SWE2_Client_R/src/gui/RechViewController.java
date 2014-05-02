@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class RechViewController extends AbstractController {
+	public MainController parent;
 	@FXML private Button btnSave, btnAdd, btnFind;
 	@FXML private TextField tfKunde;
 	@FXML private TextArea taMessage, taComment;
@@ -40,16 +41,17 @@ public class RechViewController extends AbstractController {
 		
 	}
 	
+	/**
+	 * happens onClick on save-button, recite data gets sent
+	 * to server and saved
+	 * @param event
+	 */
 	@FXML private void doSave(ActionEvent event) {
-
-		
-//		Stage stage = (Stage) btnAdd.getScene().getWindow();
-//		stage.close();
 		
 	}
-	@FXML private void openNewRech(ActionEvent event) throws IOException {	
-		showKontaktDialog("fxml/KontaktView.fxml");
-		showPriorityDialog("../fxml/newRechView.fxml", "Neue Rechnungszeile");
+	
+	@FXML private void openRechZeile(ActionEvent event) throws IOException {	
+		showRechZeileDialog("/fxml/RechZeileView.fxml", this);
 	}
 	
 	public void addRechnungszeileToTable(RechnungZeileModel rechnungszeile) {
@@ -57,22 +59,11 @@ public class RechViewController extends AbstractController {
 		tableRechnungszeilen.setItems(rechnungszeilen);
 	}
 	
-	public Stage showKontaktDialog(String fxmlURL) {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlURL));
+	public void setParent(MainController parent) {
+		this.parent = parent;
+	}
 	
-		Stage stage = new Stage(StageStyle.DECORATED);
-		try {
-			stage.setScene(new Scene((Pane) loader.load()));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		RechZeileViewController controller = loader.<RechZeileViewController>getController();
-		controller.initParent(this);
-	
-		stage.show();
-	
-		return stage;
+	public MainController getParent() {
+		return this.parent;
 	}
 }

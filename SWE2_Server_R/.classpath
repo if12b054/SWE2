@@ -33,7 +33,6 @@
 	<classpathentry kind="lib" path="lib/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-benchmark-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-hibernate-1.4.7.jar"/>
-	<classpathentry kind="lib" path="lib/sqljdbc.jar"/>
 	<classpathentry kind="lib" path="lib/sqljdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

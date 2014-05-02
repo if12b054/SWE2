@@ -6,9 +6,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Vector;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import applikation.Parameter;
 import businesslayer.Businesslayer;
 import businessobjects.KontaktModel;
+import businessobjects.RechnungModel;
 import businessobjects.RechnungZeileModel;
 
 import com.sun.glass.ui.Platform;
@@ -17,33 +22,42 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class Handler implements Runnable{
 	
-	private Socket _client;
+	private Socket client;
 	private String _requestHeader = "";
 	private String _requestLine = "";
 	private String _xml;
 	
 	public Handler(Socket client) {
-	 	this._client = client;
+	 	this.client = client;
 	}
 	
 	@Override
 	public void run() {
-		KontaktModel k = null;
 		ArrayList<RechnungZeileModel> searchAll = new ArrayList<RechnungZeileModel>();
 		try {
-			setNachricht(_client);
-			if(_xml != null) {
-				k = deserializeObject(_xml);
-			}
+			setNachricht(client);
+			
 			String action = parseHeader(_requestLine);
 			
 			Businesslayer b = new Businesslayer();
 			
-			if(action.equals("insert/Kontakt")) {
-				b.insertKontakt(k);
-			}
-			if(action.equals("search/Rechnung")) {
+			switch(action) 
+			{
+			case "/insert/Kontakt":
+				if(_xml != null) {
+					System.out.println("Inserting Contact!");
+					KontaktModel k = deserializeObject(_xml);
+					b.insertKontakt(k);
+				}
+				break;
+			case "/search/Rechnung":
+				//ToDo: Wonach suchen, Roman? Parameter parsen, dude! Und dann mitgeben der searchRechnung methode...
 				searchAll = b.searchRechnung();
+				break;
+			case "/search/Kontakt":
+				ObservableList<RechnungModel> rechnungen = FXCollections.observableArrayList();
+				Vector<Parameter> parms = deserializeVector(_xml);
+				rechnungen = b.searchContact(parms);
 			}
 			
 		} catch (IOException e) {
@@ -79,10 +93,17 @@ public class Handler implements Runnable{
 		return k;
 	}
 	
+	public Vector<Parameter> deserializeVector(String xml) {
+		XStream xstream = new XStream();
+		xstream.processAnnotations(Vector.class);
+		Vector<Parameter> v = (Vector<Parameter>)xstream.fromXML(xml);
+		return v;
+	}
+	
 	public String parseHeader(String head) {
 		String[] splitArray;
 		splitArray = head.split(" ");
-		return splitArray[3];
+		return splitArray[1];
 	}
 }
 

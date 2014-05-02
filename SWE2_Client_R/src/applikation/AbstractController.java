@@ -1,5 +1,10 @@
 package applikation;
 
+import gui.KontaktViewController;
+import gui.MainController;
+import gui.RechViewController;
+import gui.RechZeileViewController;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -8,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -27,6 +33,47 @@ public abstract class AbstractController implements Initializable {
 	public void initialize(URL url, ResourceBundle resources) {
 	}
 	
+	public void showRechnungDialog(String fxmlPath, MainController parent) {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource(fxmlPath));
+		Stage stage = new Stage(StageStyle.DECORATED);
+		try {
+			stage.setScene(new Scene((Pane) loader.load()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		RechViewController controller = loader.getController();
+		controller.setParent(parent);
+		stage.show();
+	}
+	
+	public void showKontaktDialog(String fxmlPath, MainController parent) {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource(fxmlPath));
+		Stage stage = new Stage(StageStyle.DECORATED);
+		try {
+			stage.setScene(new Scene((Pane) loader.load()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		KontaktViewController controller = loader.getController();
+		controller.setParent(parent);
+		stage.show();
+	}
+	
+	public void showRechZeileDialog(String fxmlPath, RechViewController parent) {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource(fxmlPath));
+		Stage stage = new Stage(StageStyle.DECORATED);
+		try {
+			stage.setScene(new Scene((Pane) loader.load()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		RechZeileViewController controller = loader.getController();
+		controller.setParent(parent);
+		stage.show();
+	}
 	
 	
 
@@ -41,14 +88,6 @@ public abstract class AbstractController implements Initializable {
 		newStage.initModality(m);
 		newStage.initOwner(stage);
 		Scene scene = new Scene(root);
-//		scene.getStylesheets().add(
-//				getClass().getResource("application.css").toExternalForm());
-//		// more css by code
-//		for (String css : cssList) {
-//			scene.getStylesheets().add(
-//					getClass().getResource(css).toExternalForm());
-//		}
-
 		newStage.setScene(scene);
 		newStage.setTitle(title);
 		newStage.show();

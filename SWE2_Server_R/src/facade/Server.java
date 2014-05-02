@@ -47,7 +47,7 @@ import java.net.Socket;
 		}
 	 	for(;;) {
 			try {
-				Socket client = warteAufAnmeldung(serverSocket);
+				Socket client = wait(serverSocket);
 				System.out.println("Neue Clientverbindung:" + client);
 				/*Neuer Request -> neues Handler Objekt*/
 				Handler h = new Handler(client);
@@ -66,9 +66,9 @@ import java.net.Socket;
      * verbunden hat und gibt die SocketNR zurück
      * */
     
-    java.net.Socket warteAufAnmeldung(java.net.ServerSocket serverSocket) throws IOException {
+    Socket wait(ServerSocket serverSocket) throws IOException {
     	/* blockiert, bis sich ein Client angemeldet hat*/
-    	java.net.Socket socket = serverSocket.accept(); 
+    	Socket socket = serverSocket.accept(); 
  	return socket;
     }
  }

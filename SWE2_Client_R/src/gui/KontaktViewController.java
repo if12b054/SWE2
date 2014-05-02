@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class KontaktViewController extends AbstractController {
@@ -33,12 +34,12 @@ public class KontaktViewController extends AbstractController {
 	@FXML private ImageView imgFirmaInput, imgDelete;
 	
 	/* zum Ausblenden der jeweiligen Pane bei Eingabe in die andere */
-	@FXML private TitledPane firmaPane;
-	@FXML private TitledPane personPane;
+	@FXML private Pane firmaPane;
+	@FXML private Pane personPane;
 	
 	private KontaktViewModel model = new KontaktViewModel();
 	private Image checkMark, noCheckMark, bin, emptyImg;
-	Proxy proxy; //reference to proxy in Main, for Server functions
+	private MainController parent;
 	
 	KontaktModel kontakt;
 	private String errorMsg;
@@ -77,7 +78,7 @@ public class KontaktViewController extends AbstractController {
 		        	if(tfFirma.getText() == null || tfFirma.getText().isEmpty()) {
 		        		imgFirmaInput.setImage(emptyImg);
 		        	}
-		        	else if(proxy.isFirma(tfFirma.getText())) {
+		        	else if(parent.getProxy().isFirma(tfFirma.getText())) {
 		        		imgFirmaInput.setImage(checkMark);
 		        	}
 		        	else {
@@ -99,6 +100,13 @@ public class KontaktViewController extends AbstractController {
 		//stage.close();
 	}
 	
+	@FXML private void doKontaktSearch(ActionEvent event) {
+		
+		createKontakt();
+		//Stage stage = (Stage) btnAdd.getScene().getWindow();
+		//stage.close();
+	}
+	
 	/**
 	 * Creates new Kontakt-Object and sends it over to proxy, which will send it to server,
 	 * where the new "Kontakt" is inserted into the database
@@ -106,7 +114,7 @@ public class KontaktViewController extends AbstractController {
 	public void createKontakt() {
 		
 		/* error-checking */
-		if((errorMsg = InputChecks.kontaktError()) != null)
+		if((errorMsg = InputChecks.saveKontaktError()) != null)
 		{
 			kontaktError.setText(errorMsg);
 			errorMsg = null;
@@ -126,7 +134,7 @@ public class KontaktViewController extends AbstractController {
 			k.setRechnungsadresse(tfRStrasse.getText(), tfRPLZ.getText(), tfROrt.getText(), tfRLand.getText());
 			
 			/* send to proxy */
-			proxy.insertKontakt(k);
+			parent.getProxy().insertKontakt(k);
 		}
 	}
 	
@@ -134,5 +142,9 @@ public class KontaktViewController extends AbstractController {
 		tfFirma.setText(null);
 		imgFirmaInput.setImage(emptyImg);
 		System.out.println("DELETE");
+	}
+	
+	public void setParent(MainController parent) {
+		this.parent = parent;
 	}
 }

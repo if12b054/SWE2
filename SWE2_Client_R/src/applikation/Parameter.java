@@ -48,4 +48,8 @@ public class Parameter {
 		this.doubleValue = doubleValue;
 	}
 	
+	public Date getDateParameter() {
+		return date;
+	}
+	
 }

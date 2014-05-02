@@ -27,6 +27,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -41,136 +44,66 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 
 public class MainController extends AbstractController {
 	
-	/* Allgmein benörigte Daten */
-	private static MainController firstInstance;
-	private MainControllerModel model;
-	private Proxy proxy;
-	boolean isError = true; //because no input in beginning -> is an error
-	
-	private Image checkMark, noCheckMark, bin, emptyImg;
-	
-	/* for each table an ObservableList */
-	private static ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
-	private static ObservableList<RechnungModel> rechnungen = FXCollections.observableArrayList();
-	
 	/* "Kontakte/Suche" Page: */
+	@FXML private Label lblKontaktCount;
 	@FXML private TextField tfSucheVorname, tfSucheNachname, tfSucheFirma;
 	@FXML private TableView<KontaktModel> tableKontaktSuche;
+	@FXML private Button btnNewKontakt;
 	
 	/* "Rechnungen/Suche" Page: */
-	@FXML private Button btnSuche, btnKundeSuche;
-	@FXML private TextField tfDatumVon, tfDatumBis, tfPreisVon, tfPreisBis, tfKontaktName;
+	@FXML private Label lblRechnungCount;
+	@FXML private Button btnKontaktSuche, btnNewRech;
+	@FXML private TextField tfPreisVon, tfPreisBis, tfKontaktName;
 	@FXML private ImageView imgKundeInput, imgKundeDelete;
 	@FXML private TableView<RechnungModel> tableRechnungSuche;
 	@FXML private Pane pDatumVon, pDatumBis;
 	
+	/* Allgmein benörigte Daten */
+	private MainControllerKontaktModel kModel;
+	private MainControllerRechnungModel rModel;
+	private Proxy proxy;
+	boolean isError = true; //because no input in beginning -> is an error
+	private Image checkMark, noCheckMark, bin, emptyImg;
+	
 	private DatePicker vonDatePicker, bisDatePicker;
 	
-	@FXML private void openKontaktSearch(ActionEvent event) throws IOException {
-		showPriorityDialog("searchView.fxml", "Suche");
-	}
-	
-	@FXML private void openNewRech(ActionEvent event) throws IOException {			
-		showPriorityDialog("newRechView.fxml", "Neue Rechnungszeile");
-	}
-	
-	
-	
 	/**
-	 * Triggered on click on "Suche" Butten in Rechnungen/Suche subtab
-	 * sends the current data from the textFields to Proxy, then receives the needed data in
-	 * form of an ArrayList<Rechnungen>, and then displays that data in TableView
-	 * @param event
-	 */
-	@FXML private void doRechnungenSuche(ActionEvent event) {
-		/* clear current data from table */
-		rechnungen.clear();
-		
-		/* get search parms from TextFields */
-		Vector<String> searchParms = new Vector<String>();
-		searchParms.addElement(tfDatumVon.getText());
-		searchParms.addElement(tfDatumBis.getText());
-		searchParms.addElement(tfPreisVon.getText());
-		searchParms.addElement(tfPreisBis.getText());
-		searchParms.addElement(tfKontaktName.getText());
-		
-		/* get Rechnung objects from server according to searchParms */
-		ArrayList<RechnungModel> rechnungenResult = proxy.searchRechnung(searchParms);
-		
-		/* add results to observableList rechnungen */
-		for (RechnungModel r : rechnungenResult)
-			rechnungen.add(r);
-		
-		/* TEST */
-		System.out.println("WORKING..");
-		ArrayList<RechnungZeileModel> testRechnungszeilen = new ArrayList<RechnungZeileModel>();
-		testRechnungszeilen.add(new RechnungZeileModel("Artikel", 1, 1, 1));
-		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
-		rechnungen.add(new RechnungModel(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
-		/* TEST-ENDE */
-		
-		/* display rechnungen in table */
-		tableRechnungSuche.setItems(rechnungen);
-	}
-	
-	/**
-	 * happens on the fly, everytime a field on the Kontakt-page LOSES focus,
-	 * this function is called 
+	 * opens contact window, either with empty textFields when creating new Contact or
+	 * with textFields set, when editing old contact
 	 * @param event
 	 * @throws IOException
 	 */
-	private void doKontaktSuche(ActionEvent event) throws IOException {
-		/* clear current data from table */
-		kontakte.clear();
-		
-		
-		
-		/* get search parms from TextFields */
-		Vector<Parameter> searchParms = new Vector<Parameter>();
-		searchParms.addElement(new Parameter(vonDatePicker.getSelectedDate()));
-		searchParms.addElement(new Parameter(bisDatePicker.getSelectedDate()));
-		searchParms.addElement(new Parameter (tfPreisVon.getText()));
-		searchParms.addElement(new Parameter(tfPreisBis.getText()));
-		searchParms.addElement(new Parameter(tfKontaktName.getText()));
-		
-		/* get Rechnung objects from server according to searchParms */
-		ArrayList<KontaktModel> kontakteResult = proxy.searchKontakt(searchParms);
-		
-		/* add results to observableList rechnungen */
-		for (KontaktModel k : kontakteResult)
-			kontakte.add(k);
-		
-		/* TEST */
-		System.out.println("WORKING..");
-		String typ="Person", firma="Smartass GmbH", vorname="Bart", nachname="Simpson";
-		KontaktModel testKontakt = new KontaktModel(firma, vorname, nachname, null, null);
-		kontakte.add(testKontakt);
-		/* TEST-ENDE */
-		
-		/* display kontakte in table */
-		tableKontaktSuche.setItems(kontakte);
+	@FXML private void doNewKontakt(ActionEvent event) throws IOException {
+		showKontaktDialog("/fxml/KontaktView.fxml", this);
 	}
 	
-	@FXML private void doKontaktAnzeigen(ActionEvent event) throws IOException {
-		
+	/**
+	 * opens recite window, with empty textFields
+	 * @param event
+	 * @throws IOException
+	 */
+	@FXML private void doNewRech(ActionEvent event) throws IOException {
+		showRechnungDialog("/fxml/RechView.fxml", this);
 	}
 	
-	@FXML private void doKontaktBearbeiten(ActionEvent event) throws IOException {
+	/**
+	 * opens search window for reference on recite page
+	 * @param event
+	 */
+	@FXML void doKontaktSuche(ActionEvent event) {
 		
 	}
-    
-    public static MainController getInstance() {
-        return firstInstance;
-    }
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		firstInstance = this;
-		model = new MainControllerModel();
+		kModel = new MainControllerKontaktModel(this);
+		rModel = new MainControllerRechnungModel(this);
 		proxy = new Proxy();
 		
 		/* load images */
@@ -179,35 +112,22 @@ public class MainController extends AbstractController {
 		bin = new Image("file:assets/bin.png");
 		emptyImg = new Image("file:assets/transparent.png");
 		
-		/* Initialize the DatePickers */
-		vonDatePicker = new DatePicker(Locale.GERMAN);
-		vonDatePicker.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-		vonDatePicker.getCalendarView().todayButtonTextProperty().set("Today");
-		vonDatePicker.getCalendarView().setShowWeeks(false);
-		vonDatePicker.getStylesheets().add("fxml/datepicker.css");
-		bisDatePicker = new DatePicker(Locale.GERMAN);
-		bisDatePicker.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-		bisDatePicker.getCalendarView().todayButtonTextProperty().set("Today");
-		bisDatePicker.getCalendarView().setShowWeeks(false);
-		bisDatePicker.getStylesheets().add("fxml/datepicker.css");
-
-		/* Add DatePickers to grid */
-		pDatumVon.getChildren().add(vonDatePicker);
-		pDatumBis.getChildren().add(bisDatePicker);
+		/* bind contact data to model */
+		tfSucheVorname.textProperty().bindBidirectional(kModel.getkVorname());
+		tfSucheNachname.textProperty().bindBidirectional(kModel.getkNachname());
+		tfSucheFirma.textProperty().bindBidirectional(kModel.getkFirma());
+		lblKontaktCount.textProperty().bindBidirectional(kModel.getkResultCount());
 		
+		/* add listeners from models */
+		tfSucheVorname.focusedProperty().addListener(kModel.kontaktSearchListener);
+		tfSucheNachname.focusedProperty().addListener(kModel.kontaktSearchListener);
+		tfSucheFirma.focusedProperty().addListener(kModel.kontaktSearchListener);
+		vonDatePicker.focusedProperty().addListener(rModel.rechSearchListener);
+		bisDatePicker.focusedProperty().addListener(rModel.rechSearchListener);
+		tfPreisVon.focusedProperty().addListener(rModel.rechSearchListener);
+		tfPreisBis.focusedProperty().addListener(rModel.rechSearchListener);
+		tfKontaktName.focusedProperty().addListener(rModel.rechSearchListener);
 	}
-	
-	public Date alterDateType(String time) {
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-			Date parsed = (Date) format.parse(time);
-			return parsed;
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	
 	/* GETTERs and SETTERs*/
 	
@@ -215,18 +135,20 @@ public class MainController extends AbstractController {
 		return this.proxy;
 	}
 	
-	ChangeListener<Date> dateListener = new ChangeListener<Date>() {
-		@Override
-		public void changed(ObservableValue<? extends Date> observable,
-				Date oldValue, Date newValue) {
-			if (newValue == null) {
-				isError = true;
-			} else {
-				if (bisDatePicker.invalidProperty().get()) {
-					isError = true;
-			    }
-			}
-		}
-	};
+	public void setTableKontaktSuche(ObservableList<KontaktModel> kontakte) {
+		tableKontaktSuche.setItems(kontakte);
+	}
+	
+	public void setTableRechnungSuche(ObservableList<RechnungModel> rechnungen) {
+		tableRechnungSuche.setItems(rechnungen);
+	}
+	
+	public void setDatePickers(DatePicker fDatePicker, DatePicker tDatePicker) {
+		/* Add DatePickers to panes */
+		this.vonDatePicker = fDatePicker;
+		this.bisDatePicker = tDatePicker;
+		pDatumVon.getChildren().add(vonDatePicker);
+		pDatumBis.getChildren().add(bisDatePicker);
+	}
 	
 }

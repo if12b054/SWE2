@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class RechZeileViewController extends AbstractController {
+	private RechViewController parent;
 	private int idNumber; //to check if row is being edited or created
 	@FXML private ComboBox<String> cbArtikel;
 	@FXML private TextField tfMenge;
@@ -25,18 +26,16 @@ public class RechZeileViewController extends AbstractController {
 	
 	Proxy proxy; //reference to proxy in Main, for Server functions
 	
-	RechViewController parent;
-	
 	RechnungZeileModel rechnungszeile;
 	private ArrayList<Artikel> dieArtikel;
 	
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
-		proxy = MainController.getInstance().getProxy();
+		proxy = parent.getParent().getProxy();
 		dieArtikel = proxy.getArticles();
 	}
 	
-	public void initParent(RechViewController newParent) {
+	public void setParent(RechViewController newParent) {
 		parent = newParent;
 	}
 	

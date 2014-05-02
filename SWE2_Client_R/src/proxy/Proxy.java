@@ -8,6 +8,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -44,32 +47,16 @@ public class Proxy {
 	
 	/**
 	 * sends Kontakt data to server, which inserts it into database
+	 * CHECK on server-side if contact already exists, if
+	 * it does, do UPDATE!
 	 * @param k		Kontakt-Object which data is inserted into database
 	 */
 	public void insertKontakt(KontaktModel k) {
 		System.out.println("Sending Kontakt-data to server.");
-		String action = "insert/Kontakt";
-		
-		/*//Send to server 
-		Socket socket;
-		socket= createConnection();
-		String xml = serializeObject(k);
-		sendMessage(action, xml, socket);*/
-	}
-	
-	
-	/**
-	 * sends searchParms to server, which will look for results in database via SQL-queries
-	 * @param searchParms	[0] = Vorname, [1] = Nachname, [2] = Firma
-	 * @return				an ArrayList of Kontakt-Objects to be displayed in TableView
-	 */
-	public ArrayList<KontaktModel> searchKontakt(Vector<Parameter> searchParms) {
-		String action = "search/Kontakt";
-		ArrayList<KontaktModel> kontakte = new ArrayList<KontaktModel>();
-		
-		/* Server-SQL abfr hier */
-		
-		return kontakte;
+//		String action = "insert/Kontakt";
+//		Socket socket= createConnection();
+//		String xml = serializeObject(k);
+//		sendMessage(action, xml, socket);
 	}
 	
 	/**
@@ -82,17 +69,60 @@ public class Proxy {
 		
 	}
 	
+	
+	/**
+	 * sends searchParms to server, which will look for results in database via SQL-queries
+	 * @param searchParms	[0] = Vorname, [1] = Nachname, [2] = Firma
+	 * @return				an ArrayList of Kontakt-Objects to be displayed in TableView
+	 */
+	public ObservableList<KontaktModel> searchKontakt(Vector<Parameter> searchParms) {
+		String action = "search/Kontakt";
+		ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
+		
+		System.out.println("Searching for Kontakt: ");
+		System.out.println("Vorname: " + searchParms.get(0).getStringParameter());
+		System.out.println("Nachname: " + searchParms.get(1).getStringParameter());
+		System.out.println("Firma: " + searchParms.get(2).getStringParameter());
+		
+		/* Server-SQL abfr hier */
+		
+		
+		/* TEST */
+		System.out.println("WORKING..");
+		String typ="Person", firma="Smartass GmbH", vorname="Bart", nachname="Simpson";
+		KontaktModel testKontakt = new KontaktModel(firma, vorname, nachname, null, null);
+		kontakte.add(testKontakt);
+		/* TEST-ENDE */
+		
+		return kontakte;
+	}
+	
 	/**
 	 * sends searchParms to server, which will look for results in database via SQL-queries
 	 * @param searchParms	[0] = VonDatum, [1] = BisDatum, [2] = VonPreis, [3] = BisPreis, [4] = KontaktBezeichnung
 	 * 						get the value with the right getter e.g.: VonDatum - aDate.getDateParameter();
 	 * @return				an ArrayList of Rechnung-Objects to be displayed in TableView
 	 */
-	public ArrayList<RechnungModel> searchRechnung(Vector<String> searchParms) {
+	public ObservableList<RechnungModel> searchRechnung(Vector<Parameter> searchParms) {
 		String action = "search/Rechnung";
-		ArrayList<RechnungModel> rechnungen = new ArrayList<RechnungModel>();
+		ObservableList<RechnungModel> rechnungen = FXCollections.observableArrayList();
+		
+		System.out.println("Searching for Rechnung: ");
+		System.out.println("VonDatum: " + searchParms.get(0).getDateParameter());
+		System.out.println("BisDatum: " + searchParms.get(1).getDateParameter());
+		System.out.println("VonPreis: " + searchParms.get(2).getStringParameter());
+		System.out.println("BisPreis: " + searchParms.get(3).getStringParameter());
+		System.out.println("Kontakt: " + searchParms.get(4).getStringParameter());
 		
 		/* Server-SQL abfr hier */
+		
+		/* TEST */
+		System.out.println("WORKING..");
+		ArrayList<RechnungZeileModel> testRechnungszeilen = new ArrayList<RechnungZeileModel>();
+		testRechnungszeilen.add(new RechnungZeileModel("Artikel", 1, 1, 1));
+		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
+		rechnungen.add(new RechnungModel(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
+		/* TEST-ENDE */
 		
 		return rechnungen;
 	}
