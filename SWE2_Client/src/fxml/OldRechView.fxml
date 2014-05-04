@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="447.0000999999975" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <VBox id="VBox" alignment="CENTER_LEFT" layoutX="14.0" layoutY="14.0" spacing="15.0">
+      <children>
+        <Label text="Datum:">
+          <font>
+            <Font name="System Bold" size="12.0" fx:id="x1" />
+          </font>
+        </Label>
+        <Label font="$x1" text="Kunde:" />
+        <Label font="$x1" text="Fälligkeit:" />
+      </children>
+    </VBox>
+    <VBox id="VBox" alignment="CENTER_LEFT" layoutX="76.0" layoutY="14.0" spacing="15.0">
+      <children>
+        <Label text="00-00-0000" />
+        <Label text="EineFirma" />
+        <Label text="00-00-0000" />
+      </children>
+    </VBox>
+    <Label font="$x1" layoutX="330.0" layoutY="11.0" prefWidth="59.0" text="Nummer:" />
+    <Label layoutX="399.0" layoutY="11.0" text="00000" />
+    <Label font="$x1" layoutX="14.0" layoutY="115.0" text="Nachricht:" />
+    <Label font="$x1" layoutX="15.0" layoutY="175.0" text="Kommentar:" />
+    <Label font="$x1" layoutX="15.0" layoutY="233.0" text="Rechnungszeilen:" />
+    <Button layoutX="368.0" layoutY="43.0" mnemonicParsing="false" text="Drucken" />
+    <TextArea layoutX="96.0" layoutY="115.0" prefHeight="43.0" prefWidth="335.0" wrapText="true" />
+    <TextArea layoutX="96.0" layoutY="175.0" prefHeight="43.0" prefWidth="335.0" wrapText="true" />
+    <TableView id="tableRechnungen" fx:id="tableRechnungszeilen" layoutX="15.0" layoutY="262.0" prefHeight="234.0" prefWidth="417.0">
+      <columns>
+        <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="96.0" text="Artikel">
+          <cellValueFactory>
+            <PropertyValueFactory property="artikel" />
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn text="Menge">
+          <cellValueFactory>
+            <PropertyValueFactory property="menge" />
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn text="Stückpreis">
+          <cellValueFactory>
+            <PropertyValueFactory property="stueckPreis" />
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn text="Netto">
+          <cellValueFactory>
+            <PropertyValueFactory property="netto" />
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="80.0" text="Brutto">
+          <cellValueFactory>
+            <PropertyValueFactory property="brutto" />
+          </cellValueFactory>
+        </TableColumn>
+      </columns>
+    </TableView>
+  </children>
+</AnchorPane>
