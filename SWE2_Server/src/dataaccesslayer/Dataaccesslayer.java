@@ -27,7 +27,7 @@ public class Dataaccesslayer {
 		try {
 			PreparedStatement cmd = conn.prepareStatement(sql);			
 
-			cmd.setInt(1, 3);
+			cmd.setInt(1, 4);
 			cmd.setInt(2, 1);//cmd.setInt(1, Integer.parseInt(k.getUid()));
 			cmd.setString(3,k.getFirma());
 			cmd.setString(4,k.getTitel());
@@ -51,139 +51,98 @@ public class Dataaccesslayer {
 		ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
 		Connection conn = connectDB("ErpDB");
 		
-		System.out.println("Server Vorname: " + parms.get(0).getStringParameter());
-		System.out.println("Server Nachname: " + parms.get(1).getStringParameter());
-		System.out.println("Server Firma: " + parms.get(2).getStringParameter());
-		
-		
 		ResultSet rs = null;
-		try{
-			if(!parms.get(0).getStringParameter().equals(null)){
-				String sql = "SELECT * FROM Kunde WHERE Vorname = ?";
-				PreparedStatement cmd = conn.prepareStatement(sql);
-				cmd.setString(1, parms.get(0).getStringParameter());
-				rs = cmd.executeQuery();
-			}
-			
-			boolean empty = true;
-			
-			while(rs.next()) {
-				empty = false;
-				System.out.println("nname " + rs.getString("Nachname"));
-				System.out.println("vname " + rs.getString("Vorname"));	
-			}
-			
-			if(empty) {
-				System.out.println("ResultSet ist leer");
-			}
-			
-			while(rs.next()) {
-				//Kontakt ist eine Firma
-				if(rs.getString("UID") != null){
-					KontaktModel k = new KontaktModel(rs.getString("UID"),rs.getString("Firmenname"));
-					kontakte.add(k);
-				}
-				
-				//Kontakt ein Mensch
-				if(rs.getString("UID") != null){
-					KontaktModel k = new KontaktModel(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
-							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
-					System.out.println("nname " + k.getNachname());
-					System.out.println("vname " + k.getVorname());
-				}
-			}
-			/*
+		
+			try{
 			//Check ob Vorname != 0
-			if(!parms.get(0).getStringParameter().equals(null)) {
-				System.out.println("01");
+			if(!(parms.get(0).getStringParameter()==null)) {
 				//Check ob Nachname != 0
-				if(!parms.get(1).getStringParameter().equals(null)){
-					System.out.println("02");
+				if(!(parms.get(1).getStringParameter()==null)){
 					//Check ob Firma != 0
-					if(!parms.get(2).getStringParameter().equals(null)){
+					if(!(parms.get(2).getStringParameter()==null)){
 						//Alle drei
-						String sql = "SELECT * FROM Kunde WHERE VORNAME = ? AND NACHNAME = ? AND Firmenname = ?";
+						String sql = "SELECT * FROM Kunde WHERE Vorname = ? AND Nachname = ? AND Firmenname = ?";
 						PreparedStatement cmd;
 							cmd = conn.prepareStatement(sql);
-							System.out.println("1");
-						cmd.setString(1, parms.get(0).toString());
-						cmd.setString(2, parms.get(1).toString());
-						cmd.setString(3, parms.get(2).toString());
+						cmd.setString(1, parms.get(0).getStringParameter());
+						cmd.setString(2, parms.get(1).getStringParameter());
+						cmd.setString(3, parms.get(2).getStringParameter());
 						rs = cmd.executeQuery();
 					}
 					else{//Vorname und Nachname
-						String sql = "SELECT * FROM Kunde WHERE VORNAME = ? AND NACHNAME = ?";
-						System.out.println("2");
+						String sql = "SELECT * FROM Kunde WHERE Vorname = ? AND NACHNAME = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
-						cmd.setString(1, parms.get(0).toString());
-						cmd.setString(2, parms.get(1).toString());
+						cmd.setString(1, parms.get(0).getStringParameter());
+						cmd.setString(2, parms.get(1).getStringParameter());
 						rs = cmd.executeQuery();
 					}
 				}
 				else {
 					//Vorname und Firma
-					if(!parms.get(2).getStringParameter().equals(null)){
-						System.out.println("3");
-						String sql = "SELECT * FROM Kunde WHERE VORNAME = ? AND Firmenname = ?";
+					if(!(parms.get(2).getStringParameter()==null)){
+						String sql = "SELECT * FROM Kunde WHERE Vorname = ? AND Firmenname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
-						cmd.setString(1, parms.get(0).toString());
-						cmd.setString(2, parms.get(2).toString());
+						cmd.setString(1, parms.get(0).getStringParameter());
+						cmd.setString(2, parms.get(2).getStringParameter());
 						rs = cmd.executeQuery();
 					}
 					else{//nur Vorname
-						System.out.println("4");
-						String sql = "SELECT * FROM Kunde WHERE VORNAME = ?";
+						String sql = "SELECT * FROM Kunde WHERE Vorname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
-						cmd.setString(1, parms.get(0).toString());
+						cmd.setString(1, parms.get(0).getStringParameter());
 						rs = cmd.executeQuery();
 					}
 				}
 			}
-			//Check ob Nachname != 0
-			if(parms.get(1).toString() != null) {
-				//Check ob Firma != 0
-				if(parms.get(2).toString() != null) {
-					//Nachname und Firma
-					String sql = "SELECT * FROM Kunde WHERE NACHNAME = ? AND Firmenname = ?";
-					PreparedStatement cmd = conn.prepareStatement(sql);
-					cmd.setString(1, parms.get(1).toString());
-					cmd.setString(2, parms.get(2).toString());
-					rs = cmd.executeQuery();
+			else{
+				//Check ob Nachname != 0	
+				if(parms.get(1).getStringParameter()==null) {
+					//Check ob Firma != 0
+					if(parms.get(2).getStringParameter()==null) {
+						//Nachname und Firma
+						String sql = "SELECT * FROM Kunde WHERE Nachname = ? AND Firmenname = ?";
+						PreparedStatement cmd = conn.prepareStatement(sql);
+						cmd.setString(1, parms.get(1).getStringParameter());
+						cmd.setString(2, parms.get(2).getStringParameter());
+						rs = cmd.executeQuery();
+					}
+					else {	//nur Nachname
+						String sql = "SELECT * FROM Kunde WHERE Nachname = ?";
+						PreparedStatement cmd = conn.prepareStatement(sql);
+						cmd.setString(1, parms.get(1).getStringParameter());
+						rs = cmd.executeQuery();
+					}
 				}
-				else {	//nur Nachname
-					String sql = "SELECT * FROM Kunde WHERE NACHNAME = ?";
-					PreparedStatement cmd = conn.prepareStatement(sql);
-					cmd.setString(1, parms.get(1).toString());
-					rs = cmd.executeQuery();
+				else{
+					//Check ob Firma != 0
+					if(parms.get(2).getStringParameter()==null) {
+						//nur Firma
+						String sql = "SELECT * FROM Kunde WHERE Firmenname = ?";
+						PreparedStatement cmd = conn.prepareStatement(sql);
+						cmd.setString(1, parms.get(2).getStringParameter());
+						rs = cmd.executeQuery();
+					}
 				}
 			}
-			//Check ob Firma != 0
-			if(parms.get(2).toString() != null) {
-				//nur Firma
-				String sql = "SELECT * FROM Kunde WHERE Firmenname = ?";
-				PreparedStatement cmd = conn.prepareStatement(sql);
-				cmd.setString(1, parms.get(2).toString());
-				rs = cmd.executeQuery();
-			}
-			
+
 			while(rs.next()) {
 				//Kontakt ist eine Firma
-				if(rs.getString("UID") != null){
+				if(rs.getString("Vorname").equals(null)){
 					KontaktModel k = new KontaktModel(rs.getString("UID"),rs.getString("Firmenname"));
 					kontakte.add(k);
 				}
 				
 				//Kontakt ein Mensch
-				if(rs.getString("UID") != null){
+				if(!rs.getString("Vorname").equals(null)){
 					KontaktModel k = new KontaktModel(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
 							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
+					kontakte.add(k);
 				}
 			}
-			*/
+			
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 		return kontakte;
 	}
 	
