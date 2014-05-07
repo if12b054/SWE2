@@ -33,7 +33,6 @@
 	<classpathentry kind="lib" path="lib/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-benchmark-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-hibernate-1.4.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Roman/workspace/SWE2_Server/lib/Microsoft JDBC Driver 4.0 for SQL Server/sqljdbc_4.0/enu/sqljdbc4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Roman/workspace/SWE2_Server/lib/Microsoft JDBC Driver 4.0 for SQL Server/sqljdbc_4.0/enu/sqljdbc.jar"/>
+	<classpathentry kind="lib" path="lib/Microsoft JDBC Driver 4.0 for SQL Server/sqljdbc_4.0/enu/sqljdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
