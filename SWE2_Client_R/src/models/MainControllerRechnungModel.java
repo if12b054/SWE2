@@ -1,4 +1,4 @@
-package gui;
+package models;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Vector;
 
+import controllers.MainController;
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import businessobjects.KontaktModel;
 import businessobjects.RechnungModel;
@@ -39,7 +40,7 @@ public class MainControllerRechnungModel {
 	private StringProperty rKontakt = new SimpleStringProperty();
 	private StringProperty rResultCount = new SimpleStringProperty();
 	
-	MainControllerRechnungModel(MainController controller) {
+	public MainControllerRechnungModel(MainController controller) {
 		this.controller = controller;
 		
 		/* Initialize and create the DatePickers */

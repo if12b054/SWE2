@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class RechnungModel {
+public class RechnungModel extends AModel{
 	private ArrayList<RechnungZeileModel> rechnungszeilen = new ArrayList<RechnungZeileModel>();
 	private FloatProperty betrag = new SimpleFloatProperty();
 	private StringProperty datum = new SimpleStringProperty();

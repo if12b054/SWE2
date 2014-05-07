@@ -1,4 +1,4 @@
-package gui;
+package controllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import applikation.AbstractController;
+import businessobjects.AModel;
 import businessobjects.Artikel;
 import businessobjects.RechnungModel;
 import businessobjects.RechnungZeileModel;
@@ -51,7 +52,7 @@ public class RechViewController extends AbstractController {
 	}
 	
 	@FXML private void openRechZeile(ActionEvent event) throws IOException {	
-		showRechZeileDialog("/fxml/RechZeileView.fxml", this);
+		showNewDialog("/fxml/RechZeileView.fxml", this, null); //need to change
 	}
 	
 	public void addRechnungszeileToTable(RechnungZeileModel rechnungszeile) {
@@ -59,11 +60,18 @@ public class RechViewController extends AbstractController {
 		tableRechnungszeilen.setItems(rechnungszeilen);
 	}
 	
-	public void setParent(MainController parent) {
-		this.parent = parent;
+	@Override
+	public void setParent(AbstractController parent) {
+		this.parent = (MainController) parent;
 	}
 	
 	public MainController getParent() {
 		return this.parent;
+	}
+	
+	@Override
+	public void loadModel(AModel model) {
+		RechnungModel rModel = (RechnungModel) model;
+		//set fields here
 	}
 }

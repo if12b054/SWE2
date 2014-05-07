@@ -1,6 +1,6 @@
 package applikation;
 
-import gui.MainController;
+import controllers.MainController;
 
 public abstract class InputChecks {
 	

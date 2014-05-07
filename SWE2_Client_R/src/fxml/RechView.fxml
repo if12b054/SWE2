@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="628.0000999999975" prefWidth="477.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.RechViewController">
+<AnchorPane prefHeight="628.0000999999975" prefWidth="477.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.RechViewController">
   <children>
     <TitledPane animated="false" layoutX="14.0" layoutY="14.0" prefHeight="264.0" prefWidth="449.0" text="Allgemein">
       <content>

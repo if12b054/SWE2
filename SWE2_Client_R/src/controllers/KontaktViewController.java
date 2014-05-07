@@ -1,14 +1,17 @@
-package gui;
+package controllers;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import models.KontaktViewModel;
 import proxy.Proxy;
 import applikation.AbstractController;
 import applikation.InputChecks;
+import businessobjects.AModel;
 import businessobjects.Artikel;
 import businessobjects.KontaktModel;
+import businessobjects.RechnungModel;
 import businessobjects.RechnungZeileModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -144,7 +147,37 @@ public class KontaktViewController extends AbstractController {
 		System.out.println("DELETE");
 	}
 	
-	public void setParent(MainController parent) {
-		this.parent = parent;
+	@Override
+	public void setParent(AbstractController parent) {
+		this.parent = (MainController)parent;
+	}
+	
+	@Override
+	public void loadModel(AModel model) {
+		KontaktModel kModel = (KontaktModel) model;
+		//set fields here
+		switch(kModel.typProperty().get())
+		{
+		case "Person":
+			System.out.println("It's a Person!");
+			tfTitel.setText(kModel.getTitel());
+			tfVname.setText(kModel.getVorname());
+			tfNname.setText(kModel.getNachname());
+			tfGebdatum.setText(kModel.getGeburtsdatum());
+			tfFirma.setText(kModel.getFirma());
+			
+			break;
+		case "Firma":
+			System.out.println("It's a Firm!");
+			break;
+		}
+		tfRStrasse.setText(kModel.getRechnungsadresse().get(0)); 
+		tfRPLZ.setText(kModel.getRechnungsadresse().get(1)); 
+		tfROrt.setText(kModel.getRechnungsadresse().get(2)); 
+		tfRLand.setText(kModel.getRechnungsadresse().get(3)); 
+		tfLStrasse.setText(kModel.getLieferadresse().get(0)); 
+		tfLPLZ.setText(kModel.getLieferadresse().get(1)); 
+		tfLOrt.setText(kModel.getLieferadresse().get(2)); 
+		tfLLand.setText(kModel.getLieferadresse().get(3)); 
 	}
 }

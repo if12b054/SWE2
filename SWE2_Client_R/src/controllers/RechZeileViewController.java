@@ -1,4 +1,4 @@
-package gui;
+package controllers;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,8 +35,9 @@ public class RechZeileViewController extends AbstractController {
 		dieArtikel = proxy.getArticles();
 	}
 	
-	public void setParent(RechViewController newParent) {
-		parent = newParent;
+	@Override
+	public void setParent(AbstractController newParent) {
+		parent = (RechViewController) newParent;
 	}
 	
 	/**

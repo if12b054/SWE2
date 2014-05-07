@@ -1,5 +1,6 @@
-/applikation
-/businessobjects
-/fxml
-/gui
-/proxy
+/gui/
+/applikation/
+/models/
+/controllers/
+/businessobjects/
+/fxml/

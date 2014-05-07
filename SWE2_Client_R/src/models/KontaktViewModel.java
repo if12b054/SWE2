@@ -1,4 +1,4 @@
-package gui;
+package models;
 
 import applikation.Utils;
 import javafx.beans.binding.BooleanBinding;

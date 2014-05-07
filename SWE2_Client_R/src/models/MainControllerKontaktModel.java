@@ -1,9 +1,10 @@
-package gui;
+package models;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import controllers.MainController;
 import businessobjects.KontaktModel;
 import businessobjects.RechnungModel;
 import applikation.InputChecks;
@@ -34,7 +35,7 @@ public class MainControllerKontaktModel {
 	private StringProperty kFirma = new SimpleStringProperty();
 	private StringProperty kResultCount = new SimpleStringProperty();
 	
-	MainControllerKontaktModel(MainController controller) {
+	public MainControllerKontaktModel(MainController controller) {
 		this.controller = controller;
 	}
 	

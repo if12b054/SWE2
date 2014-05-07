@@ -7,7 +7,7 @@ import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class KontaktModel {
+public class KontaktModel extends AModel{
 	
 	/* Kontakt-type: "Person" or "Firma" */
 	private StringProperty typ = new SimpleStringProperty();
