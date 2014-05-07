@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path=""/>
 	<classpathentry kind="lib" path="lib/Microsoft JDBC Driver 4.0 for SQL Server/sqljdbc_4.0/enu/sqljdbc.jar"/>
 	<classpathentry kind="lib" path="lib/Microsoft JDBC Driver 4.0 for SQL Server/sqljdbc_4.0/enu/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-hibernate/antlr-2.7.7.jar"/>

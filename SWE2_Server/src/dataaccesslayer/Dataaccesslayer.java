@@ -17,7 +17,7 @@ import businessobjects.RechnungZeileModel;
 
 public class Dataaccesslayer {
 	
-	final String PCName = "Ultrabook\\SQLEXPRESS";
+	final String PCName = "ULTRABOOK\\SQLEXPRESS";
 	
 	public void insertKontakt(KontaktModel k) {
 		Connection conn = connectDB("ErpDB");
@@ -61,7 +61,7 @@ public class Dataaccesslayer {
 					//Check ob Firma != 0
 					if(!(parms.get(2).getStringParameter()==null)){
 						//Alle drei
-						String sql = "SELECT * FROM Kunde WHERE Vorname = ? AND Nachname = ? AND Firmenname = ?";
+						String sql = "SELECT * FROM Kontakt WHERE Vorname = ? AND Nachname = ? AND Firmenname = ?";
 						PreparedStatement cmd;
 							cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(0).getStringParameter());
@@ -70,7 +70,7 @@ public class Dataaccesslayer {
 						rs = cmd.executeQuery();
 					}
 					else{//Vorname und Nachname
-						String sql = "SELECT * FROM Kunde WHERE Vorname = ? AND NACHNAME = ?";
+						String sql = "SELECT * FROM Kontakt WHERE Vorname = ? AND NACHNAME = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(0).getStringParameter());
 						cmd.setString(2, parms.get(1).getStringParameter());
@@ -80,14 +80,14 @@ public class Dataaccesslayer {
 				else {
 					//Vorname und Firma
 					if(!(parms.get(2).getStringParameter()==null)){
-						String sql = "SELECT * FROM Kunde WHERE Vorname = ? AND Firmenname = ?";
+						String sql = "SELECT * FROM Kontakt WHERE Vorname = ? AND Firmenname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(0).getStringParameter());
 						cmd.setString(2, parms.get(2).getStringParameter());
 						rs = cmd.executeQuery();
 					}
 					else{//nur Vorname
-						String sql = "SELECT * FROM Kunde WHERE Vorname = ?";
+						String sql = "SELECT * FROM Kontakt WHERE Vorname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(0).getStringParameter());
 						rs = cmd.executeQuery();
@@ -100,14 +100,14 @@ public class Dataaccesslayer {
 					//Check ob Firma != 0
 					if(parms.get(2).getStringParameter()==null) {
 						//Nachname und Firma
-						String sql = "SELECT * FROM Kunde WHERE Nachname = ? AND Firmenname = ?";
+						String sql = "SELECT * FROM Kontakt WHERE Nachname = ? AND Firmenname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(1).getStringParameter());
 						cmd.setString(2, parms.get(2).getStringParameter());
 						rs = cmd.executeQuery();
 					}
 					else {	//nur Nachname
-						String sql = "SELECT * FROM Kunde WHERE Nachname = ?";
+						String sql = "SELECT * FROM Kontakt WHERE Nachname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(1).getStringParameter());
 						rs = cmd.executeQuery();
@@ -117,7 +117,7 @@ public class Dataaccesslayer {
 					//Check ob Firma != 0
 					if(parms.get(2).getStringParameter()==null) {
 						//nur Firma
-						String sql = "SELECT * FROM Kunde WHERE Firmenname = ?";
+						String sql = "SELECT * FROM Kontakt WHERE Firmenname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(2).getStringParameter());
 						rs = cmd.executeQuery();
