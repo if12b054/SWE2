@@ -125,7 +125,7 @@ public class Dataaccesslayer {
 				}
 			}
 
-			while(rs.next()) {
+			while(rs.next()) {				
 				//Kontakt ist eine Firma
 				if(rs.getString("Vorname").equals(null)){
 					KontaktModel k = new KontaktModel(rs.getString("UID"),rs.getString("Firmenname"));
@@ -170,19 +170,14 @@ public class Dataaccesslayer {
 			PreparedStatement cmd = conn.prepareStatement(sql);
 			rd = cmd.executeQuery();
 			
-			
 			while(rd.next()) {
 				//Rechnungszeile rm = new Rechnungszeile();
 				
 				String zeile = rd.getString("");
-			}
-			
-			
+			}	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
 		return searchAll;
 	}
 }

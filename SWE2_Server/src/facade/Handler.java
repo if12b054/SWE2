@@ -67,10 +67,10 @@ public class Handler implements Runnable{
 				
 				kontakte = b.searchContact(parms);
 				
-				/*for(int i=0; i<kontakte.size(); i++){
+				for(int i=0; i<kontakte.size(); i++){
 					System.out.println("gefunden: " + kontakte.get(i).getVorname());
 					System.out.println("gefunden: " + kontakte.get(i).getNachname());
-				}*/
+				}
 				
 				String xml = serializeKontaktSearch(kontakte);
 				sendMessage(xml,client);
@@ -125,7 +125,7 @@ public class Handler implements Runnable{
 			writer.write("EOF");
 			writer.write("\n");
 			writer.flush();
-			writer.close();
+			//writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

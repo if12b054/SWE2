@@ -207,18 +207,11 @@ public class Proxy {
 		String line;
 		String requestHeader=null;
 		String xml;
-		System.out.println("-1");
-		System.out.println("isClosed?: " + socket.isClosed());
-		String _requestLine = bufferedReader.readLine();
-		System.out.println("-1");
-		requestHeader += requestHeader + _requestLine;
-		System.out.println("-1");
-		requestHeader += bufferedReader.readLine();
-		System.out.println("-1");
-		requestHeader += bufferedReader.readLine();
-		System.out.println("-1");
 		
-		System.out.println("-2");
+		String _requestLine = bufferedReader.readLine();
+		requestHeader += requestHeader + _requestLine;
+		requestHeader += bufferedReader.readLine();
+		requestHeader += bufferedReader.readLine();
 		
 		while(!(line = bufferedReader.readLine()).equals("EOF")) {
 			if(line.equals("EOF"))break;
