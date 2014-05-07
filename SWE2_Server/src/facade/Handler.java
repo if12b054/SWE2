@@ -125,7 +125,7 @@ public class Handler implements Runnable{
 			writer.write("EOF");
 			writer.write("\n");
 			writer.flush();
-			writer.close();
+			//writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

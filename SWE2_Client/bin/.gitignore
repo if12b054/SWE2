@@ -1,3 +1,6 @@
 /applikation/
 /businessobjects/
-/gui/
+/controllers/
+/fxml/
+/models/
+/proxy/

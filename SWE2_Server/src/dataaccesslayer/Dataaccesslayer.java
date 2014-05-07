@@ -149,8 +149,8 @@ public class Dataaccesslayer {
 	public Connection connectDB(String dbName) {
 		try {
 			String url = "jdbc:sqlserver://" + PCName + ";databaseName=" + dbName + ";integratedSecurity=true";
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			Connection conn = DriverManager.getConnection(url);
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver"); 
+			Connection conn = DriverManager.getConnection(url, "Test", "test");
 			return conn;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
