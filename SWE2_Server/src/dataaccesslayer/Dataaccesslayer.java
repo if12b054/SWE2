@@ -17,7 +17,7 @@ import businessobjects.RechnungZeileModel;
 
 public class Dataaccesslayer {
 	
-	final String PCName = "Schlepptop\\SQLEXPRESS";
+	final String PCName = "Ultrabook\\SQLEXPRESS";
 	
 	public void insertKontakt(KontaktModel k) {
 		Connection conn = connectDB("ErpDB");
