@@ -7,10 +7,10 @@ import javafx.scene.paint.Paint;
 public class Parameter {
 	
 	/* types of preferences */
-	private String string;
-	private Paint paint;
-	private double doubleValue;
-	private Date date;
+	private String string = null;
+	private Paint paint = null;
+	private double doubleValue = 0;
+	private Date date = null;
 	
 	public Parameter(String preference) {
 		string = preference;

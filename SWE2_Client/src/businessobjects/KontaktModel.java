@@ -37,7 +37,8 @@ public class KontaktModel extends AModel{
 	
 	public KontaktModel(String uid, String firma) {
 		this.typ.set("Firma");
-		this.uid = uid;
+		this.firma.set(firma);
+		this.setUid(uid);
 	}
 	
 	public final StringProperty typProperty() {
@@ -117,5 +118,13 @@ public class KontaktModel extends AModel{
 		this.rechnungsadresse.add(PLZ);
 		this.rechnungsadresse.add(ort);
 		this.rechnungsadresse.add(land);
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 }

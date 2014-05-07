@@ -17,7 +17,7 @@ public class Businesslayer {
 		d.insertKontakt(k);
 	}
 	
-	public ObservableList<RechnungModel> searchContact(Vector<Parameter> parms) {
+	public ObservableList<KontaktModel> searchContact(Vector<Parameter> parms) {
 		return d.searchContact(parms);
 	}
 

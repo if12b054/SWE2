@@ -1,6 +1,8 @@
 package proxy;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -45,6 +47,18 @@ public class Proxy {
 		return articles;
 	}
 	
+	public Socket createSocket() {
+		Socket socket = null;
+		try {
+			socket = new Socket("127.0.0.1",11111);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return socket;
+	}
+	
 	/**
 	 * sends Kontakt data to server, which inserts it into database
 	 * CHECK on server-side if contact already exists, if
@@ -52,11 +66,13 @@ public class Proxy {
 	 * @param k		Kontakt-Object which data is inserted into database
 	 */
 	public void insertKontakt(KontaktModel k) {
+		
 		System.out.println("Sending Kontakt-data to server.");
-//		String action = "insert/Kontakt";
-//		Socket socket= createConnection();
-//		String xml = serializeObject(k);
-//		sendMessage(action, xml, socket);
+		String action = "insert/Kontakt";
+		Socket socket = createSocket();
+		String xml = serializeKontakt(k);
+		sendMessage(action, xml, socket);
+
 	}
 	
 	/**
@@ -84,15 +100,30 @@ public class Proxy {
 		System.out.println("Nachname: " + searchParms.get(1).getStringParameter());
 		System.out.println("Firma: " + searchParms.get(2).getStringParameter());
 		
+		
 		/* Server-SQL abfr hier */
-		
-		
-		/* TEST */
+	
+		try {
+			Socket socket = new Socket("127.0.0.1",11111);
+			String xml = serializeKontaktSearch(searchParms);
+
+			sendMessage(action, xml, socket);
+			
+			String xml2 = readMessage(socket);
+			kontakte = deserializeKontaktSearch(xml2);
+			
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		/* TEST 
 		System.out.println("WORKING..");
 		String typ="Person", firma="Smartass GmbH", vorname="Bart", nachname="Simpson";
 		KontaktModel testKontakt = new KontaktModel(firma, vorname, nachname, null, null);
 		kontakte.add(testKontakt);
-		/* TEST-ENDE */
+		 TEST-ENDE */
 		
 		return kontakte;
 	}
@@ -127,19 +158,7 @@ public class Proxy {
 		return rechnungen;
 	}
 	
-	public Socket createConnection() {
-		Socket s = null;
-		try {
-			s = new Socket("127.0.0.1",11111);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return s;
-	}
-	
-	public String serializeObject(KontaktModel k) {
+	public String serializeKontakt(KontaktModel k) {
 		XStream xstream = new XStream(new DomDriver());
 		xstream.processAnnotations(KontaktModel.class);
 		//xstream.alias("kontakt", Kontakt.class);
@@ -147,9 +166,20 @@ public class Proxy {
 		return xml;
 	}
 	
-	public ArrayList<RechnungZeileModel> sendMessage(String action, String xml, Socket socket) {
+	public String serializeKontaktSearch(Vector<Parameter> searchParms) {
+		XStream xstream = new XStream(new DomDriver());
+		xstream.processAnnotations(KontaktModel.class);
+		//xstream.alias("kontakt", Kontakt.class);
+		String xml = xstream.toXML(searchParms);
+		return xml;
+	}
+	
+	public void sendMessage(String action, String xml, Socket socket) {
 		try {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+			
+			System.out.println("Socket Client: " + socket);
+			
 			writer.write("GET / HTTP/1.1 " + action);
 			writer.write("\n");
 			writer.write("host: " + socket.getInetAddress());
@@ -158,13 +188,47 @@ public class Proxy {
 			writer.write("Content-Type: text/xml");
 			writer.write("\n");
 			writer.write(xml);
+			writer.write("\n");
+			writer.write("EOF");
+			writer.write("\n");
 			writer.flush();
-			writer.close();
+			//writer.close();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;  
 	}
 	
+	public String readMessage(Socket socket) throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		//Lesen des gesamten HttpHeaders
+		
+		StringBuffer buff = new StringBuffer();
+		String line;
+		String requestHeader=null;
+		String xml;
+		
+		String _requestLine = bufferedReader.readLine();
+		requestHeader += requestHeader + _requestLine;
+		requestHeader += bufferedReader.readLine();
+		requestHeader += bufferedReader.readLine();
+		
+		while(!(line = bufferedReader.readLine()).equals("EOF")) {
+			if(line.equals("EOF"))break;
+			buff.append(line);
+		}
+		
+		//bufferedReader.close();	
+			
+		String content = buff.toString();
+		xml = content;
+		return xml;
+	}
 	
+	public ObservableList<KontaktModel> deserializeKontaktSearch(String xml) {
+		XStream xstream = new XStream();
+		xstream.processAnnotations(KontaktModel.class);
+		ObservableList<KontaktModel> k = (ObservableList<KontaktModel>) xstream.fromXML(xml);
+		return k;
+	}
 }
