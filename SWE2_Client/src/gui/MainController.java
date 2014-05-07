@@ -80,7 +80,7 @@ public class MainController extends AbstractController {
 	 * @throws IOException
 	 */
 	@FXML private void doNewKontakt(ActionEvent event) throws IOException {
-		showNewDialog("/fxml/KontaktView.fxml", this);
+		showKontaktDialog("/fxml/KontaktView.fxml", this);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class MainController extends AbstractController {
 	 * @throws IOException
 	 */
 	@FXML private void doNewRech(ActionEvent event) throws IOException {
-		showRechnungDialog("/fxml/RechView.fxml", this);
+		showKontaktDialog("/fxml/RechView.fxml", this);
 	}
 	
 	/**
