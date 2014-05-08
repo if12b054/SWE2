@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import proxy.Proxy;
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import applikation.AbstractController;
 import businessobjects.AModel;
@@ -33,6 +34,7 @@ import javafx.stage.StageStyle;
 public class RechViewController extends AbstractController {
 	public MainController parent;
 	private DatePicker fDatePicker;
+	private Proxy proxy;
 	
 	@FXML private Button btnSave, btnAdd, btnFind;
 	@FXML private Pane pFaelligkeit;
@@ -40,6 +42,7 @@ public class RechViewController extends AbstractController {
 	@FXML private TextArea taMessage, taComment;
 	@FXML private TableView<RechnungZeileModel> tableRechnungszeilen;
 	@FXML private ImageView imgRechKundeInput, imgRechnKundeDelete;
+	@FXML private ComboBox<String> boxMWSt;
 	
 	private static ObservableList<RechnungZeileModel> rechnungszeilen = FXCollections.observableArrayList();
 	
@@ -74,6 +77,10 @@ public class RechViewController extends AbstractController {
 	@Override
 	public void setParent(AbstractController parent) {
 		this.parent = (MainController) parent;
+	}
+	
+	public String getMWSt() {
+		return this.boxMWSt.getValue();
 	}
 	
 	public MainController getParent() {

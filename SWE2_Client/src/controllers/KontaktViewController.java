@@ -97,17 +97,15 @@ public class KontaktViewController extends AbstractController {
 	 * @param event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		
 		createKontakt();
-		//Stage stage = (Stage) btnAdd.getScene().getWindow();
-		//stage.close();
 	}
 	
+	/**
+	 * happens on "Finden" button, search for firm reference
+	 * @param event
+	 */
 	@FXML private void doKontaktSearch(ActionEvent event) {
 		
-		createKontakt();
-		//Stage stage = (Stage) btnAdd.getScene().getWindow();
-		//stage.close();
 	}
 	
 	/**

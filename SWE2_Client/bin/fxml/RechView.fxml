@@ -29,11 +29,14 @@
             <ComboBox fx:id="boxMWSt" layoutX="298.0" layoutY="12.0">
               <items>
                 <FXCollections fx:factory="observableArrayList">
-                  <String fx:value="Item 1" />
-                  <String fx:value="Item 2" />
-                  <String fx:value="Item 3" />
+                  <String fx:value="0.15" />
+                  <String fx:value="0.19" />
+                  <String fx:value="0.25" />
                 </FXCollections>
               </items>
+              <value>
+        		<String fx:value="0.15" />
+    		</value>
             </ComboBox>
             <Pane fx:id="pFaelligkeit" layoutX="92.0" layoutY="12.0" prefHeight="21.0" prefWidth="144.0" />
           </children>
