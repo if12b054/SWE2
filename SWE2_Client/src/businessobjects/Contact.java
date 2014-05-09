@@ -7,7 +7,7 @@ import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class KontaktModel extends AModel{
+public class Contact extends AbstractObject{
 	
 	/* Kontakt-type: "Person" or "Firma" */
 	private StringProperty typ = new SimpleStringProperty();
@@ -27,14 +27,14 @@ public class KontaktModel extends AModel{
 	/* für Adressen: [0] = Strasse, [1] = PLZ, [2] = Ort, [3] = Land */
 	private Vector<String> adresse = new Vector<String>(); 
 	
-	public KontaktModel(String firma, String vorname, String nachname, String titel, String geburtsdatum) {
+	public Contact(String firma, String vorname, String nachname, String titel, String geburtsdatum) {
 		this.typ.set("Person");
 		this.firma.set(firma);
 		this.vorname.set(vorname);
 		this.nachname.set(nachname);
 	}
 	
-	public KontaktModel(String uid, String firma) {
+	public Contact(String uid, String firma) {
 		this.typ.set("Firma");
 		this.firma.set(firma);
 		this.setUid(uid);

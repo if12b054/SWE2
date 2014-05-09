@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class RechnungZeileModel extends AModel {
+public class InvoiceLine extends AbstractObject {
 	private int idNumber = -1;
 	private IntegerProperty menge = new SimpleIntegerProperty();
 	private FloatProperty stueckPreis = new SimpleFloatProperty();
@@ -16,7 +16,7 @@ public class RechnungZeileModel extends AModel {
 	
 	private float netto;
 	
-	public RechnungZeileModel(String newArtikel, int newMenge, float newStueckPreis, float newMWSt) {
+	public InvoiceLine(String newArtikel, int newMenge, float newStueckPreis, float newMWSt) {
 		this.artikel.set(newArtikel);
 		this.menge.set(newMenge);
 		this.stueckPreis.set(newStueckPreis);

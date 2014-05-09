@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="429.0000999999975" prefWidth="421.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.KontaktViewController">
+<AnchorPane prefHeight="429.0000999999975" prefWidth="421.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="javafxControllers.ContactController">
   <!-- TODO Add Nodes -->
   <children>
     <SplitPane dividerPositions="0.24121774210357472, 0.6861825090907513" focusTraversable="true" orientation="VERTICAL" prefHeight="588.0000999999975" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -1,32 +1,32 @@
-package controllers;
+package javafxControllers;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import businessobjects.KontaktModel;
+import businessobjects.Contact;
 
 public class ControllerTest {
 
 	@Test
 	public void testKontakt1() {
-		KontaktModel k;
+		Contact k;
 		
-		k = new KontaktModel("12345", "Beispielfirma");
+		k = new Contact("12345", "Beispielfirma");
 		assertNotNull(k);
 	}
 	
 	public void testKontakt2(){
-		KontaktModel k;
+		Contact k;
 		//new KontaktModel(tfFirma.getText(), tfVname.getText(), tfNname.getText(), tfTitel.getText(), tfGebdatum.getText());
-		k = new KontaktModel("Beispielfirma", "Max", "Mustermann", "Herr", "29.03.1934");
+		k = new Contact("Beispielfirma", "Max", "Mustermann", "Herr", "29.03.1934");
 		assertNotNull(k);
 	}
 	
 	public void testKontakt3(){
-	KontaktModel k;
+	Contact k;
 		
-		k = new KontaktModel("12345", null);
+		k = new Contact("12345", null);
 		
 		String firma = k.getFirma();
 		assertNull(firma);
@@ -34,8 +34,8 @@ public class ControllerTest {
 	
 	public void testKontakt4(){
 		
-		KontaktModel k;
-		k = new KontaktModel("12345", "Coolefirma");
+		Contact k;
+		k = new Contact("12345", "Coolefirma");
 		
 		String firma = k.getFirma();
 		assertEquals("Coolefirma", firma);

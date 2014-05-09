@@ -11,15 +11,15 @@ import java.util.Vector;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import applikation.Parameter;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
-import businessobjects.RechnungZeileModel;
+import businessobjects.Contact;
+import businessobjects.Invoice;
+import businessobjects.InvoiceLine;
 
 public class Dataaccesslayer {
 	
 	final String PCName = "ULTRABOOK\\SQLEXPRESS";
 	
-	public void insertKontakt(KontaktModel k) throws SQLException {
+	public void insertKontakt(Contact k) throws SQLException {
 		Connection conn = connectDB("ErpDB");
 		
 		
@@ -48,8 +48,8 @@ public class Dataaccesslayer {
 		
 	}
 	
-	public ObservableList<KontaktModel> searchContact(Vector<Parameter> parms) {
-		ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
+	public ObservableList<Contact> searchContact(Vector<Parameter> parms) {
+		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
 		Connection conn = connectDB("ErpDB");
 		
 		ResultSet rs = null;
@@ -129,13 +129,13 @@ public class Dataaccesslayer {
 			while(rs.next()) {				
 				//Kontakt ist eine Firma
 				if(rs.getString("Vorname").equals(null)){
-					KontaktModel k = new KontaktModel(rs.getString("UID"),rs.getString("Firmenname"));
+					Contact k = new Contact(rs.getString("UID"),rs.getString("Firmenname"));
 					kontakte.add(k);
 				}
 				
 				//Kontakt ein Mensch
 				if(!rs.getString("Vorname").equals(null)){
-					KontaktModel k = new KontaktModel(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
+					Contact k = new Contact(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
 							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
 					kontakte.add(k);
 				}
@@ -161,8 +161,8 @@ public class Dataaccesslayer {
 		return null;
 	}
 
-	public ArrayList<RechnungZeileModel> searchRechnung() {
-		ArrayList<RechnungZeileModel> searchAll = new ArrayList<RechnungZeileModel>();
+	public ArrayList<InvoiceLine> searchRechnung() {
+		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
 		Connection conn = connectDB("ErpDB");
 		ResultSet rd;
 		

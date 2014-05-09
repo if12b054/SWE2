@@ -1,27 +1,30 @@
-package controllers;
+package javafxControllers;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import proxy.Proxy;
+import ObserverPattern.Observer;
 import applikation.AbstractController;
-import businessobjects.AModel;
-import businessobjects.Artikel;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungZeileModel;
+import businessobjects.AbstractObject;
+import businessobjects.Article;
+import businessobjects.Contact;
+import businessobjects.InvoiceLine;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
-public class RechZeileViewController extends AbstractController {
-	private RechViewController parent;
+public class InvoiceLineController extends AbstractController implements Observer {
+	private InvoiceController parent;
 	private int existingID = -1; //if recite-line gets edited
 	@FXML private ComboBox<String> cbArtikel;
 	@FXML private ComboBox<Integer> cbMenge;
@@ -30,9 +33,9 @@ public class RechZeileViewController extends AbstractController {
 	
 	Proxy proxy; //reference to proxy in Main, for Server functions
 	
-	RechnungZeileModel rechnungszeile;
-	private ArrayList<Artikel> dieArtikel;
-	
+	InvoiceLine rechnungszeile;
+	private ArrayList<Article> dieArtikel;
+
 	public void initialize() {
 		dieArtikel = parent.getParent().getProxy().getArticles();
 		cbMenge.getItems().addAll(1,2,3,4,5,6,7,8,9,10);
@@ -43,13 +46,13 @@ public class RechZeileViewController extends AbstractController {
 	
 	@Override
 	public void setParent(AbstractController newParent) {
-		parent = (RechViewController) newParent;
+		parent = (InvoiceController) newParent;
 		initialize();
 	}
 	
 	@Override
-	public void loadModel(AModel model) {
-		RechnungZeileModel rModel = (RechnungZeileModel) model;
+	public void loadModel(AbstractObject model) {
+		InvoiceLine rModel = (InvoiceLine) model;
 		
 		existingID = rModel.getIdNumber();
 		cbArtikel.setValue(rModel.getArtikel());
@@ -61,11 +64,24 @@ public class RechZeileViewController extends AbstractController {
 	}
 	
 	/**
+	 * after stage gets created, this event is set, so when the window closes,
+	 * it gets unregistered from observerlist
+	 */
+	public void setOnClose() {
+		Stage stage = this.getStage();
+		this.getStage().setOnHiding(new EventHandler<WindowEvent>() {
+		      public void handle(WindowEvent event) {
+		        parent.unregister(InvoiceLineController.this);
+		      }
+		});
+	}
+	
+	/**
 	 * On button click "
 	 * @param event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		rechnungszeile = new RechnungZeileModel(
+		rechnungszeile = new InvoiceLine(
 				cbArtikel.getValue(), 
 				cbMenge.getValue(), 
 				Float.parseFloat(lblStueckPreis.getText()), 
@@ -81,7 +97,7 @@ public class RechZeileViewController extends AbstractController {
 		/* recite-line already exists */
 		else {
 			int i = 0;
-			for(RechnungZeileModel r : parent.getRechnungszeilen()) {
+			for(InvoiceLine r : parent.getRechnungszeilen()) {
 				if(r.getIdNumber() == existingID) {
 					rechnungszeile.setIdNumber(existingID);
 					parent.getRechnungszeilen().remove(i);
@@ -99,7 +115,11 @@ public class RechZeileViewController extends AbstractController {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void update() {
+		lblMWSt.setText(parent.getMWSt());
 	}
 }

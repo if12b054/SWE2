@@ -7,8 +7,8 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class RechnungModel extends AModel{
-	private ArrayList<RechnungZeileModel> rechnungszeilen = new ArrayList<RechnungZeileModel>();
+public class Invoice extends AbstractObject{
+	private ArrayList<InvoiceLine> rechnungszeilen = new ArrayList<InvoiceLine>();
 	private FloatProperty betrag = new SimpleFloatProperty();
 	private StringProperty datum = new SimpleStringProperty();
 	private StringProperty faelligkeit = new SimpleStringProperty();
@@ -16,7 +16,7 @@ public class RechnungModel extends AModel{
 	private StringProperty nachricht = new SimpleStringProperty();
 	private StringProperty kommentar = new SimpleStringProperty();
 	
-	public RechnungModel(ArrayList<RechnungZeileModel> rechnungszeilen, String datum, String faelligkeit, String kunde, String nachricht, String kommentar) {
+	public Invoice(ArrayList<InvoiceLine> rechnungszeilen, String datum, String faelligkeit, String kunde, String nachricht, String kommentar) {
 		this.rechnungszeilen = rechnungszeilen;	
 		this.datum.set(datum);
 		this.faelligkeit.set(faelligkeit);
@@ -24,7 +24,7 @@ public class RechnungModel extends AModel{
 		this.nachricht.set(nachricht);
 		this.nachricht.set(kommentar);
 		
-		for (RechnungZeileModel r : rechnungszeilen) {
+		for (InvoiceLine r : rechnungszeilen) {
 			betrag.set(betrag.get()+r.getBrutto());
 		}
 	}

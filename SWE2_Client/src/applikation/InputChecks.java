@@ -1,6 +1,6 @@
 package applikation;
 
-import controllers.MainController;
+import javafxControllers.MainController;
 
 public abstract class InputChecks {
 	

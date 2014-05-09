@@ -8,7 +8,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="451.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.RechZeileViewController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="451.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="javafxControllers.InvoiceLineController">
   <children>
     <GridPane prefHeight="89.5" prefWidth="357.0" AnchorPane.bottomAnchor="45.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
@@ -35,15 +35,7 @@
         </ComboBox>
         <Label fx:id="lblMWSt" text="00.00" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
         <Label id="lblMWSt" fx:id="lblStueckPreis" text="00.00" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <ComboBox fx:id="cbMenge" prefHeight="21.0" prefWidth="59.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-          <items>
-            <FXCollections fx:factory="observableArrayList">
-              <String fx:value="Item 1" />
-              <String fx:value="Item 2" />
-              <String fx:value="Item 3" />
-            </FXCollections>
-          </items>
-        </ComboBox>
+        <ComboBox fx:id="cbMenge" prefHeight="21.0" prefWidth="59.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

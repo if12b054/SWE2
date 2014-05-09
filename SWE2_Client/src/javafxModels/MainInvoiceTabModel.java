@@ -1,4 +1,4 @@
-package models;
+package javafxModels;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Vector;
 
-import controllers.MainController;
 import eu.schudt.javafx.controls.calendar.DatePicker;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
+import businessobjects.Contact;
+import businessobjects.Invoice;
 import applikation.InputChecks;
 import applikation.Parameter;
 import applikation.Utils;
@@ -27,8 +26,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafxControllers.MainController;
 
-public class MainControllerRechnungModel {
+public class MainInvoiceTabModel {
 	
 	private MainController controller;
 	private DatePicker fDatePicker, tDatePicker;
@@ -40,7 +40,7 @@ public class MainControllerRechnungModel {
 	private StringProperty rKontakt = new SimpleStringProperty();
 	private StringProperty rResultCount = new SimpleStringProperty();
 	
-	public MainControllerRechnungModel(MainController controller) {
+	public MainInvoiceTabModel(MainController controller) {
 		this.controller = controller;
 		
 		/* Initialize and create the DatePickers */
@@ -54,7 +54,7 @@ public class MainControllerRechnungModel {
 		tDatePicker.getCalendarView().todayButtonTextProperty().set("Today");
 		tDatePicker.getCalendarView().setShowWeeks(false);
 		tDatePicker.getStylesheets().add("fxml/datepicker.css");
-		controller.setDatePickers(fDatePicker, tDatePicker);
+		controller.initDatePickers(fDatePicker, tDatePicker);
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class MainControllerRechnungModel {
 	 * @param event
 	 */
 	private void searchRechnungen() {
-		ObservableList<RechnungModel> rechnungen = FXCollections.observableArrayList();
+		ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
 		
 		/* get search parms from TextFields */
 		Vector<Parameter> searchParms = new Vector<Parameter>();

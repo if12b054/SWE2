@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="662.0000999999975" prefWidth="424.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.RechViewController">
+<AnchorPane prefHeight="662.0000999999975" prefWidth="424.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="javafxControllers.InvoiceController">
   <children>
     <SplitPane dividerPositions="0.5439393115243488" focusTraversable="true" orientation="VERTICAL" prefHeight="841.0000999999975" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <items>
@@ -25,7 +25,7 @@
             <ImageView id="imgCmpInput" fx:id="imgRechKundeInput" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="279.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
             <Button id="btn" fx:id="btnFind" layoutX="317.0" layoutY="41.0" mnemonicParsing="false" text="Finden" />
             <Label layoutX="254.0" layoutY="14.0" text="MWSt" />
-            <ComboBox fx:id="boxMWSt" layoutX="298.0" layoutY="12.0" value="0.15">
+            <ComboBox id="tfMWSt" fx:id="cbMWSt" layoutX="298.0" layoutY="12.0" value="0.15">
               <items>
                 <FXCollections fx:factory="observableArrayList">
                   <String fx:value="0.15" />
@@ -92,6 +92,8 @@
             </TableView>
             <Button id="hinzufuegen" fx:id="btnAdd" layoutX="324.0" layoutY="14.0" mnemonicParsing="false" onAction="#openRechZeile" text="Hinzufügen" />
             <Button id="btnRechnungen" fx:id="btnSave" layoutX="317.0" layoutY="264.0" mnemonicParsing="false" onAction="#doSave" prefWidth="89.0" text="Speichern" />
+            <Button id="btnRechnungen" layoutX="211.0" layoutY="264.0" mnemonicParsing="false" onAction="#doSave" prefWidth="89.0" text="Löschen" />
+            <Hyperlink layoutX="132.0" layoutY="263.0" text="Abbrechen" />
           </children>
         </AnchorPane>
       </items>

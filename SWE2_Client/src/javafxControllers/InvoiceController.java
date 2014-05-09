@@ -1,4 +1,4 @@
-package controllers;
+package javafxControllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -9,12 +9,16 @@ import java.util.ResourceBundle;
 
 import proxy.Proxy;
 import eu.schudt.javafx.controls.calendar.DatePicker;
+import ObserverPattern.Observer;
+import ObserverPattern.Subject;
 import applikation.AbstractController;
-import businessobjects.AModel;
-import businessobjects.Artikel;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
-import businessobjects.RechnungZeileModel;
+import businessobjects.AbstractObject;
+import businessobjects.Article;
+import businessobjects.Contact;
+import businessobjects.Invoice;
+import businessobjects.InvoiceLine;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -34,23 +38,31 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-public class RechViewController extends AbstractController {
+/**
+ * Controller for creating new or viewing old recites, gets created, if user clicks
+ * on "New" button in MainController(recite tab), or if he searches for old recites
+ * and double clicks on a result
+ * Is subject when it comes to changes on the MWSt ComboBox
+ * @author Victor
+ *
+ */
+public class InvoiceController extends AbstractController implements Subject {
 	public MainController parent;
 	private DatePicker fDatePicker;
 	private Proxy proxy;
+	private ArrayList<Observer> MWStList = new ArrayList<Observer>(); //List which gets affected if MWSt ComboBox changes values
 	
 	@FXML private Button btnSave, btnAdd, btnFind;
 	@FXML private Pane pFaelligkeit;
 	@FXML private TextField tfKunde;
 	@FXML private TextArea taMessage, taComment;
-	@FXML private TableView<RechnungZeileModel> tableRechnungszeilen;
+	@FXML private TableView<InvoiceLine> tableRechnungszeilen;
 	@FXML private ImageView imgRechKundeInput, imgRechnKundeDelete;
-	@FXML private ComboBox<String> boxMWSt;
+	@FXML private ComboBox<String> cbMWSt;
 	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
 	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
 	
-	private static ObservableList<RechnungZeileModel> rechnungszeilen = FXCollections.observableArrayList();
+	private static ObservableList<InvoiceLine> rechnungszeilen = FXCollections.observableArrayList();
 	private int rZeileCount = 0;
 	
 	@Override
@@ -62,19 +74,28 @@ public class RechViewController extends AbstractController {
 		fDatePicker.getStylesheets().add("fxml/datepicker.css");
 		pFaelligkeit.getChildren().add(fDatePicker);
 		
+		
 		tableRechnungszeilen.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override
 		    public void handle(MouseEvent mouseEvent) {
 		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
 		            if(mouseEvent.getClickCount() == 2){
 		                System.out.println("Double clicked");
-		                RechnungZeileModel rZeile = (RechnungZeileModel) tableRechnungszeilen.getSelectionModel().getSelectedItem();
+		                InvoiceLine rZeile = (InvoiceLine) tableRechnungszeilen.getSelectionModel().getSelectedItem();
 		                if(rZeile != null) {
-		                	showNewDialog("/fxml/RechZeileView.fxml", RechViewController.this, rZeile);
+		                	showNewDialog("/fxml/InvoiceLineView.fxml", InvoiceController.this, rZeile);
 		                }
 		            }
 		        }
 		    }
+		});
+		cbMWSt.setEditable(true);
+		cbMWSt.getEditor().textProperty().addListener( new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				notifyObserver();
+			}
 		});
 	}
 	
@@ -89,10 +110,12 @@ public class RechViewController extends AbstractController {
 	
 	@FXML private void openRechZeile(ActionEvent event) throws IOException {	
 		rZeileCount++;
-		showNewDialog("/fxml/RechZeileView.fxml", this, null); //need to change
+		InvoiceLineController invLineWindow = (InvoiceLineController)showNewDialog("/fxml/InvoiceLineView.fxml", this, null); //need to change
+		invLineWindow.setOnClose();
+		register(invLineWindow);
 	}
 	
-	public void addRechnungszeileToTable(RechnungZeileModel rechnungszeile) {
+	public void addRechnungszeileToTable(InvoiceLine rechnungszeile) {
 		rechnungszeilen.add(rechnungszeile);
 		tableRechnungszeilen.setItems(rechnungszeilen);
 	}
@@ -103,21 +126,22 @@ public class RechViewController extends AbstractController {
 	}
 	
 	public String getMWSt() {
-		return this.boxMWSt.getValue();
+		return this.cbMWSt.getValue();
 	}
 	
 	public MainController getParent() {
 		return this.parent;
 	}
 	
-	public ObservableList<RechnungZeileModel> getRechnungszeilen() {
+	public ObservableList<InvoiceLine> getRechnungszeilen() {
 		return rechnungszeilen;
 	}
 	
 	@Override
-	public void loadModel(AModel model) {
-		RechnungModel rModel = (RechnungModel) model;
-		//set fields here
+	public void loadModel(AbstractObject model) {
+		Invoice rModel = (Invoice) model;
+		//TODO set fields here
+		//disable most fields
 	}
 
 	public int getrZeileCount() {
@@ -127,8 +151,22 @@ public class RechViewController extends AbstractController {
 	public void setrZeileCount(int rZeileCount) {
 		this.rZeileCount = rZeileCount;
 	}
-	
-	public void setTabel(ObservableList<RechnungZeileModel> list) {
-		tableRechnungszeilen.setItems(list);
+
+	@Override
+	public void register(Observer o) {
+		MWStList.add(o);
+	}
+
+	@Override
+	public void unregister(Observer o) {
+		MWStList.remove(o);
+	}
+
+	@Override
+	public void notifyObserver() {
+		for(Observer o : MWStList)
+		{
+			o.update();
+		}
 	}
 }

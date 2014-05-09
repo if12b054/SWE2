@@ -1,12 +1,11 @@
-package models;
+package javafxModels;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import controllers.MainController;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
+import businessobjects.Contact;
+import businessobjects.Invoice;
 import applikation.InputChecks;
 import applikation.Parameter;
 import applikation.Utils;
@@ -24,8 +23,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafxControllers.MainController;
 
-public class MainControllerKontaktModel {
+public class MainContactTabModel {
 	
 	MainController controller;
 	
@@ -35,7 +35,7 @@ public class MainControllerKontaktModel {
 	private StringProperty kFirma = new SimpleStringProperty();
 	private StringProperty kResultCount = new SimpleStringProperty();
 	
-	public MainControllerKontaktModel(MainController controller) {
+	public MainContactTabModel(MainController controller) {
 		this.controller = controller;
 	}
 	
@@ -45,7 +45,7 @@ public class MainControllerKontaktModel {
 	 * @param event
 	 */
 	public void searchKontakts() {
-		ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
+		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
 		int results = 0;
 		
 		/* get search parms from TextFields */

@@ -1,4 +1,4 @@
-package models;
+package javafxModels;
 
 import applikation.Utils;
 import javafx.beans.binding.BooleanBinding;
@@ -10,10 +10,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafxControllers.ContactController;
 
-public class KontaktViewModel {
+public class ContactModel {
 	
-	/* "Kontakte" Page: */
+	private ContactController controller;
+	
 	private StringProperty titel = new SimpleStringProperty();
 	private StringProperty vorname = new SimpleStringProperty();
 	private StringProperty nachname = new SimpleStringProperty();
@@ -22,38 +24,50 @@ public class KontaktViewModel {
 	private StringProperty firmenname = new SimpleStringProperty();
 	private StringProperty UID = new SimpleStringProperty();
 	
-	private BooleanBinding isFirma = new BooleanBinding() {
-		@Override
-		protected boolean computeValue() {
-			return !Utils.isNullOrEmpty(getFirmenname());
-		}
+	public ChangeListener<Boolean> isFirma = new ChangeListener<Boolean>()
+	{
+	    @Override
+	    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+	    {
+	    	if (!newPropertyValue)
+	        {
+	        	if(firma.get() == null || firma.get().isEmpty()) {
+	        		controller.setFirmaFoundImg(controller.getParent().getEmptyImg());
+	        	}
+	        	else if(controller.getParent().getProxy().isFirma(firma.get())) {
+	        		controller.setFirmaFoundImg(controller.getParent().getCheckMark());
+	        	}
+	        	else {
+	        		controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
+	        	}
+	        }
+	    }
 	};
-
+	
 	private BooleanBinding disableEditFirma = new BooleanBinding() {
 		@Override
 		protected boolean computeValue() {
-			return !Utils.isNullOrEmpty(getVorname())
-					|| !Utils.isNullOrEmpty(getNachname())
-					|| !Utils.isNullOrEmpty(getGeburtsdatum())
-					|| !Utils.isNullOrEmpty(getFirma())
-					|| !Utils.isNullOrEmpty(getTitel());
+			return !Utils.isNullOrEmpty(vorname.get())
+					|| !Utils.isNullOrEmpty(nachname.get())
+					|| !Utils.isNullOrEmpty(geburtsdatum.get())
+					|| !Utils.isNullOrEmpty(firma.get())
+					|| !Utils.isNullOrEmpty(titel.get());
 		}
 	};
 
 	private BooleanBinding disableEditPerson = new BooleanBinding() {
 		@Override
 		protected boolean computeValue() {
-			return !Utils.isNullOrEmpty(getFirmenname())
-					|| !Utils.isNullOrEmpty(getUID());
+			return !Utils.isNullOrEmpty(firmenname.get())
+					|| !Utils.isNullOrEmpty(UID.get());
 		}
 	};
 
-	public KontaktViewModel() {
+	public ContactModel() {
 		ChangeListener<String> canEditListener = new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				isFirma.invalidate();
 				disableEditPerson.invalidate();
 				disableEditFirma.invalidate();
 			}
@@ -99,10 +113,6 @@ public class KontaktViewModel {
 	
 	/* returning BINDINGS */
 
-	public final BooleanBinding isFirmaBinding() {
-		return isFirma;
-	}
-
 	public BooleanBinding disableEditPersonBinding() {
 		return disableEditPerson;
 	}
@@ -110,75 +120,9 @@ public class KontaktViewModel {
 	public BooleanBinding disableEditFirmaBinding() {
 		return disableEditFirma;
 	}
-	
-	/* GETTERS and SETTERS */
 
-	public String getTitel() {
-		return titel.get();
-	}
-
-	public void setTitel(String titel) {
-		this.titel.set(titel);
-	}
-	
-	public String getVorname() {
-		return vorname.get();
-	}
-
-	public void setVorname(String vorname) {
-		this.vorname.set(vorname);
-	}
-
-	public String getNachname() {
-		return nachname.get();
-	}
-
-	public void setNachname(String nachname) {
-		this.nachname.set(nachname);
-	}
-	
-	public String getFirma() {
-		return firma.get();
-	}
-
-	public void setFirma(String firma) {
-		this.firma.set(firma);
-	}
-	
-	public String getGeburtsdatum() {
-		return geburtsdatum.get();
-	}
-
-	public void setGeburtsdatum(String geburtsdatum) {
-		this.geburtsdatum.set(geburtsdatum);
-	}
-
-	public String getFirmenname() {
-		return firmenname.get();
-	}
-
-	public void setFirmenname(String firmenname) {
-		this.firmenname.set(firmenname);
-	}
-
-	public String getUID() {
-		return UID.get();
-	}
-
-	public void setUID(String UID) {
-		this.UID.set(UID);
-	}
-
-	public boolean isFirma() {
-		return isFirma.get();
-	}
-
-	public boolean disableEditPerson() {
-		return disableEditPerson.get();
-	}
-
-	public boolean disableEditFirma() {
-		return disableEditFirma.get();
+	public void setController(ContactController controller) {
+		this.controller = controller;
 	}
 	
 }

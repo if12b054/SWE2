@@ -1,7 +1,7 @@
 package applikation;
 
 import java.io.IOException;
-import businessobjects.AModel;
+import businessobjects.AbstractObject;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -12,7 +12,7 @@ import javafx.stage.StageStyle;
 public abstract class AbstractController implements Initializable {
 	private Stage stage;
 	
-	public void showNewDialog(String fxmlPath, AbstractController parent, AModel model) {
+	public AbstractController showNewDialog(String fxmlPath, AbstractController parent, AbstractObject model) {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource(fxmlPath));
 		Stage stage = new Stage(StageStyle.DECORATED);
@@ -24,10 +24,12 @@ public abstract class AbstractController implements Initializable {
 		}
 		AbstractController controller = loader.getController();
 		controller.setParent(parent);
+		controller.setStage(stage);
 		if(model != null) {
 			controller.loadModel(model);
 		}
 		stage.show();
+		return controller;
 	}
 	
 	public Stage getStage() {
@@ -42,7 +44,7 @@ public abstract class AbstractController implements Initializable {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void loadModel(AModel model) {
+	public void loadModel(AbstractObject model) {
 		throw new UnsupportedOperationException();
 	}
 }

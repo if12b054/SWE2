@@ -1,4 +1,4 @@
-package controllers;
+package javafxControllers;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class searchKontaktViewController {
+public class ContactSearchController {
 	
 	@FXML private TextField tfVorname, tfNachname, tfFirma;
 	@FXML private Button btnSearch;

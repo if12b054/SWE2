@@ -16,9 +16,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import applikation.Parameter;
 import businesslayer.Businesslayer;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
-import businessobjects.RechnungZeileModel;
+import businessobjects.Contact;
+import businessobjects.Invoice;
+import businessobjects.InvoiceLine;
 
 import com.sun.glass.ui.Platform;
 import com.thoughtworks.xstream.XStream;
@@ -37,7 +37,7 @@ public class Handler implements Runnable{
 	
 	@Override
 	public void run() {
-		ArrayList<RechnungZeileModel> searchAll = new ArrayList<RechnungZeileModel>();
+		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
 		try {
 			
 			readMessage(client);
@@ -54,7 +54,7 @@ public class Handler implements Runnable{
 			case "insert/Kontakt":
 				if(_xml != null) {
 					System.out.println("Inserting Contact!");
-					KontaktModel k = deserializeKontakt(_xml);			
+					Contact k = deserializeKontakt(_xml);			
 					try {
 						b.insertKontakt(k);
 					} catch (SQLException e) {
@@ -67,7 +67,7 @@ public class Handler implements Runnable{
 				searchAll = b.searchRechnung();
 				break;
 			case "search/Kontakt":
-				ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
+				ObservableList<Contact> kontakte = FXCollections.observableArrayList();
 				Vector<Parameter> parms = deserializeVector(_xml);
 				
 				kontakte = b.searchContact(parms);
@@ -136,18 +136,18 @@ public class Handler implements Runnable{
 		}
 	}
 	
-	public String serializeKontaktSearch(ObservableList<KontaktModel> k) {
+	public String serializeKontaktSearch(ObservableList<Contact> k) {
 		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(KontaktModel.class);
+		xstream.processAnnotations(Contact.class);
 		//xstream.alias("kontakt", Kontakt.class);
 		String xml = xstream.toXML(k);
 		return xml;
 	}
 	
-	public KontaktModel deserializeKontakt(String xml) {
+	public Contact deserializeKontakt(String xml) {
 		XStream xstream = new XStream();
-		xstream.processAnnotations(KontaktModel.class);
-		KontaktModel k = (KontaktModel)xstream.fromXML(xml);
+		xstream.processAnnotations(Contact.class);
+		Contact k = (Contact)xstream.fromXML(xml);
 		return k;
 	}
 	

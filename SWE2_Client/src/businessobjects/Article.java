@@ -1,6 +1,6 @@
 package businessobjects;
 
-public class Artikel {
+public class Article {
 	private int id;
 	private String bezeichnung;
 	private float preis;

@@ -1,18 +1,17 @@
-package controllers;
+package javafxControllers;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import models.KontaktViewModel;
 import proxy.Proxy;
 import applikation.AbstractController;
 import applikation.InputChecks;
-import businessobjects.AModel;
-import businessobjects.Artikel;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
-import businessobjects.RechnungZeileModel;
+import businessobjects.AbstractObject;
+import businessobjects.Article;
+import businessobjects.Contact;
+import businessobjects.Invoice;
+import businessobjects.InvoiceLine;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -26,8 +25,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafxModels.ContactModel;
 
-public class KontaktViewController extends AbstractController {
+public class ContactController extends AbstractController {
 	@FXML private Button btnKontakte, btnKontakteSuche, btnDelete;
 	@FXML private TextField tfTitel, tfVname, tfNname, tfGebdatum, tfFirma;
 	@FXML private TextField tfFname, tfUID;
@@ -39,23 +39,18 @@ public class KontaktViewController extends AbstractController {
 	@FXML private Pane firmaPane;
 	@FXML private Pane personPane;
 	
-	private KontaktViewModel model = new KontaktViewModel();
-	private Image checkMark, noCheckMark, bin, emptyImg;
+	private ContactModel model = new ContactModel();
 	private MainController parent;
 	
-	KontaktModel kontakt;
+	Contact kontakt;
 	private String errorMsg;
 	
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
-		/* load images */
-		checkMark = new Image("file:assets/check.png");
-		noCheckMark = new Image("file:assets/nocheck.gif");
-		bin = new Image("file:assets/bin.png");
-		emptyImg = new Image("file:assets/transparent.png");
+		model.setController(this);
 		
 		/* set images */
-		imgDelete.setImage(bin);
+		imgDelete.setImage(parent.getBin());
 		
 		/* bidirectional bind to model */
 		tfVname.textProperty().bindBidirectional(model.vornameProperty());
@@ -66,29 +61,12 @@ public class KontaktViewController extends AbstractController {
 		tfFname.textProperty().bindBidirectional(model.firmennameProperty());
 		tfUID.textProperty().bindBidirectional(model.UIDProperty());
 		
+		/* can only create new person OR firm*/
 		personPane.disableProperty().bind(model.disableEditPersonBinding());
 		firmaPane.disableProperty().bind(model.disableEditFirmaBinding());
 		
 		/* if firma-field becomes unfocused -> validate firm */
-		tfFirma.focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
-		    @Override
-		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-		    {
-		        if (!newPropertyValue)
-		        {
-		        	if(tfFirma.getText() == null || tfFirma.getText().isEmpty()) {
-		        		imgFirmaInput.setImage(emptyImg);
-		        	}
-		        	else if(parent.getProxy().isFirma(tfFirma.getText())) {
-		        		imgFirmaInput.setImage(checkMark);
-		        	}
-		        	else {
-		        		imgFirmaInput.setImage(noCheckMark);
-		        	}
-		        }
-		    }
-		});
+		tfFirma.focusedProperty().addListener(model.isFirma);
 	}
 	
 	/**
@@ -100,7 +78,7 @@ public class KontaktViewController extends AbstractController {
 	}
 	
 	/**
-	 * happens on "Finden" button, search for firm reference
+	 * happens with click on "Finden" button, search for firm reference
 	 * @param event
 	 */
 	@FXML private void doKontaktSearch(ActionEvent event) {
@@ -120,15 +98,15 @@ public class KontaktViewController extends AbstractController {
 //			errorMsg = null;
 //		}
 //		else {
-			KontaktModel k;
+			Contact k;
 			
 			/* ist eine Person */
 			if(tfVname.getText() != null) {
-				k = new KontaktModel(tfFirma.getText(), tfVname.getText(), tfNname.getText(), tfTitel.getText(), tfGebdatum.getText());
+				k = new Contact(tfFirma.getText(), tfVname.getText(), tfNname.getText(), tfTitel.getText(), tfGebdatum.getText());
 			}
 			/* ist eine Firma */
 			else {
-				k = new KontaktModel(tfUID.getText(), tfFname.getText());
+				k = new Contact(tfUID.getText(), tfFname.getText());
 			}
 			k.setAdresse(tfStrasse.getText(), tfPLZ.getText(), tfOrt.getText(), tfLand.getText());
 			
@@ -139,7 +117,7 @@ public class KontaktViewController extends AbstractController {
 	
 	@FXML private void clearFirmaField(ActionEvent event) {
 		tfFirma.setText(null);
-		imgFirmaInput.setImage(emptyImg);
+		imgFirmaInput.setImage(parent.getEmptyImg());
 		System.out.println("DELETE");
 	}
 	
@@ -148,9 +126,13 @@ public class KontaktViewController extends AbstractController {
 		this.parent = (MainController)parent;
 	}
 	
+	public MainController getParent() {
+		return this.parent;
+	}
+	
 	@Override
-	public void loadModel(AModel model) {
-		KontaktModel kModel = (KontaktModel) model;
+	public void loadModel(AbstractObject model) {
+		Contact kModel = (Contact) model;
 		//set fields here
 		switch(kModel.typProperty().get())
 		{
@@ -171,5 +153,9 @@ public class KontaktViewController extends AbstractController {
 //		tfPLZ.setText(kModel.getAdresse().get(1)); 
 //		tfOrt.setText(kModel.getAdresse().get(2)); 
 //		tfLand.setText(kModel.getAdresse().get(3)); 
+	}
+	
+	public void setFirmaFoundImg(Image newImg) {
+		imgFirmaInput.setImage(newImg);
 	}
 }

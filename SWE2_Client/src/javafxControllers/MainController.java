@@ -1,4 +1,4 @@
-package controllers;
+package javafxControllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -11,19 +11,17 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.Vector;
 
-import models.MainControllerKontaktModel;
-import models.MainControllerRechnungModel;
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import proxy.Proxy;
 import applikation.AbstractController;
 import applikation.Parameter;
 import applikation.Utils;
 import applikation.InputChecks;
-import businessobjects.AModel;
-import businessobjects.Artikel;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
-import businessobjects.RechnungZeileModel;
+import businessobjects.AbstractObject;
+import businessobjects.Article;
+import businessobjects.Contact;
+import businessobjects.Invoice;
+import businessobjects.InvoiceLine;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -53,13 +51,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
+import javafxModels.MainContactTabModel;
+import javafxModels.MainInvoiceTabModel;
 
 public class MainController extends AbstractController {
 	
 	/* "Kontakte/Suche" Page: */
 	@FXML private Label lblKontaktCount;
 	@FXML private TextField tfSucheVorname, tfSucheNachname, tfSucheFirma;
-	@FXML private TableView<KontaktModel> tableKontaktSuche;
+	@FXML private TableView<Contact> tableKontaktSuche;
 	@FXML private Button btnNewKontakt;
 	
 	/* "Rechnungen/Suche" Page: */
@@ -67,12 +67,12 @@ public class MainController extends AbstractController {
 	@FXML private Button btnKontaktSuche, btnNewRech;
 	@FXML private TextField tfPreisVon, tfPreisBis, tfKontaktName;
 	@FXML private ImageView imgKundeInput, imgKundeDelete;
-	@FXML private TableView<RechnungModel> tableRechnungSuche;
+	@FXML private TableView<Invoice> tableRechnungSuche;
 	@FXML private Pane pDatumVon, pDatumBis;
 	
 	/* Allgmein benörigte Daten */
-	private MainControllerKontaktModel kModel;
-	private MainControllerRechnungModel rModel;
+	private MainContactTabModel kModel;
+	private MainInvoiceTabModel rModel;
 	private Proxy proxy;
 	boolean isError = true; //because no input in beginning -> is an error
 	private Image checkMark, noCheckMark, bin, emptyImg;
@@ -86,7 +86,7 @@ public class MainController extends AbstractController {
 	 * @throws IOException
 	 */
 	@FXML private void doNewKontakt(ActionEvent event) throws IOException {
-		showNewDialog("/fxml/KontaktView.fxml", this, null);
+		showNewDialog("/fxml/ContactView.fxml", this, null);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class MainController extends AbstractController {
 	 * @throws IOException
 	 */
 	@FXML private void doNewRech(ActionEvent event) throws IOException {
-		showNewDialog("/fxml/RechView.fxml", this, null);
+		showNewDialog("/fxml/InvoiceView.fxml", this, null);
 	}
 	
 	/**
@@ -108,8 +108,8 @@ public class MainController extends AbstractController {
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		kModel = new MainControllerKontaktModel(this);
-		rModel = new MainControllerRechnungModel(this);
+		kModel = new MainContactTabModel(this);
+		rModel = new MainInvoiceTabModel(this);
 		proxy = new Proxy();
 		
 		/* load images */
@@ -140,10 +140,10 @@ public class MainController extends AbstractController {
 		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
 		            if(mouseEvent.getClickCount() == 2){
 		                System.out.println("Double clicked");
-		                KontaktModel kontakt = (KontaktModel) tableKontaktSuche.getSelectionModel().getSelectedItem();
+		                Contact kontakt = (Contact) tableKontaktSuche.getSelectionModel().getSelectedItem();
 		                if(kontakt != null) {
 		                	System.out.println("KONTAKT: " + kontakt.getNachname());
-		                	showNewDialog("/fxml/KontaktView.fxml", MainController.this, kontakt);
+		                	showNewDialog("/fxml/ContactView.fxml", MainController.this, kontakt);
 		                }
 		            }
 		        }
@@ -157,20 +157,36 @@ public class MainController extends AbstractController {
 		return this.proxy;
 	}
 	
-	public void setTableKontaktSuche(ObservableList<KontaktModel> kontakte) {
+	public void setTableKontaktSuche(ObservableList<Contact> kontakte) {
 		tableKontaktSuche.setItems(kontakte);
 	}
 	
-	public void setTableRechnungSuche(ObservableList<RechnungModel> rechnungen) {
+	public void setTableRechnungSuche(ObservableList<Invoice> rechnungen) {
 		tableRechnungSuche.setItems(rechnungen);
 	}
 	
-	public void setDatePickers(DatePicker fDatePicker, DatePicker tDatePicker) {
+	public void initDatePickers(DatePicker fDatePicker, DatePicker tDatePicker) {
 		/* Add DatePickers to panes */
 		this.vonDatePicker = fDatePicker;
 		this.bisDatePicker = tDatePicker;
 		pDatumVon.getChildren().add(vonDatePicker);
 		pDatumBis.getChildren().add(bisDatePicker);
+	}
+
+	public Image getCheckMark() {
+		return checkMark;
+	}
+
+	public Image getNoCheckMark() {
+		return noCheckMark;
+	}
+
+	public Image getBin() {
+		return bin;
+	}
+
+	public Image getEmptyImg() {
+		return emptyImg;
 	}
 	
 }

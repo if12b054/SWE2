@@ -17,10 +17,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import applikation.Parameter;
-import businessobjects.Artikel;
-import businessobjects.KontaktModel;
-import businessobjects.RechnungModel;
-import businessobjects.RechnungZeileModel;
+import businessobjects.Article;
+import businessobjects.Contact;
+import businessobjects.Invoice;
+import businessobjects.InvoiceLine;
 
 public class Proxy {
 	
@@ -41,8 +41,8 @@ public class Proxy {
 	 * (for dropdown while adding Rechnungszeilen
 	 * @return
 	 */
-	public ArrayList<Artikel> getArticles() {
-		ArrayList<Artikel> articles = new ArrayList<Artikel>();
+	public ArrayList<Article> getArticles() {
+		ArrayList<Article> articles = new ArrayList<Article>();
 		
 		return articles;
 	}
@@ -65,7 +65,7 @@ public class Proxy {
 	 * it does, do UPDATE!
 	 * @param k		Kontakt-Object which data is inserted into database
 	 */
-	public void insertKontakt(KontaktModel k) {
+	public void insertKontakt(Contact k) {
 		
 		System.out.println("Sending Kontakt-data to server.");
 		String action = "insert/Kontakt";
@@ -79,7 +79,7 @@ public class Proxy {
 	 * same as insertKontakt, just with Rechnung
 	 * @param r		Rechnung-Object to be inserted in database
 	 */
-	public void insertRechnung(RechnungModel r) {
+	public void insertRechnung(Invoice r) {
 		System.out.println("Sending Rechnung-data to server.");
 		String action = "insert/Rechnung";
 		
@@ -91,9 +91,9 @@ public class Proxy {
 	 * @param searchParms	[0] = Vorname, [1] = Nachname, [2] = Firma
 	 * @return				an ArrayList of Kontakt-Objects to be displayed in TableView
 	 */
-	public ObservableList<KontaktModel> searchKontakt(Vector<Parameter> searchParms) {
+	public ObservableList<Contact> searchKontakt(Vector<Parameter> searchParms) {
 		String action = "search/Kontakt";
-		ObservableList<KontaktModel> kontakte = FXCollections.observableArrayList();
+		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
 		
 		System.out.println("Searching for Kontakt: ");
 		System.out.println("Vorname: " + searchParms.get(0).getStringParameter());
@@ -134,9 +134,9 @@ public class Proxy {
 	 * 						get the value with the right getter e.g.: VonDatum - aDate.getDateParameter();
 	 * @return				an ArrayList of Rechnung-Objects to be displayed in TableView
 	 */
-	public ObservableList<RechnungModel> searchRechnung(Vector<Parameter> searchParms) {
+	public ObservableList<Invoice> searchRechnung(Vector<Parameter> searchParms) {
 		String action = "search/Rechnung";
-		ObservableList<RechnungModel> rechnungen = FXCollections.observableArrayList();
+		ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
 		
 		System.out.println("Searching for Rechnung: ");
 		System.out.println("VonDatum: " + searchParms.get(0).getDateParameter());
@@ -149,18 +149,18 @@ public class Proxy {
 		
 		/* TEST */
 		System.out.println("WORKING..");
-		ArrayList<RechnungZeileModel> testRechnungszeilen = new ArrayList<RechnungZeileModel>();
-		testRechnungszeilen.add(new RechnungZeileModel("Artikel", 1, 1, 1));
+		ArrayList<InvoiceLine> testRechnungszeilen = new ArrayList<InvoiceLine>();
+		testRechnungszeilen.add(new InvoiceLine("Artikel", 1, 1, 1));
 		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
-		rechnungen.add(new RechnungModel(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
+		rechnungen.add(new Invoice(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
 		/* TEST-ENDE */
 		
 		return rechnungen;
 	}
 	
-	public String serializeKontakt(KontaktModel k) {
+	public String serializeKontakt(Contact k) {
 		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(KontaktModel.class);
+		xstream.processAnnotations(Contact.class);
 		//xstream.alias("kontakt", Kontakt.class);
 		String xml = xstream.toXML(k);
 		return xml;
@@ -168,7 +168,7 @@ public class Proxy {
 	
 	public String serializeKontaktSearch(Vector<Parameter> searchParms) {
 		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(KontaktModel.class);
+		xstream.processAnnotations(Contact.class);
 		//xstream.alias("kontakt", Kontakt.class);
 		String xml = xstream.toXML(searchParms);
 		return xml;
@@ -225,10 +225,10 @@ public class Proxy {
 		return xml;
 	}
 	
-	public ObservableList<KontaktModel> deserializeKontaktSearch(String xml) {
+	public ObservableList<Contact> deserializeKontaktSearch(String xml) {
 		XStream xstream = new XStream();
-		xstream.processAnnotations(KontaktModel.class);
-		ObservableList<KontaktModel> k = (ObservableList<KontaktModel>) xstream.fromXML(xml);
+		xstream.processAnnotations(Contact.class);
+		ObservableList<Contact> k = (ObservableList<Contact>) xstream.fromXML(xml);
 		return k;
 	}
 }

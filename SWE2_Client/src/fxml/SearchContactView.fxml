@@ -8,7 +8,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="465.0000999999975" prefWidth="419.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.MainController">
+<AnchorPane prefHeight="465.0000999999975" prefWidth="419.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="javafxControllers.MainController">
   <!-- TODO Add Nodes -->
   <children>
     <SplitPane dividerPositions="0.2829373039012318" focusTraversable="true" orientation="VERTICAL" prefHeight="589.0" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
