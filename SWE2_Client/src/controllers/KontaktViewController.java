@@ -31,8 +31,7 @@ public class KontaktViewController extends AbstractController {
 	@FXML private Button btnKontakte, btnKontakteSuche, btnDelete;
 	@FXML private TextField tfTitel, tfVname, tfNname, tfGebdatum, tfFirma;
 	@FXML private TextField tfFname, tfUID;
-	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
-	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
+	@FXML private TextField tfStrasse, tfOrt, tfPLZ, tfLand;
 	@FXML private Label kontaktError;
 	@FXML private ImageView imgFirmaInput, imgDelete;
 	
@@ -115,28 +114,27 @@ public class KontaktViewController extends AbstractController {
 	public void createKontakt() {
 		
 		/* error-checking */
-		if((errorMsg = InputChecks.saveKontaktError()) != null)
-		{
-			kontaktError.setText(errorMsg);
-			errorMsg = null;
-		}
-		else {
+//		if((errorMsg = InputChecks.saveKontaktError()) != null)
+//		{
+//			kontaktError.setText(errorMsg);
+//			errorMsg = null;
+//		}
+//		else {
 			KontaktModel k;
 			
 			/* ist eine Person */
-			if(tfVname != null) {
+			if(tfVname.getText() != null) {
 				k = new KontaktModel(tfFirma.getText(), tfVname.getText(), tfNname.getText(), tfTitel.getText(), tfGebdatum.getText());
 			}
 			/* ist eine Firma */
 			else {
 				k = new KontaktModel(tfUID.getText(), tfFname.getText());
 			}
-			k.setLieferadresse(tfLStrasse.getText(), tfLPLZ.getText(), tfLOrt.getText(), tfLLand.getText());
-			k.setRechnungsadresse(tfRStrasse.getText(), tfRPLZ.getText(), tfROrt.getText(), tfRLand.getText());
+			k.setAdresse(tfStrasse.getText(), tfPLZ.getText(), tfOrt.getText(), tfLand.getText());
 			
 			/* send to proxy */
 			parent.getProxy().insertKontakt(k);
-		}
+//		}
 	}
 	
 	@FXML private void clearFirmaField(ActionEvent event) {
@@ -169,13 +167,9 @@ public class KontaktViewController extends AbstractController {
 			System.out.println("It's a Firm!");
 			break;
 		}
-		tfRStrasse.setText(kModel.getRechnungsadresse().get(0)); 
-		tfRPLZ.setText(kModel.getRechnungsadresse().get(1)); 
-		tfROrt.setText(kModel.getRechnungsadresse().get(2)); 
-		tfRLand.setText(kModel.getRechnungsadresse().get(3)); 
-		tfLStrasse.setText(kModel.getLieferadresse().get(0)); 
-		tfLPLZ.setText(kModel.getLieferadresse().get(1)); 
-		tfLOrt.setText(kModel.getLieferadresse().get(2)); 
-		tfLLand.setText(kModel.getLieferadresse().get(3)); 
+//		tfStrasse.setText(kModel.getAdresse().get(0)); 
+//		tfPLZ.setText(kModel.getAdresse().get(1)); 
+//		tfOrt.setText(kModel.getAdresse().get(2)); 
+//		tfLand.setText(kModel.getAdresse().get(3)); 
 	}
 }

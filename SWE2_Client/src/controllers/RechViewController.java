@@ -12,11 +12,13 @@ import eu.schudt.javafx.controls.calendar.DatePicker;
 import applikation.AbstractController;
 import businessobjects.AModel;
 import businessobjects.Artikel;
+import businessobjects.KontaktModel;
 import businessobjects.RechnungModel;
 import businessobjects.RechnungZeileModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,6 +29,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -43,8 +47,11 @@ public class RechViewController extends AbstractController {
 	@FXML private TableView<RechnungZeileModel> tableRechnungszeilen;
 	@FXML private ImageView imgRechKundeInput, imgRechnKundeDelete;
 	@FXML private ComboBox<String> boxMWSt;
+	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
+	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
 	
 	private static ObservableList<RechnungZeileModel> rechnungszeilen = FXCollections.observableArrayList();
+	private int rZeileCount = 0;
 	
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
@@ -54,6 +61,21 @@ public class RechViewController extends AbstractController {
 		fDatePicker.getCalendarView().setShowWeeks(false);
 		fDatePicker.getStylesheets().add("fxml/datepicker.css");
 		pFaelligkeit.getChildren().add(fDatePicker);
+		
+		tableRechnungszeilen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent mouseEvent) {
+		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+		            if(mouseEvent.getClickCount() == 2){
+		                System.out.println("Double clicked");
+		                RechnungZeileModel rZeile = (RechnungZeileModel) tableRechnungszeilen.getSelectionModel().getSelectedItem();
+		                if(rZeile != null) {
+		                	showNewDialog("/fxml/RechZeileView.fxml", RechViewController.this, rZeile);
+		                }
+		            }
+		        }
+		    }
+		});
 	}
 	
 	/**
@@ -66,6 +88,7 @@ public class RechViewController extends AbstractController {
 	}
 	
 	@FXML private void openRechZeile(ActionEvent event) throws IOException {	
+		rZeileCount++;
 		showNewDialog("/fxml/RechZeileView.fxml", this, null); //need to change
 	}
 	
@@ -87,9 +110,25 @@ public class RechViewController extends AbstractController {
 		return this.parent;
 	}
 	
+	public ObservableList<RechnungZeileModel> getRechnungszeilen() {
+		return rechnungszeilen;
+	}
+	
 	@Override
 	public void loadModel(AModel model) {
 		RechnungModel rModel = (RechnungModel) model;
 		//set fields here
+	}
+
+	public int getrZeileCount() {
+		return rZeileCount;
+	}
+
+	public void setrZeileCount(int rZeileCount) {
+		this.rZeileCount = rZeileCount;
+	}
+	
+	public void setTabel(ObservableList<RechnungZeileModel> list) {
+		tableRechnungszeilen.setItems(list);
 	}
 }

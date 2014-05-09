@@ -1,5 +1,6 @@
 package businesslayer;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -13,7 +14,7 @@ import dataaccesslayer.Dataaccesslayer;
 public class Businesslayer {
 	Dataaccesslayer d = new Dataaccesslayer();
 	
-	public void insertKontakt(KontaktModel k) {
+	public void insertKontakt(KontaktModel k) throws SQLException {
 		d.insertKontakt(k);
 	}
 	

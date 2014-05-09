@@ -19,31 +19,32 @@ public class Dataaccesslayer {
 	
 	final String PCName = "ULTRABOOK\\SQLEXPRESS";
 	
-	public void insertKontakt(KontaktModel k) {
+	public void insertKontakt(KontaktModel k) throws SQLException {
 		Connection conn = connectDB("ErpDB");
 		
-		String sql = "INSERT INTO Kunde VALUES (?,?,?,?,?,?,?,?,?,?)";
 		
-		try {
-			PreparedStatement cmd = conn.prepareStatement(sql);			
-
-			cmd.setInt(1, 4);
-			cmd.setInt(2, 1);//cmd.setInt(1, Integer.parseInt(k.getUid()));
-			cmd.setString(3,k.getFirma());
-			cmd.setString(4,k.getTitel());
-			cmd.setString(5,k.getVorname());
-			cmd.setString(6,k.getNachname());
-			cmd.setString(7,k.getGeburtsdatum()); //cmd.setDate(6,k.getGeburtsdatum());
-			cmd.setString(8, null); //Adresse
-			cmd.setString(9,k.getRechnungsadresse().elementAt(0));
-			cmd.setString(10,k.getLieferadresse().elementAt(0));
-			
-			cmd.execute();
-			
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
+		PreparedStatement cmd;
+		if(k.typProperty().getValue().equals("Person")) {
+			String sql = "INSERT INTO Kontakt(Firmenname,Titel,Vorname,Nachname,Geburtsdatum,Adresse,Typ) VALUES (?,?,?,?,?,?,?)";
+			cmd = conn.prepareStatement(sql);
+			cmd.setString(1,k.getFirma());
+			cmd.setString(2,k.getTitel());
+			cmd.setString(3,k.getVorname());
+			cmd.setString(4,k.getNachname());
+			cmd.setString(5,k.getGeburtsdatum());
+			cmd.setInt(6,1); //TODO ID of an adress
+			cmd.setString(7,k.typProperty().getValue());
 		}
+		else {
+			String sql = "INSERT INTO Kontakt(UID,Firmenname,Adresse,Typ) VALUES (?,?,?,?)";
+			cmd = conn.prepareStatement(sql);
+			cmd.setString(1,k.getUid());
+			cmd.setString(2,k.getFirma());
+			cmd.setInt(3,1); //TODO ID of an adress
+			cmd.setString(4,k.typProperty().getValue());
+		}
+		
+		cmd.execute();
 		
 	}
 	

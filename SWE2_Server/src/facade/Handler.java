@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -54,7 +55,11 @@ public class Handler implements Runnable{
 				if(_xml != null) {
 					System.out.println("Inserting Contact!");
 					KontaktModel k = deserializeKontakt(_xml);			
-					b.insertKontakt(k);
+					try {
+						b.insertKontakt(k);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 				break;
 			case "/search/Rechnung":

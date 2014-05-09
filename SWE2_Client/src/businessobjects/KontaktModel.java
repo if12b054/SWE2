@@ -25,8 +25,7 @@ public class KontaktModel extends AModel{
 	private StringProperty firma = new SimpleStringProperty();
 	
 	/* für Adressen: [0] = Strasse, [1] = PLZ, [2] = Ort, [3] = Land */
-	private Vector<String> lieferadresse = new Vector<String>(); 
-	private Vector<String> rechnungsadresse = new Vector<String>();
+	private Vector<String> adresse = new Vector<String>(); 
 	
 	public KontaktModel(String firma, String vorname, String nachname, String titel, String geburtsdatum) {
 		this.typ.set("Person");
@@ -98,26 +97,15 @@ public class KontaktModel extends AModel{
 		this.geburtsdatum = geburtsdatum;
 	}
 
-	public Vector<String> getLieferadresse() {
-		return lieferadresse;
+	public Vector<String> getAdresse() {
+		return adresse;
 	}
 
-	public void setLieferadresse(String strasse, String PLZ, String ort, String land) {
-		this.lieferadresse.add(strasse);
-		this.lieferadresse.add(PLZ);
-		this.lieferadresse.add(ort);
-		this.lieferadresse.add(land);
-	}
-
-	public Vector<String> getRechnungsadresse() {
-		return rechnungsadresse;
-	}
-
-	public void setRechnungsadresse(String strasse, String PLZ, String ort, String land) {
-		this.rechnungsadresse.add(strasse);
-		this.rechnungsadresse.add(PLZ);
-		this.rechnungsadresse.add(ort);
-		this.rechnungsadresse.add(land);
+	public void setAdresse(String strasse, String PLZ, String ort, String land) {
+		this.adresse.add(strasse);
+		this.adresse.add(PLZ);
+		this.adresse.add(ort);
+		this.adresse.add(land);
 	}
 
 	public String getUid() {

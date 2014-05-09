@@ -9,10 +9,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="528.0000999999975" prefWidth="421.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.KontaktViewController">
+<AnchorPane prefHeight="429.0000999999975" prefWidth="421.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controllers.KontaktViewController">
   <!-- TODO Add Nodes -->
   <children>
-    <SplitPane dividerPositions="0.19581745326664482, 0.5570341146323002" focusTraversable="true" orientation="VERTICAL" prefHeight="588.0000999999975" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <SplitPane dividerPositions="0.24121774210357472, 0.6861825090907513" focusTraversable="true" orientation="VERTICAL" prefHeight="588.0000999999975" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <items>
         <AnchorPane maxHeight="100.0" maxWidth="-1.0" minHeight="100.0" minWidth="-1.0" prefHeight="100.0" prefWidth="160.0">
           <children>
@@ -86,26 +86,17 @@
         </AnchorPane>
         <Pane minWidth="103.0" prefHeight="229.0" prefWidth="451.0">
           <children>
-            <Label font="$x1" layoutX="14.0" layoutY="10.0" text="Rechnungsadresse" />
+            <Label font="$x1" layoutX="14.0" layoutY="10.0" text="Adresse" />
             <Label layoutX="14.0" layoutY="37.0" text="Straße" />
-            <TextField id="tfRadresse" fx:id="tfRStrasse" layoutX="60.0" layoutY="34.0" prefWidth="176.0" />
+            <TextField id="tfRadresse" fx:id="tfStrasse" layoutX="60.0" layoutY="34.0" prefWidth="176.0" />
             <Label layoutX="273.0" layoutY="37.0" text="PLZ" />
-            <TextField id="tfLadresse" fx:id="tfRPLZ" layoutX="316.0" layoutY="34.0" prefWidth="91.0" />
+            <TextField id="tfLadresse" fx:id="tfPLZ" layoutX="316.0" layoutY="34.0" prefWidth="91.0" />
             <Label layoutX="15.0" layoutY="68.0" text="Ort" />
-            <TextField id="tfLadresse" fx:id="tfROrt" layoutX="59.0" layoutY="65.0" prefWidth="177.00009999999747" />
-            <Label font="$x1" layoutX="15.0" layoutY="102.0" text="Liefersadresse" />
+            <TextField id="tfLadresse" fx:id="tfOrt" layoutX="59.0" layoutY="65.0" prefWidth="177.00009999999747" />
             <Label layoutX="273.0" layoutY="68.0" text="Land" />
-            <TextField id="tfLadresse" fx:id="tfRLand" layoutX="316.0" layoutY="65.0" prefWidth="91.0" />
-            <Label layoutX="15.0" layoutY="132.0" text="Straße" />
-            <TextField id="tfRadresse" fx:id="tfLStrasse" layoutX="59.0" layoutY="129.0" prefWidth="177.0001220703125" />
-            <Label layoutX="273.0" layoutY="132.0" text="PLZ" />
-            <TextField id="tfLadresse" fx:id="tfLPLZ" layoutX="316.0" layoutY="129.0" prefWidth="91.0" />
-            <Label layoutX="16.0" layoutY="163.0" text="Ort" />
-            <TextField id="tfLadresse" fx:id="tfLOrt" layoutX="60.0" layoutY="160.0" prefWidth="176.0" />
-            <Label layoutX="273.0" layoutY="163.0" text="Land" />
-            <TextField id="tfLadresse" fx:id="tfLLand" layoutX="316.0" layoutY="160.0" prefWidth="91.0" />
-            <Button fx:id="btnKontakte" layoutX="271.0" layoutY="194.0" mnemonicParsing="false" onAction="#doSave" prefWidth="134.0" text="Speichern" />
-            <Label fx:id="kontaktError" layoutX="18.0" layoutY="196.0" text="Error:" textFill="#ff3333" />
+            <TextField id="tfLadresse" fx:id="tfLand" layoutX="316.0" layoutY="65.0" prefWidth="91.0" />
+            <Button fx:id="btnKontakte" layoutX="271.0" layoutY="98.0" mnemonicParsing="false" onAction="#doSave" prefWidth="134.0" text="Speichern" />
+            <Label fx:id="kontaktError" layoutX="15.0" layoutY="100.0" text="Error:" textFill="#ff3333" />
           </children>
         </Pane>
       </items>
