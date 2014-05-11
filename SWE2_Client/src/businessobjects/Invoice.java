@@ -34,8 +34,8 @@ public class Invoice extends AbstractObject{
 		this.contact.set(contact);
 		this.message = message;
 		this.comment = comment;
-		this.invAdress = invAdress;
-		this.delAdress = delAdress;
+		this.setInvAdress(invAdress);
+		this.setDelAdress(delAdress);
 		
 		for (InvoiceLine r : invoiceLines) {
 			amount.set(amount.get()+r.getBrutto());
@@ -84,5 +84,21 @@ public class Invoice extends AbstractObject{
 	
 	public final void setKommentar(String comment) {
 		this.comment = comment;
+	}
+
+	public Adress getInvAdress() {
+		return invAdress;
+	}
+
+	public void setInvAdress(Adress invAdress) {
+		this.invAdress = invAdress;
+	}
+
+	public Adress getDelAdress() {
+		return delAdress;
+	}
+
+	public void setDelAdress(Adress delAdress) {
+		this.delAdress = delAdress;
 	}
 }

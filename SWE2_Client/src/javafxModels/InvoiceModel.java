@@ -3,13 +3,10 @@ package javafxModels;
 import java.util.Calendar;
 import java.util.Date;
 
+import applikation.Utils;
 import businessobjects.Adress;
 import businessobjects.Invoice;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,7 +29,11 @@ public class InvoiceModel {
 	private InvoiceController controller;
 	
 	public boolean errorsFound() {
-		//do error checking here!
+		/* checking if postcode correct */
+		if(!Utils.isInteger(invPostCode.get()) || !Utils.isInteger(delPostCode.get())) {
+			controller.showErrorDialog("/fxml/ErrorView.fxml", "The postcode needs to be numeric(0-9).");
+			return true;
+		}
 		return false;
 	}
 	

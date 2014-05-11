@@ -19,14 +19,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 
 public class InvoiceLineController extends AbstractController implements Observer {
 	private InvoiceController parent;
 	private int existingID = -1; //if recite-line gets edited
-	@FXML private ComboBox<String> cbArtikel;
+	@FXML private ComboBox<Article> cbArtikel;
 	@FXML private ComboBox<Integer> cbMenge;
 	@FXML private Label lblNetto, lblMWSt, lblBrutto, lblStueckPreis;
 	@FXML private Button btnSave;
@@ -34,10 +37,41 @@ public class InvoiceLineController extends AbstractController implements Observe
 	Proxy proxy; //reference to proxy in Main, for Server functions
 	
 	InvoiceLine rechnungszeile;
-	private ArrayList<Article> dieArtikel;
+	private ObservableList<Article> dieArtikel;
 
 	public void initialize() {
 		dieArtikel = parent.getParent().getProxy().getArticles();
+//		for(int i=0; i<=dieArtikel.size(); i++) {
+//			
+//		}
+		cbArtikel.getItems().addAll(dieArtikel);
+		
+		cbArtikel.getSelectionModel().selectFirst(); //select the first element
+        
+        cbArtikel.setCellFactory(new Callback<ListView<Article>,ListCell<Article>>(){
+ 
+            @Override
+            public ListCell<Article> call(ListView<Article> p) {
+                 
+                final ListCell<Article> cell = new ListCell<Article>(){
+ 
+                    @Override
+                    protected void updateItem(Article t, boolean bln) {
+                        super.updateItem(t, bln);
+                         
+                        if(t != null){
+                            setText(t.getName());
+                        }else{
+                            setText(null);
+                        }
+                    }
+  
+                };
+                 
+                return cell;
+            }
+        });
+		
 		cbMenge.getItems().addAll(1,2,3,4,5,6,7,8,9,10);
 		//onchange listener for cbMenge and cbArtikel
 		cbMenge.setValue(1);
@@ -55,7 +89,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 		InvoiceLine rModel = (InvoiceLine) model;
 		
 		existingID = rModel.getIdNumber();
-		cbArtikel.setValue(rModel.getArtikel());
+		cbArtikel.setValue(rModel.getArticle());
 		cbMenge.setValue(rModel.getMenge());
 		lblNetto.setText(Float.toString(rModel.getNetto()));
 		lblMWSt.setText(parent.getMWSt().toString());

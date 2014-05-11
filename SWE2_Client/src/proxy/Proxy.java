@@ -41,8 +41,17 @@ public class Proxy {
 	 * (for dropdown while adding Rechnungszeilen
 	 * @return
 	 */
-	public ArrayList<Article> getArticles() {
-		ArrayList<Article> articles = new ArrayList<Article>();
+	public ObservableList<Article> getArticles() {
+		ObservableList<Article> articles = FXCollections.observableArrayList();
+		
+		Article article = new Article(1, "Apfel", 1.12);
+		articles.add(article);
+		article = new Article(2, "Banane", 0.95);
+		articles.add(article);
+		article = new Article(3, "Kirsche", 0.32);
+		articles.add(article);
+		article = new Article(4, "Auto", 22410.12);
+		articles.add(article);
 		
 		return articles;
 	}
@@ -152,7 +161,7 @@ public class Proxy {
 		/* TEST */
 		System.out.println("WORKING..");
 		ArrayList<InvoiceLine> testRechnungszeilen = new ArrayList<InvoiceLine>();
-		testRechnungszeilen.add(new InvoiceLine("Artikel", 1, 1, 1));
+//		testRechnungszeilen.add(new InvoiceLine("Artikel", 1, 1, 1));
 		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
 //		rechnungen.add(new Invoice(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
 		/* TEST-ENDE */

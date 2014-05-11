@@ -21,28 +21,8 @@ public final class Utils {
 		return String.format("#%02X%02X%02X", (int) (color.getRed() * 255),
 				(int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
 	}
-
-	public static final void showMessageBox(Stage parent, String title, String message) {
-		final Stage dialogStage = new Stage();
-		dialogStage.initOwner(parent);
-		dialogStage.initModality(Modality.WINDOW_MODAL);
-
-		final Button btn = new Button("OK");
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				dialogStage.close();
-			}
-		});
-		dialogStage.setTitle(title);
-		dialogStage.setScene(new Scene(VBoxBuilder.create()
-				.children(new Text(message), btn)
-				.alignment(Pos.CENTER).spacing(10).padding(new Insets(5))
-				.build()));
-		dialogStage.show();
-	}
 	
-	public static final boolean isNumeric(String str)
+	public static final boolean isInteger(String str)
 	{
 		try {
 			int i = Integer.parseInt(str);

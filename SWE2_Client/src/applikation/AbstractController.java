@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafxControllers.ErrorController;
 
 public abstract class AbstractController implements Initializable {
 	private Stage stage;
@@ -45,8 +46,9 @@ public abstract class AbstractController implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		AbstractController controller = loader.getController();
+		ErrorController controller = loader.getController();
 		controller.setStage(stage);
+		controller.setMsg(errorMsg);
 		stage.show();
 		return controller;
 	}

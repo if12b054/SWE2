@@ -12,19 +12,21 @@ public class InvoiceLine extends AbstractObject {
 	private IntegerProperty menge = new SimpleIntegerProperty();
 	private FloatProperty stueckPreis = new SimpleFloatProperty();
 	private FloatProperty brutto = new SimpleFloatProperty();
-	private StringProperty artikel = new SimpleStringProperty();
+	private StringProperty articleName = new SimpleStringProperty();
+	private Article article;
 	
 	private float netto;
 	
-	public InvoiceLine(String newArtikel, int newMenge, float newStueckPreis, float newMWSt) {
-		this.artikel.set(newArtikel);
+	public InvoiceLine(Article article, int newMenge, float newStueckPreis, float newMWSt) {
+		this.setArticle(article);
+		this.articleName.set(article.getName());
 		this.menge.set(newMenge);
 		this.stueckPreis.set(newStueckPreis);
 		setNetto(newMenge*newStueckPreis);
 	}
 	
 	public final StringProperty artikelProperty() {
-		return artikel;
+		return articleName;
 	}
 
 	public final FloatProperty stueckPreisProperty() {
@@ -40,7 +42,7 @@ public class InvoiceLine extends AbstractObject {
 	}
 	
 	public final String getArtikel() {
-		return artikel.get();
+		return articleName.get();
 	}
 
 	public final float getStueckPreis() {
@@ -69,5 +71,13 @@ public class InvoiceLine extends AbstractObject {
 
 	public void setIdNumber(int idNumber) {
 		this.idNumber = idNumber;
+	}
+
+	public Article getArticle() {
+		return article;
+	}
+
+	public void setArticle(Article article) {
+		this.article = article;
 	}
 }

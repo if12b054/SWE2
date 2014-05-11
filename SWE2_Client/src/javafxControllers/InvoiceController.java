@@ -130,7 +130,7 @@ public class InvoiceController extends AbstractController implements Subject {
 	 */
 	@FXML private void doSave(ActionEvent event) {
 		if(fDatePicker.getSelectedDate() == null || fDatePicker.invalidProperty().get()) {
-			showErrorDialog("/fxml/ErrorView.fxml", "Enter a proper date. E.g.: ");
+			showErrorDialog("/fxml/ErrorView.fxml", "Enter a proper date using this format: 2000-01-01");
 		} else {
 			if(!model.errorsFound()) {
 				model.createInvoice(fDatePicker.getSelectedDate());

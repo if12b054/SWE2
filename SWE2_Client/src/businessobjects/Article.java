@@ -2,20 +2,31 @@ package businessobjects;
 
 public class Article {
 	private int id;
-	private String bezeichnung;
-	private float preis;
+	private String name;
+	private double price;
 	
-	public String getBezeichnung() {
-		return bezeichnung;
+	public Article(int id, String name, double price) {
+		this.id = id;
+		this.name = name;
+		this.price = price;
 	}
-	public void setBezeichnung(String bezeichnung) {
-		this.bezeichnung = bezeichnung;
+	
+	@Override
+	public String toString() {
+		return name;
 	}
-	public float getPreis() {
-		return preis;
+	
+	public String getName() {
+		return name;
 	}
-	public void setPreis(float preis) {
-		this.preis = preis;
+	public void setName(String name) {
+		this.name = name;
+	}
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		this.price = price;
 	}
 	public int getId() {
 		return id;
