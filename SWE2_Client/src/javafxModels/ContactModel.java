@@ -1,5 +1,6 @@
 package javafxModels;
 
+import businessobjects.Contact;
 import applikation.Utils;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,26 +24,12 @@ public class ContactModel {
 	private StringProperty firma = new SimpleStringProperty();
 	private StringProperty firmenname = new SimpleStringProperty();
 	private StringProperty UID = new SimpleStringProperty();
+	private StringProperty street = new SimpleStringProperty();
+	private StringProperty PLZ = new SimpleStringProperty();
+	private StringProperty city = new SimpleStringProperty();
+	private StringProperty country = new SimpleStringProperty();
 	
-	public ChangeListener<Boolean> isFirma = new ChangeListener<Boolean>()
-	{
-	    @Override
-	    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-	    {
-	    	if (!newPropertyValue)
-	        {
-	        	if(firma.get() == null || firma.get().isEmpty()) {
-	        		controller.setFirmaFoundImg(controller.getParent().getEmptyImg());
-	        	}
-	        	else if(controller.getParent().getProxy().isFirma(firma.get())) {
-	        		controller.setFirmaFoundImg(controller.getParent().getCheckMark());
-	        	}
-	        	else {
-	        		controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
-	        	}
-	        }
-	    }
-	};
+	/* GUI functions */
 	
 	private BooleanBinding disableEditFirma = new BooleanBinding() {
 		@Override
@@ -81,6 +68,29 @@ public class ContactModel {
 		firma.addListener(canEditListener);
 	}
 	
+	/* saving data and error checking */
+	
+	/**
+	 * Creates new Kontakt-Object and sends it over to proxy, which will send it to server,
+	 * where the new "Kontakt" is inserted into the database
+	 * */
+	public void createKontakt() {
+		Contact k;
+		
+		/* contact is person */
+		if(vorname.get() != null) {
+			k = new Contact(firma.get(), vorname.get(), nachname.get(), titel.get(), geburtsdatum.get());
+		}
+		/* contact is firm */
+		else {
+			k = new Contact(UID.get(), firmenname.get());
+		}
+		k.setAdresse(street.get(), PLZ.get(), city.get(), country.get());
+		
+		/* send to proxy */
+		controller.getParent().getProxy().insertKontakt(k);
+	}
+	
 	/* returning PROPERTIES */
 	
 	public final StringProperty titelProperty() {
@@ -111,6 +121,22 @@ public class ContactModel {
 		return UID;
 	}
 	
+	public final StringProperty streetProperty() {
+		return street;
+	}
+	
+	public final StringProperty PLZProperty() {
+		return PLZ;
+	}
+	
+	public final StringProperty cityProperty() {
+		return city;
+	}
+	
+	public final StringProperty countryProperty() {
+		return country;
+	}
+	
 	/* returning BINDINGS */
 
 	public BooleanBinding disableEditPersonBinding() {
@@ -124,5 +150,4 @@ public class ContactModel {
 	public void setController(ContactController controller) {
 		this.controller = controller;
 	}
-	
 }

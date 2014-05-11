@@ -41,7 +41,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 		cbMenge.getItems().addAll(1,2,3,4,5,6,7,8,9,10);
 		//onchange listener for cbMenge and cbArtikel
 		cbMenge.setValue(1);
-		lblMWSt.setText(parent.getMWSt());
+		lblMWSt.setText(parent.getMWSt().toString());
 	}
 	
 	@Override
@@ -58,7 +58,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 		cbArtikel.setValue(rModel.getArtikel());
 		cbMenge.setValue(rModel.getMenge());
 		lblNetto.setText(Float.toString(rModel.getNetto()));
-		lblMWSt.setText(parent.getMWSt());
+		lblMWSt.setText(parent.getMWSt().toString());
 		lblBrutto.setText(Float.toString(rModel.getBrutto()));
 		lblStueckPreis.setText(Float.toString(rModel.getStueckPreis()));
 	}
@@ -120,6 +120,6 @@ public class InvoiceLineController extends AbstractController implements Observe
 
 	@Override
 	public void update() {
-		lblMWSt.setText(parent.getMWSt());
+		lblMWSt.setText(parent.getMWSt().toString());
 	}
 }

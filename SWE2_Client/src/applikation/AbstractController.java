@@ -1,11 +1,13 @@
 package applikation;
 
 import java.io.IOException;
+
 import businessobjects.AbstractObject;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -28,6 +30,23 @@ public abstract class AbstractController implements Initializable {
 		if(model != null) {
 			controller.loadModel(model);
 		}
+		stage.show();
+		return controller;
+	}
+	
+	public AbstractController showErrorDialog(String fxmlPath, String errorMsg) {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource(fxmlPath));
+		Stage stage = new Stage(StageStyle.DECORATED);
+		stage.setTitle("Error");
+		stage.initModality(Modality.APPLICATION_MODAL);
+		try {
+			stage.setScene(new Scene((Pane) loader.load()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		AbstractController controller = loader.getController();
+		controller.setStage(stage);
 		stage.show();
 		return controller;
 	}

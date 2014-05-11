@@ -1,75 +1,88 @@
 package businessobjects;
 
-import java.util.ArrayList;
+import java.util.Date;
 
 import javafx.beans.property.FloatProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
 public class Invoice extends AbstractObject{
-	private ArrayList<InvoiceLine> rechnungszeilen = new ArrayList<InvoiceLine>();
-	private FloatProperty betrag = new SimpleFloatProperty();
-	private StringProperty datum = new SimpleStringProperty();
-	private StringProperty faelligkeit = new SimpleStringProperty();
-	private StringProperty kunde = new SimpleStringProperty();
-	private StringProperty nachricht = new SimpleStringProperty();
-	private StringProperty kommentar = new SimpleStringProperty();
+	private ObservableList<InvoiceLine> invoiceLines;
+	private FloatProperty amount = new SimpleFloatProperty();
+	private ObjectProperty<Date> creationDate = new SimpleObjectProperty<Date>();
+	private ObjectProperty<Date> dueDate = new SimpleObjectProperty<Date>();
+	private StringProperty contact = new SimpleStringProperty();
+	private String message, comment;
+	private Adress invAdress, delAdress;
 	
-	public Invoice(ArrayList<InvoiceLine> rechnungszeilen, String datum, String faelligkeit, String kunde, String nachricht, String kommentar) {
-		this.rechnungszeilen = rechnungszeilen;	
-		this.datum.set(datum);
-		this.faelligkeit.set(faelligkeit);
-		this.kunde.set(kunde);
-		this.nachricht.set(nachricht);
-		this.nachricht.set(kommentar);
+	public Invoice(
+			ObservableList<InvoiceLine> invoiceLines, 
+			Date date, 
+			Date dueDate, 
+			String contact, 
+			String message, 
+			String comment,
+			Adress invAdress, 
+			Adress delAdress) {
+		this.invoiceLines = invoiceLines;	
+		this.creationDate.set(date);
+		this.dueDate.set(dueDate);
+		this.contact.set(contact);
+		this.message = message;
+		this.comment = comment;
+		this.invAdress = invAdress;
+		this.delAdress = delAdress;
 		
-		for (InvoiceLine r : rechnungszeilen) {
-			betrag.set(betrag.get()+r.getBrutto());
+		for (InvoiceLine r : invoiceLines) {
+			amount.set(amount.get()+r.getBrutto());
 		}
 	}
 	
 	public final FloatProperty betragProperty() {
-		return betrag;
+		return amount;
 	}
 	
-	public final StringProperty datumProperty() {
-		return datum;
+	public final ObjectProperty<Date> datumProperty() {
+		return creationDate;
 	}
 	
-	public final StringProperty faelligkeitProperty() {
-		return faelligkeit;
+	public final ObjectProperty<Date> faelligkeitProperty() {
+		return dueDate;
 	}
 
 	public final StringProperty kundeProperty() {
-		return kunde;
+		return contact;
 	}
 	
-	public final StringProperty nachrichtProperty() {
-		return nachricht;
+	public String getMessage() {
+		return message;
 	}
 	
-	public final StringProperty kommentarProperty() {
-		return kommentar;
+	public String getComment() {
+		return comment;
 	}
 	
-	public final void setDatum(String datum) {
-		this.datum.set(datum);
+	public final void setDatum(Date datum) {
+		this.creationDate.set(datum);
 	}
 	
-	public final void setFaelligkeit(String faelligkeit) {
-		this.datum.set(faelligkeit);
+	public final void setFaelligkeit(Date faelligkeit) {
+		this.creationDate.set(faelligkeit);
 	}
 	
 	public final void setKunde(String kunde) {
-		this.kunde.set(kunde);
+		this.contact.set(kunde);
 	}
 	
-	public final void setNachricht(String nachricht) {
-		this.nachricht.set(nachricht);
+	public void setNachricht(String message) {
+		this.message = message;
 	}
 	
-	public final void setKommentar(String kommentar) {
-		this.kommentar.set(kommentar);
+	public final void setKommentar(String comment) {
+		this.comment = comment;
 	}
 }

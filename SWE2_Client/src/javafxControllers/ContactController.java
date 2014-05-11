@@ -27,13 +27,16 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafxModels.ContactModel;
 
+/**
+ * @author Victor
+ *
+ */
 public class ContactController extends AbstractController {
 	@FXML private Button btnKontakte, btnKontakteSuche, btnDelete;
 	@FXML private TextField tfTitel, tfVname, tfNname, tfGebdatum, tfFirma;
 	@FXML private TextField tfFname, tfUID;
 	@FXML private TextField tfStrasse, tfOrt, tfPLZ, tfLand;
-	@FXML private Label kontaktError;
-	@FXML private ImageView imgFirmaInput, imgDelete;
+	@FXML private ImageView imgFirmaInput;
 	
 	/* zum Ausblenden der jeweiligen Pane bei Eingabe in die andere */
 	@FXML private Pane firmaPane;
@@ -42,15 +45,9 @@ public class ContactController extends AbstractController {
 	private ContactModel model = new ContactModel();
 	private MainController parent;
 	
-	Contact kontakt;
-	private String errorMsg;
-	
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
 		model.setController(this);
-		
-		/* set images */
-		imgDelete.setImage(parent.getBin());
 		
 		/* bidirectional bind to model */
 		tfVname.textProperty().bindBidirectional(model.vornameProperty());
@@ -60,21 +57,27 @@ public class ContactController extends AbstractController {
 		tfTitel.textProperty().bindBidirectional(model.titelProperty());
 		tfFname.textProperty().bindBidirectional(model.firmennameProperty());
 		tfUID.textProperty().bindBidirectional(model.UIDProperty());
+		tfStrasse.textProperty().bindBidirectional(model.streetProperty());
+		tfPLZ.textProperty().bindBidirectional(model.PLZProperty());
+		tfOrt.textProperty().bindBidirectional(model.cityProperty());
+		tfLand.textProperty().bindBidirectional(model.countryProperty());
 		
 		/* can only create new person OR firm*/
 		personPane.disableProperty().bind(model.disableEditPersonBinding());
 		firmaPane.disableProperty().bind(model.disableEditFirmaBinding());
 		
 		/* if firma-field becomes unfocused -> validate firm */
-		tfFirma.focusedProperty().addListener(model.isFirma);
+		tfFirma.focusedProperty().addListener(isFirma);
 	}
 	
 	/**
-	 * On button click "
-	 * @param event
+	 * @called 	when save button gets clicked
+	 * @action 	activates function in model to check fields for errors and 
+	 * 			then send data along if none exist
+	 * @param 	event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		createKontakt();
+		model.createKontakt();
 	}
 	
 	/**
@@ -85,49 +88,15 @@ public class ContactController extends AbstractController {
 		
 	}
 	
-	/**
-	 * Creates new Kontakt-Object and sends it over to proxy, which will send it to server,
-	 * where the new "Kontakt" is inserted into the database
-	 * */
-	public void createKontakt() {
-		
-		/* error-checking */
-//		if((errorMsg = InputChecks.saveKontaktError()) != null)
-//		{
-//			kontaktError.setText(errorMsg);
-//			errorMsg = null;
-//		}
-//		else {
-			Contact k;
-			
-			/* ist eine Person */
-			if(tfVname.getText() != null) {
-				k = new Contact(tfFirma.getText(), tfVname.getText(), tfNname.getText(), tfTitel.getText(), tfGebdatum.getText());
-			}
-			/* ist eine Firma */
-			else {
-				k = new Contact(tfUID.getText(), tfFname.getText());
-			}
-			k.setAdresse(tfStrasse.getText(), tfPLZ.getText(), tfOrt.getText(), tfLand.getText());
-			
-			/* send to proxy */
-			parent.getProxy().insertKontakt(k);
-//		}
-	}
-	
-	@FXML private void clearFirmaField(ActionEvent event) {
+	@FXML private void clearAll(ActionEvent event) {
 		tfFirma.setText(null);
 		imgFirmaInput.setImage(parent.getEmptyImg());
-		System.out.println("DELETE");
+		System.out.println("Contact form cleared.");
 	}
 	
 	@Override
 	public void setParent(AbstractController parent) {
 		this.parent = (MainController)parent;
-	}
-	
-	public MainController getParent() {
-		return this.parent;
 	}
 	
 	@Override
@@ -153,6 +122,36 @@ public class ContactController extends AbstractController {
 //		tfPLZ.setText(kModel.getAdresse().get(1)); 
 //		tfOrt.setText(kModel.getAdresse().get(2)); 
 //		tfLand.setText(kModel.getAdresse().get(3)); 
+	}
+	
+	/**
+	 * Sets the image beside the firm field accordingly to input:
+	 * null = empty image
+	 * correct(checked with server) = check mark
+	 * false(checked with server) = cross mark
+	 */
+	private ChangeListener<Boolean> isFirma = new ChangeListener<Boolean>()
+	{
+	    @Override
+	    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+	    {
+	    	if (!newPropertyValue)
+	        {
+	        	if(tfFirma.getText() == null || tfFirma.getText().isEmpty()) {
+	        		setFirmaFoundImg(getParent().getEmptyImg());
+	        	}
+	        	else if(getParent().getProxy().isFirma(tfFirma.getText())) {
+	        		setFirmaFoundImg(getParent().getCheckMark());
+	        	}
+	        	else {
+	        		setFirmaFoundImg(getParent().getNoCheckMark());
+	        	}
+	        }
+	    }
+	};
+	
+	public MainController getParent() {
+		return this.parent;
 	}
 	
 	public void setFirmaFoundImg(Image newImg) {

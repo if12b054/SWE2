@@ -149,6 +149,16 @@ public class MainController extends AbstractController {
 		        }
 		    }
 		});
+		
+		/* set prompt texts */
+		tfSucheVorname.setPromptText("Vorname");
+		tfSucheNachname.setPromptText("Nachname");
+		tfSucheFirma.setPromptText("Firma");
+		vonDatePicker.setPromptText("Von");
+		bisDatePicker.setPromptText("Bis");
+		tfPreisVon.setPromptText("Von");
+		tfPreisBis.setPromptText("Bis");
+		tfKontaktName.setPromptText("Kontakt");
 	}
 	
 	/* GETTERs and SETTERs*/

@@ -83,6 +83,8 @@ public class Proxy {
 		System.out.println("Sending Rechnung-data to server.");
 		String action = "insert/Rechnung";
 		
+		System.out.println("inserting Recite with date: " + r.datumProperty().get());
+		
 	}
 	
 	
@@ -152,7 +154,7 @@ public class Proxy {
 		ArrayList<InvoiceLine> testRechnungszeilen = new ArrayList<InvoiceLine>();
 		testRechnungszeilen.add(new InvoiceLine("Artikel", 1, 1, 1));
 		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
-		rechnungen.add(new Invoice(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
+//		rechnungen.add(new Invoice(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
 		/* TEST-ENDE */
 		
 		return rechnungen;

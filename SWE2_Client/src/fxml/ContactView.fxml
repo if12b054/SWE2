@@ -72,13 +72,8 @@
                     <RowConstraints maxHeight="22.0" minHeight="10.0" prefHeight="22.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                 </GridPane>
-                <Button fx:id="btnKontakteSuche" layoutX="294.0" layoutY="121.0" mnemonicParsing="false" onAction="#doKontaktSearch" text="Finden" />
+                <Button fx:id="btnKontakteSuche" layoutX="294.0" layoutY="121.0" mnemonicParsing="false" onAction="#doKontaktSearch" prefWidth="91.0" text="Finden" />
                 <ImageView id="imgCmpInput" fx:id="imgFirmaInput" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="259.0" layoutY="121.0" pickOnBounds="true" preserveRatio="true" />
-                <Button fx:id="btnDelete" layoutX="356.0" layoutY="119.0" minWidth="28.0" mnemonicParsing="false" onAction="#clearFirmaField" prefWidth="28.0" text="">
-                  <graphic>
-                    <ImageView fx:id="imgDelete" fitHeight="21.0" fitWidth="27.999999379002773" pickOnBounds="true" preserveRatio="true" />
-                  </graphic>
-                </Button>
                 <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Person" />
               </children>
             </Pane>
@@ -95,8 +90,9 @@
             <TextField id="tfLadresse" fx:id="tfOrt" layoutX="59.0" layoutY="65.0" prefWidth="177.00009999999747" />
             <Label layoutX="273.0" layoutY="68.0" text="Land" />
             <TextField id="tfLadresse" fx:id="tfLand" layoutX="316.0" layoutY="65.0" prefWidth="91.0" />
-            <Button fx:id="btnKontakte" layoutX="271.0" layoutY="98.0" mnemonicParsing="false" onAction="#doSave" prefWidth="134.0" text="Speichern" />
-            <Label fx:id="kontaktError" layoutX="15.0" layoutY="100.0" text="Error:" textFill="#ff3333" />
+            <Button fx:id="btnKontakte" layoutX="314.0" layoutY="98.0" mnemonicParsing="false" onAction="#doSave" prefWidth="91.0" text="Speichern" />
+            <Button id="btnKontakte" layoutX="210.0" layoutY="98.0" mnemonicParsing="false" onAction="#clearAll" prefWidth="91.0" text="Clear" />
+            <Hyperlink layoutX="137.0" layoutY="98.0" text="Abbrechen" />
           </children>
         </Pane>
       </items>
