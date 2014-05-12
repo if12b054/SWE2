@@ -2,8 +2,10 @@ package businessobjects;
 
 import java.util.Date;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,7 +14,7 @@ import javafx.collections.ObservableList;
 
 public class Invoice extends AbstractObject{
 	private ObservableList<InvoiceLine> invoiceLines;
-	private FloatProperty amount = new SimpleFloatProperty();
+	private DoubleProperty amount = new SimpleDoubleProperty();
 	private ObjectProperty<Date> creationDate = new SimpleObjectProperty<Date>();
 	private ObjectProperty<Date> dueDate = new SimpleObjectProperty<Date>();
 	private StringProperty contact = new SimpleStringProperty();
@@ -42,7 +44,7 @@ public class Invoice extends AbstractObject{
 		}
 	}
 	
-	public final FloatProperty betragProperty() {
+	public final DoubleProperty amountProperty() {
 		return amount;
 	}
 	

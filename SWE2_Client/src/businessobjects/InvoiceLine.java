@@ -1,7 +1,9 @@
 package businessobjects;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -10,30 +12,31 @@ import javafx.beans.property.StringProperty;
 public class InvoiceLine extends AbstractObject {
 	private int idNumber = -1;
 	private IntegerProperty menge = new SimpleIntegerProperty();
-	private FloatProperty stueckPreis = new SimpleFloatProperty();
-	private FloatProperty brutto = new SimpleFloatProperty();
+	private DoubleProperty stueckPreis = new SimpleDoubleProperty();
+	private DoubleProperty brutto = new SimpleDoubleProperty();
 	private StringProperty articleName = new SimpleStringProperty();
 	private Article article;
 	
-	private float netto;
+	private double netto;
 	
-	public InvoiceLine(Article article, int newMenge, float newStueckPreis, float newMWSt) {
+	public InvoiceLine(Article article, int newMenge, double newStueckPreis, double newMWSt) {
 		this.setArticle(article);
 		this.articleName.set(article.getName());
 		this.menge.set(newMenge);
 		this.stueckPreis.set(newStueckPreis);
-		setNetto(newMenge*newStueckPreis);
+		netto = newMenge*newStueckPreis;
+		brutto.set(newMenge*newStueckPreis*(1+newMWSt));
 	}
 	
-	public final StringProperty artikelProperty() {
+	public final StringProperty articleNameProperty() {
 		return articleName;
 	}
 
-	public final FloatProperty stueckPreisProperty() {
+	public final DoubleProperty stueckPreisProperty() {
 		return stueckPreis;
 	}
 
-	public final FloatProperty bruttoProperty() {
+	public final DoubleProperty bruttoProperty() {
 		return brutto;
 	}
 	
@@ -45,11 +48,11 @@ public class InvoiceLine extends AbstractObject {
 		return articleName.get();
 	}
 
-	public final float getStueckPreis() {
+	public final double getStueckPreis() {
 		return stueckPreis.get();
 	}
 
-	public final float getBrutto() {
+	public final double getBrutto() {
 		return brutto.get();
 	}
 	
@@ -57,12 +60,8 @@ public class InvoiceLine extends AbstractObject {
 		return menge.get();
 	}
 
-	public float getNetto() {
+	public double getNetto() {
 		return netto;
-	}
-
-	public void setNetto(float netto) {
-		this.netto = netto;
 	}
 
 	public int getIdNumber() {

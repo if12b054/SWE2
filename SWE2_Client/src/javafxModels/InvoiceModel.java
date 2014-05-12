@@ -13,7 +13,7 @@ import javafx.beans.property.StringProperty;
 import javafxControllers.InvoiceController;
 
 public class InvoiceModel {
-	private ObjectProperty<Double> MWSt = new SimpleObjectProperty<Double>();
+	private StringProperty MWSt = new SimpleStringProperty();
 	private StringProperty contact = new SimpleStringProperty();
 	private StringProperty message = new SimpleStringProperty();
 	private StringProperty comment = new SimpleStringProperty();
@@ -47,7 +47,7 @@ public class InvoiceModel {
 	
 /* returning PROPERTIES */
 	
-	public final ObjectProperty<Double> MWStProperty() {
+	public final StringProperty MWStProperty() {
 		return MWSt;
 	}
 

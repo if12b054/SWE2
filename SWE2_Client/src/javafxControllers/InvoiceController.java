@@ -49,8 +49,6 @@ import javafxModels.InvoiceModel;
  *
  */
 public class InvoiceController extends AbstractController implements Subject {
-	final double MWST_DEFAULT_VALUE = 0.15;
-	
 	public MainController parent;
 	private InvoiceModel model = new InvoiceModel();
 	private ArrayList<Observer> MWStList = new ArrayList<Observer>(); //List which gets affected if MWSt ComboBox changes values
@@ -64,7 +62,7 @@ public class InvoiceController extends AbstractController implements Subject {
 	@FXML private TextArea taMessage, taComment;
 	@FXML private TableView<InvoiceLine> tableRechnungszeilen;
 	@FXML private ImageView imgRechKundeInput, imgRechnKundeDelete;
-	@FXML private ComboBox<Double> cbMWSt;
+	@FXML private ComboBox<String> cbMWSt;
 	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
 	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
 	private DatePicker fDatePicker;
@@ -113,7 +111,8 @@ public class InvoiceController extends AbstractController implements Subject {
 		
 		/* initialize MWSt */
 		cbMWSt.setEditable(true);
-		cbMWSt.setValue(MWST_DEFAULT_VALUE);
+		cbMWSt.getItems().setAll("0.15","0.17","0.19","0.21","0.23","0.25");
+		cbMWSt.getSelectionModel().selectFirst();
 		cbMWSt.getEditor().textProperty().addListener( new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
@@ -156,7 +155,7 @@ public class InvoiceController extends AbstractController implements Subject {
 	}
 	
 	public Double getMWSt() {
-		return this.cbMWSt.getValue();
+		return Double.parseDouble(this.cbMWSt.getValue());
 	}
 	
 	public MainController getParent() {

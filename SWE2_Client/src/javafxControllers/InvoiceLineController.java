@@ -11,6 +11,7 @@ import businessobjects.AbstractObject;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.InvoiceLine;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +26,9 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.NumberStringConverter;
+import javafxModels.InvoiceLineModel;
 
 public class InvoiceLineController extends AbstractController implements Observer {
 	private InvoiceController parent;
@@ -34,20 +38,31 @@ public class InvoiceLineController extends AbstractController implements Observe
 	@FXML private Label lblNetto, lblMWSt, lblBrutto, lblStueckPreis;
 	@FXML private Button btnSave;
 	
-	Proxy proxy; //reference to proxy in Main, for Server functions
-	
 	InvoiceLine rechnungszeile;
-	private ObservableList<Article> dieArtikel;
-
-	public void initialize() {
-		dieArtikel = parent.getParent().getProxy().getArticles();
-//		for(int i=0; i<=dieArtikel.size(); i++) {
-//			
-//		}
-		cbArtikel.getItems().addAll(dieArtikel);
+	private ObservableList<Article> articles;
+	InvoiceLineModel model = new InvoiceLineModel();
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {	
+		cbArtikel.valueProperty().bindBidirectional(model.articleProperty());
+		cbMenge.valueProperty().bindBidirectional(model.quantityProperty());
+		lblNetto.textProperty().bindBidirectional(model.nettoProperty());
+		lblMWSt.textProperty().bindBidirectional(model.salesTaxProperty());
+		lblBrutto.textProperty().bindBidirectional(model.bruttoProperty());
+		lblStueckPreis.textProperty().bindBidirectional(model.unitPriceProperty());
 		
+		cbMenge.getItems().addAll(1,2,3,4,5,6,7,8,9,10);
+		cbMenge.getSelectionModel().selectFirst();
+	}
+	
+	/**
+	 * initialize all the elements, which need the parent connection
+	 */
+	public void customInitialize() {
+		/* get articles from db and set them, so only article-name gets displayed */
+		articles = parent.getParent().getProxy().getArticles();
+		cbArtikel.getItems().addAll(articles);
 		cbArtikel.getSelectionModel().selectFirst(); //select the first element
-        
         cbArtikel.setCellFactory(new Callback<ListView<Article>,ListCell<Article>>(){
  
             @Override
@@ -67,34 +82,32 @@ public class InvoiceLineController extends AbstractController implements Observe
                     }
   
                 };
-                 
                 return cell;
             }
         });
-		
-		cbMenge.getItems().addAll(1,2,3,4,5,6,7,8,9,10);
-		//onchange listener for cbMenge and cbArtikel
-		cbMenge.setValue(1);
 		lblMWSt.setText(parent.getMWSt().toString());
+		cbArtikel.valueProperty().addListener(model.articleValueChanged);
+		cbMenge.valueProperty().addListener(model.quantityValueChanged);
+		lblMWSt.textProperty().addListener(model.salesTaxValueChanged);
 	}
 	
 	@Override
 	public void setParent(AbstractController newParent) {
 		parent = (InvoiceController) newParent;
-		initialize();
+		customInitialize();
 	}
 	
 	@Override
 	public void loadModel(AbstractObject model) {
-		InvoiceLine rModel = (InvoiceLine) model;
+		InvoiceLine invLineModel = (InvoiceLine) model;
 		
-		existingID = rModel.getIdNumber();
-		cbArtikel.setValue(rModel.getArticle());
-		cbMenge.setValue(rModel.getMenge());
-		lblNetto.setText(Float.toString(rModel.getNetto()));
+		existingID = invLineModel.getIdNumber();
+		cbArtikel.setValue(invLineModel.getArticle());
+		cbMenge.setValue(invLineModel.getMenge());
+		lblNetto.setText(Double.toString(invLineModel.getNetto()));
 		lblMWSt.setText(parent.getMWSt().toString());
-		lblBrutto.setText(Float.toString(rModel.getBrutto()));
-		lblStueckPreis.setText(Float.toString(rModel.getStueckPreis()));
+		lblBrutto.setText(Double.toString(invLineModel.getBrutto()));
+		lblStueckPreis.setText(Double.toString(invLineModel.getStueckPreis()));
 	}
 	
 	/**
@@ -148,12 +161,8 @@ public class InvoiceLineController extends AbstractController implements Observe
 	}
 
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		
-	}
-
-	@Override
 	public void update() {
-		lblMWSt.setText(parent.getMWSt().toString());
+		String newMWSt = Double.toString(parent.getMWSt());
+		this.lblMWSt.setText(newMWSt);
 	}
 }
