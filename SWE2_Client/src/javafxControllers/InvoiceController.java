@@ -11,7 +11,6 @@ import proxy.Proxy;
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import ObserverPattern.Observer;
 import ObserverPattern.Subject;
-import applikation.AbstractController;
 import businessobjects.AbstractObject;
 import businessobjects.Article;
 import businessobjects.Contact;
@@ -173,14 +172,6 @@ public class InvoiceController extends AbstractController implements Subject {
 		//disable most fields
 	}
 
-	public int getrZeileCount() {
-		return invLineCount;
-	}
-
-	public void setrZeileCount(int rZeileCount) {
-		this.invLineCount = rZeileCount;
-	}
-
 	@Override
 	public void register(Observer o) {
 		MWStList.add(o);
@@ -197,5 +188,20 @@ public class InvoiceController extends AbstractController implements Subject {
 		{
 			o.update();
 		}
+		for(InvoiceLine i : tableRechnungszeilen.getItems()) {
+			i.updateMWSt(Double.parseDouble(cbMWSt.getValue()));
+		}
+	}
+	
+	public int getrZeileCount() {
+		return invLineCount;
+	}
+
+	public void setrZeileCount(int rZeileCount) {
+		this.invLineCount = rZeileCount;
+	}
+	
+	public ArrayList<Observer> getMWStList() {
+		return MWStList;
 	}
 }

@@ -13,7 +13,6 @@ import java.util.Vector;
 
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import proxy.Proxy;
-import applikation.AbstractController;
 import applikation.Parameter;
 import applikation.Utils;
 import applikation.InputChecks;
@@ -51,33 +50,33 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
-import javafxModels.MainContactTabModel;
-import javafxModels.MainInvoiceTabModel;
+import javafxModels.MainContactModel;
+import javafxModels.MainInvoiceModel;
 
 public class MainController extends AbstractController {
 	
 	/* "Kontakte/Suche" Page: */
-	@FXML private Label lblKontaktCount;
-	@FXML private TextField tfSucheVorname, tfSucheNachname, tfSucheFirma;
-	@FXML private TableView<Contact> tableKontaktSuche;
-	@FXML private Button btnNewKontakt;
+	@FXML private Label lblContactCount;
+	@FXML private TextField tfFirstName, tfLastName, tfFirm;
+	@FXML private TableView<Contact> tableContacts;
+	@FXML private Button btnNewContact;
 	
 	/* "Rechnungen/Suche" Page: */
-	@FXML private Label lblRechnungCount;
-	@FXML private Button btnKontaktSuche, btnNewRech;
-	@FXML private TextField tfPreisVon, tfPreisBis, tfKontaktName;
-	@FXML private ImageView imgKundeInput, imgKundeDelete;
-	@FXML private TableView<Invoice> tableRechnungSuche;
-	@FXML private Pane pDatumVon, pDatumBis;
+	@FXML private Label lblInvoiceCount;
+	@FXML private Button btnFindContact, btnNewInvoice;
+	@FXML private TextField tfPriceFrom, tfPriceTill, tfContact;
+	@FXML private ImageView imgContactValid;
+	@FXML private TableView<Invoice> tableInvoices;
+	@FXML private Pane pDateFrom, pDateTill;
 	
 	/* Allgmein benörigte Daten */
-	private MainContactTabModel kModel;
-	private MainInvoiceTabModel rModel;
+	private MainContactModel contactModel;
+	private MainInvoiceModel invoiceModel;
 	private Proxy proxy;
 	boolean isError = true; //because no input in beginning -> is an error
-	private Image checkMark, noCheckMark, bin, emptyImg;
+	private Image checkMark, noCheckMark, emptyImg;
 	
-	private DatePicker vonDatePicker, bisDatePicker;
+	private DatePicker dpFrom, dpTill;
 	
 	/**
 	 * opens contact window, either with empty textFields when creating new Contact or
@@ -85,7 +84,7 @@ public class MainController extends AbstractController {
 	 * @param event
 	 * @throws IOException
 	 */
-	@FXML private void doNewKontakt(ActionEvent event) throws IOException {
+	@FXML private void doNewContact(ActionEvent event) throws IOException {
 		showNewDialog("/fxml/ContactView.fxml", this, null);
 	}
 	
@@ -94,7 +93,7 @@ public class MainController extends AbstractController {
 	 * @param event
 	 * @throws IOException
 	 */
-	@FXML private void doNewRech(ActionEvent event) throws IOException {
+	@FXML private void doNewInvoice(ActionEvent event) throws IOException {
 		showNewDialog("/fxml/InvoiceView.fxml", this, null);
 	}
 	
@@ -102,45 +101,45 @@ public class MainController extends AbstractController {
 	 * opens search window for reference on recite page
 	 * @param event
 	 */
-	@FXML void doKontaktSuche(ActionEvent event) {
+	@FXML void doFindContact(ActionEvent event) {
 		
 	}
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		kModel = new MainContactTabModel(this);
-		rModel = new MainInvoiceTabModel(this);
+		contactModel = new MainContactModel(this);
+		invoiceModel = new MainInvoiceModel(this);
 		proxy = new Proxy();
 		
 		/* load images */
 		checkMark = new Image("file:assets/check.png");
 		noCheckMark = new Image("file:assets/nocheck.gif");
-		bin = new Image("file:assets/bin.png");
 		emptyImg = new Image("file:assets/transparent.png");
+		initDatePickers();
 		
 		/* bind contact data to model */
-		tfSucheVorname.textProperty().bindBidirectional(kModel.getkVorname());
-		tfSucheNachname.textProperty().bindBidirectional(kModel.getkNachname());
-		tfSucheFirma.textProperty().bindBidirectional(kModel.getkFirma());
-		lblKontaktCount.textProperty().bindBidirectional(kModel.getkResultCount());
+		tfFirstName.textProperty().bindBidirectional(contactModel.getkVorname());
+		tfLastName.textProperty().bindBidirectional(contactModel.getkNachname());
+		tfFirm.textProperty().bindBidirectional(contactModel.getkFirma());
+		lblContactCount.textProperty().bindBidirectional(contactModel.getkResultCount());
 		
 		/* add listeners from models */
-		tfSucheVorname.focusedProperty().addListener(kModel.kontaktSearchListener);
-		tfSucheNachname.focusedProperty().addListener(kModel.kontaktSearchListener);
-		tfSucheFirma.focusedProperty().addListener(kModel.kontaktSearchListener);
-		vonDatePicker.focusedProperty().addListener(rModel.rechSearchListener);
-		bisDatePicker.focusedProperty().addListener(rModel.rechSearchListener);
-		tfPreisVon.focusedProperty().addListener(rModel.rechSearchListener);
-		tfPreisBis.focusedProperty().addListener(rModel.rechSearchListener);
-		tfKontaktName.focusedProperty().addListener(rModel.rechSearchListener);
+		tfFirstName.focusedProperty().addListener(contactModel.kontaktSearchListener);
+		tfLastName.focusedProperty().addListener(contactModel.kontaktSearchListener);
+		tfFirm.focusedProperty().addListener(contactModel.kontaktSearchListener);
+		dpFrom.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
+		dpTill.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
+		tfPriceFrom.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
+		tfPriceTill.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
+		tfContact.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
 		
-		tableKontaktSuche.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		tableContacts.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override
 		    public void handle(MouseEvent mouseEvent) {
 		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
 		            if(mouseEvent.getClickCount() == 2){
 		                System.out.println("Double clicked");
-		                Contact kontakt = (Contact) tableKontaktSuche.getSelectionModel().getSelectedItem();
+		                Contact kontakt = (Contact) tableContacts.getSelectionModel().getSelectedItem();
 		                if(kontakt != null) {
 		                	System.out.println("KONTAKT: " + kontakt.getNachname());
 		                	showNewDialog("/fxml/ContactView.fxml", MainController.this, kontakt);
@@ -151,14 +150,14 @@ public class MainController extends AbstractController {
 		});
 		
 		/* set prompt texts */
-		tfSucheVorname.setPromptText("Vorname");
-		tfSucheNachname.setPromptText("Nachname");
-		tfSucheFirma.setPromptText("Firma");
-		vonDatePicker.setPromptText("Von");
-		bisDatePicker.setPromptText("Bis");
-		tfPreisVon.setPromptText("Von");
-		tfPreisBis.setPromptText("Bis");
-		tfKontaktName.setPromptText("Kontakt");
+		tfFirstName.setPromptText("Vorname");
+		tfLastName.setPromptText("Nachname");
+		tfFirm.setPromptText("Firma");
+		dpFrom.setPromptText("Von");
+		dpTill.setPromptText("Bis");
+		tfPriceFrom.setPromptText("Von");
+		tfPriceTill.setPromptText("Bis");
+		tfContact.setPromptText("Kontakt");
 	}
 	
 	/* GETTERs and SETTERs*/
@@ -168,19 +167,28 @@ public class MainController extends AbstractController {
 	}
 	
 	public void setTableKontaktSuche(ObservableList<Contact> kontakte) {
-		tableKontaktSuche.setItems(kontakte);
+		tableContacts.setItems(kontakte);
 	}
 	
 	public void setTableRechnungSuche(ObservableList<Invoice> rechnungen) {
-		tableRechnungSuche.setItems(rechnungen);
+		tableInvoices.setItems(rechnungen);
 	}
 	
-	public void initDatePickers(DatePicker fDatePicker, DatePicker tDatePicker) {
-		/* Add DatePickers to panes */
-		this.vonDatePicker = fDatePicker;
-		this.bisDatePicker = tDatePicker;
-		pDatumVon.getChildren().add(vonDatePicker);
-		pDatumBis.getChildren().add(bisDatePicker);
+	public void initDatePickers() {
+		/* Initialize and create the DatePickers */
+		dpFrom = new DatePicker(Locale.GERMAN);
+		dpFrom.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		dpFrom.getCalendarView().todayButtonTextProperty().set("Today");
+		dpFrom.getCalendarView().setShowWeeks(false);
+		dpFrom.getStylesheets().add("fxml/datepicker.css");
+		dpTill = new DatePicker(Locale.GERMAN);
+		dpTill.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		dpTill.getCalendarView().todayButtonTextProperty().set("Today");
+		dpTill.getCalendarView().setShowWeeks(false);
+		dpTill.getStylesheets().add("fxml/datepicker.css");
+
+		pDateFrom.getChildren().add(dpFrom);
+		pDateTill.getChildren().add(dpTill);
 	}
 
 	public Image getCheckMark() {
@@ -189,10 +197,6 @@ public class MainController extends AbstractController {
 
 	public Image getNoCheckMark() {
 		return noCheckMark;
-	}
-
-	public Image getBin() {
-		return bin;
 	}
 
 	public Image getEmptyImg() {

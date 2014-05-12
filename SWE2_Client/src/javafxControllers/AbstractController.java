@@ -1,4 +1,4 @@
-package applikation;
+package javafxControllers;
 
 import java.io.IOException;
 
@@ -10,7 +10,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafxControllers.ErrorController;
 
 public abstract class AbstractController implements Initializable {
 	private Stage stage;

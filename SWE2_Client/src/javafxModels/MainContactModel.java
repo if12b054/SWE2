@@ -25,7 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafxControllers.MainController;
 
-public class MainContactTabModel {
+public class MainContactModel {
 	
 	MainController controller;
 	
@@ -35,7 +35,7 @@ public class MainContactTabModel {
 	private StringProperty kFirma = new SimpleStringProperty();
 	private StringProperty kResultCount = new SimpleStringProperty();
 	
-	public MainContactTabModel(MainController controller) {
+	public MainContactModel(MainController controller) {
 		this.controller = controller;
 	}
 	

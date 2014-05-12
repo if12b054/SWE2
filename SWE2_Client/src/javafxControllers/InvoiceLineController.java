@@ -4,15 +4,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import proxy.Proxy;
 import ObserverPattern.Observer;
-import applikation.AbstractController;
 import businessobjects.AbstractObject;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.InvoiceLine;
-import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -22,12 +18,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.NumberStringConverter;
 import javafxModels.InvoiceLineModel;
 
 public class InvoiceLineController extends AbstractController implements Observer {
@@ -88,7 +81,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 		lblMWSt.setText(parent.getMWSt().toString());
 		cbArtikel.valueProperty().addListener(model.articleValueChanged);
 		cbMenge.valueProperty().addListener(model.quantityValueChanged);
-		lblMWSt.textProperty().addListener(model.salesTaxValueChanged);
+		lblMWSt.textProperty().addListener(model.taxValueChanged);
 	}
 	
 	@Override
@@ -108,6 +101,8 @@ public class InvoiceLineController extends AbstractController implements Observe
 		lblMWSt.setText(parent.getMWSt().toString());
 		lblBrutto.setText(Double.toString(invLineModel.getBrutto()));
 		lblStueckPreis.setText(Double.toString(invLineModel.getStueckPreis()));
+		
+		parent.register(this);
 	}
 	
 	/**
@@ -131,8 +126,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 		rechnungszeile = new InvoiceLine(
 				cbArtikel.getValue(), 
 				cbMenge.getValue(), 
-				Float.parseFloat(lblStueckPreis.getText()), 
-				Float.parseFloat(lblMWSt.getText()));
+				Double.parseDouble(lblMWSt.getText()));
 		
 		System.out.println("ID: " + this.existingID);
 		
@@ -153,7 +147,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 				i++;
 			}
 			parent.getRechnungszeilen().add(rechnungszeile);
-		}
+			}
 		
 		Stage stage = (Stage) btnSave.getScene().getWindow();
 		stage.close();

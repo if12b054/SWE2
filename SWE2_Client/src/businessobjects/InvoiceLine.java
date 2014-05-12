@@ -1,5 +1,6 @@
 package businessobjects;
 
+import ObserverPattern.Observer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
@@ -19,13 +20,13 @@ public class InvoiceLine extends AbstractObject {
 	
 	private double netto;
 	
-	public InvoiceLine(Article article, int newMenge, double newStueckPreis, double newMWSt) {
+	public InvoiceLine(Article article, int newMenge, double newMWSt) {
 		this.setArticle(article);
 		this.articleName.set(article.getName());
 		this.menge.set(newMenge);
-		this.stueckPreis.set(newStueckPreis);
-		netto = newMenge*newStueckPreis;
-		brutto.set(newMenge*newStueckPreis*(1+newMWSt));
+		this.stueckPreis.set(article.getPrice());
+		netto = Math.round(article.getPrice()*menge.get()*100.0)/100.0;
+		brutto.set(Math.round((article.getPrice()*menge.get()*(newMWSt+1))*100.0)/100.0);
 	}
 	
 	public final StringProperty articleNameProperty() {
@@ -42,6 +43,12 @@ public class InvoiceLine extends AbstractObject {
 	
 	public final IntegerProperty mengeProperty() {
 		return menge;
+	}
+	
+	/* getters and setters */
+	
+	public void updateMWSt(double newMWSt) {
+		brutto.set(Math.round((article.getPrice()*menge.get()*(newMWSt+1))*100.0)/100.0);
 	}
 	
 	public final String getArtikel() {

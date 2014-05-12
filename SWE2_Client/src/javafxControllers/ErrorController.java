@@ -3,7 +3,6 @@ package javafxControllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import applikation.AbstractController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -1,6 +1,7 @@
 package javafxModels;
 
 import businessobjects.Article;
+import businessobjects.InvoiceLine;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -18,17 +19,14 @@ public class InvoiceLineModel {
 	private StringProperty brutto = new SimpleStringProperty();
 	private StringProperty unitPrice = new SimpleStringProperty();
 	
+	private InvoiceLine invoiceLine;
+	
 	public ChangeListener<Article> articleValueChanged = new ChangeListener<Article>()
 	{
 	    @Override
 	    public void changed(ObservableValue<? extends Article> arg0, Article oldArticle, Article newArticle)
 	    {
-	    	double newNetto = Math.round(newArticle.getPrice()*quantity.get()*100.0)/100.0;
-	    	double newBrutto = Math.round((newArticle.getPrice()*quantity.get()*(Double.parseDouble(salesTax.get())+1))*100.0)/100.0;
-	    	unitPrice.set(Double.toString(newArticle.getPrice()));
-	    	netto.set(Double.toString(newNetto));
-	    	brutto.set(Double.toString(newBrutto));
-	    	System.out.println("Values changing");
+	    	updateValues();
 	    }
 	};
 	
@@ -37,28 +35,28 @@ public class InvoiceLineModel {
 	    @Override
 	    public void changed(ObservableValue<? extends Integer> arg0, Integer oldQuantity, Integer newQuantity)
 	    {
-	    	double newNetto = Math.round(article.get().getPrice()*newQuantity*100.0)/100.0;
-	    	double newBrutto = Math.round((article.get().getPrice()*newQuantity*(Double.parseDouble(salesTax.get())+1))*100.0)/100.0;
-	    	unitPrice.set(Double.toString(article.get().getPrice()));
-	    	netto.set(Double.toString(newNetto));
-	    	brutto.set(Double.toString(newBrutto));
-	    	System.out.println("Values changing");
+	    	updateValues();
 	    }
 	};
 	
-	public ChangeListener<String> salesTaxValueChanged = new ChangeListener<String>()
+	public ChangeListener<String> taxValueChanged = new ChangeListener<String>()
 	{
 	    @Override
 	    public void changed(ObservableValue<? extends String> arg0, String oldSalesTax, String newSalesTax)
 	    {
-	    	double newNetto = Math.round(article.get().getPrice()*quantity.get()*100.0)/100.0;
-	    	double newBrutto = Math.round((article.get().getPrice()*quantity.get()*(Double.parseDouble(newSalesTax)+1))*100.0)/100.0;
-	    	unitPrice.set(Double.toString(article.get().getPrice()));
-	    	netto.set(Double.toString(newNetto));
-	    	brutto.set(Double.toString(newBrutto));
-	    	System.out.println("Values changing");
+	    	updateValues();
 	    }
 	};
+	
+	private void updateValues() {
+		invoiceLine = new InvoiceLine(article.get(), quantity.get().intValue(), Double.parseDouble(salesTax.get()));
+		double newNetto = Math.round(article.get().getPrice()*quantity.get()*100.0)/100.0;
+    	double newBrutto = Math.round((article.get().getPrice()*quantity.get()*(Double.parseDouble(salesTax.get())+1))*100.0)/100.0;
+    	unitPrice.set(Double.toString(invoiceLine.getStueckPreis()));
+    	netto.set(Double.toString(invoiceLine.getNetto()));
+    	brutto.set(Double.toString(invoiceLine.getBrutto()));
+    	System.out.println("Values changing");
+	}
 	
 	public ObjectProperty<Article> articleProperty() {
 		return article;

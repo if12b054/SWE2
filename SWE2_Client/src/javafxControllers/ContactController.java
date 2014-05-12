@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import proxy.Proxy;
-import applikation.AbstractController;
 import applikation.InputChecks;
 import businessobjects.AbstractObject;
 import businessobjects.Article;
