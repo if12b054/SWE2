@@ -48,7 +48,7 @@ public class InvoiceLineModel {
 	    }
 	};
 	
-	private void updateValues() {
+	public void updateValues() {
 		invoiceLine = new InvoiceLine(article.get(), quantity.get().intValue(), Double.parseDouble(salesTax.get()));
 		double newNetto = Math.round(article.get().getPrice()*quantity.get()*100.0)/100.0;
     	double newBrutto = Math.round((article.get().getPrice()*quantity.get()*(Double.parseDouble(salesTax.get())+1))*100.0)/100.0;
@@ -80,5 +80,9 @@ public class InvoiceLineModel {
 	
 	public StringProperty unitPriceProperty() {
 		return unitPrice;
+	}
+	
+	public InvoiceLine getInvoiceLine() {
+		return invoiceLine;
 	}
 }

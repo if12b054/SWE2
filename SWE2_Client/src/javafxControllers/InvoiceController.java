@@ -3,41 +3,23 @@ package javafxControllers;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import proxy.Proxy;
 import eu.schudt.javafx.controls.calendar.DatePicker;
-import ObserverPattern.Observer;
-import ObserverPattern.Subject;
 import businessobjects.AbstractObject;
-import businessobjects.Article;
-import businessobjects.Contact;
-import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafxModels.InvoiceModel;
+import javafxControllerFunctions.InvoiceModel;
 
 /**
  * Controller for creating new or viewing old recites, gets created, if user clicks
@@ -47,78 +29,55 @@ import javafxModels.InvoiceModel;
  * @author Victor
  *
  */
-public class InvoiceController extends AbstractController implements Subject {
+public class InvoiceController extends AbstractController {
 	public MainController parent;
-	private InvoiceModel model = new InvoiceModel();
-	private ArrayList<Observer> MWStList = new ArrayList<Observer>(); //List which gets affected if MWSt ComboBox changes values
 	
-	private ObservableList<InvoiceLine> invLines = FXCollections.observableArrayList();
-	private int invLineCount = 0;
+	private InvoiceModel model = new InvoiceModel(this);
 	
-	@FXML private Button btnSave, btnAdd, btnFind;
 	@FXML private Pane pFaelligkeit;
 	@FXML private TextField tfKunde;
 	@FXML private TextArea taMessage, taComment;
 	@FXML private TableView<InvoiceLine> tableRechnungszeilen;
-	@FXML private ImageView imgRechKundeInput, imgRechnKundeDelete;
+	@FXML private ImageView imgRechKundeInput;
 	@FXML private ComboBox<String> cbMWSt;
 	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
 	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
-	private DatePicker fDatePicker;
+	private DatePicker dpDeadLine;
 	
 	
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
-		model.setController(this);
+		/* initialize DatePicker*/
+		dpDeadLine = new DatePicker(Locale.GERMAN);
+		dpDeadLine.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		dpDeadLine.getCalendarView().todayButtonTextProperty().set("Today");
+		dpDeadLine.getCalendarView().setShowWeeks(false);
+		dpDeadLine.getStylesheets().add("fxml/datepicker.css");
+		pFaelligkeit.getChildren().add(dpDeadLine);
 		
-		/* bidirectional bind to model */
+		/* bidirectional bind to functions */
 		cbMWSt.valueProperty().bindBidirectional(model.MWStProperty());
 		tfKunde.textProperty().bindBidirectional(model.contactProperty());
 		taMessage.textProperty().bindBidirectional(model.messageProperty());
 		taComment.textProperty().bindBidirectional(model.commentProperty());
 		tfRStrasse.textProperty().bindBidirectional(model.invStreetProperty());
-		tfROrt.textProperty().bindBidirectional(model.invStreetProperty());
+		tfROrt.textProperty().bindBidirectional(model.invCityProperty());
 		tfRPLZ.textProperty().bindBidirectional(model.invPLZProperty());
 		tfRLand.textProperty().bindBidirectional(model.invCountryProperty());
 		tfLStrasse.textProperty().bindBidirectional(model.delStreetProperty());
-		tfLOrt.textProperty().bindBidirectional(model.delStreetProperty());
+		tfLOrt.textProperty().bindBidirectional(model.delCityProperty());
 		tfLPLZ.textProperty().bindBidirectional(model.delPLZProperty());
 		tfLLand.textProperty().bindBidirectional(model.delCountryProperty());
-		
-		/* initialize DatePicker*/
-		fDatePicker = new DatePicker(Locale.GERMAN);
-		fDatePicker.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-		fDatePicker.getCalendarView().todayButtonTextProperty().set("Today");
-		fDatePicker.getCalendarView().setShowWeeks(false);
-		fDatePicker.getStylesheets().add("fxml/datepicker.css");
-		pFaelligkeit.getChildren().add(fDatePicker);
+		dpDeadLine.selectedDateProperty().bindBidirectional(model.tillDateProperty());
 		
 		/* on double click on table entry open that entry in new InvoiceLineView */
-		tableRechnungszeilen.setOnMouseClicked(new EventHandler<MouseEvent>() {
-		    @Override
-		    public void handle(MouseEvent mouseEvent) {
-		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-		            if(mouseEvent.getClickCount() == 2){
-		                InvoiceLine rZeile = (InvoiceLine) tableRechnungszeilen.getSelectionModel().getSelectedItem();
-		                if(rZeile != null) {
-		                	showNewDialog("/fxml/InvoiceLineView.fxml", InvoiceController.this, rZeile);
-		                }
-		            }
-		        }
-		    }
-		});
+		tableRechnungszeilen.setOnMouseClicked(model.handleDoubleClick);
 		
 		/* initialize MWSt */
 		cbMWSt.setEditable(true);
 		cbMWSt.getItems().setAll("0.15","0.17","0.19","0.21","0.23","0.25");
 		cbMWSt.getSelectionModel().selectFirst();
-		cbMWSt.getEditor().textProperty().addListener( new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				notifyObserver();
-			}
-		});
+		cbMWSt.getEditor().textProperty().addListener(model.updateObservers);
 	}
 	
 	/**
@@ -127,81 +86,55 @@ public class InvoiceController extends AbstractController implements Subject {
 	 * @param event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		if(fDatePicker.getSelectedDate() == null || fDatePicker.invalidProperty().get()) {
-			showErrorDialog("/fxml/ErrorView.fxml", "Enter a proper date using this format: 2000-01-01");
-		} else {
-			if(!model.errorsFound()) {
-				model.createInvoice(fDatePicker.getSelectedDate());
-			}
-		}
+		model.save();
 	}
 	
-	@FXML private void openRechZeile(ActionEvent event) throws IOException {	
-		invLineCount++;
-		InvoiceLineController invLineWindow = (InvoiceLineController)showNewDialog("/fxml/InvoiceLineView.fxml", this, null); //need to change
-		invLineWindow.setOnClose();
-		register(invLineWindow);
+	/**
+	 * exit application on hyperlink-click, first close all InvoiceLineControllers,
+	 * then clos InvoiceController
+	 * @param event
+	 */
+	@FXML protected void doExit(ActionEvent event) {
+		model.exit();
 	}
 	
-	public void addRechnungszeileToTable(InvoiceLine rechnungszeile) {
-		invLines.add(rechnungszeile);
-		tableRechnungszeilen.setItems(invLines);
+	@FXML private void doOpenInvoiceLine(ActionEvent event) throws IOException {	
+		model.openInvoiceLine();
+	}
+	
+	@FXML private void doClear(ActionEvent event) {	
+		model.clear();
+	}
+	
+	@FXML private void doFindContact(ActionEvent event) {	
+		model.findContact();
 	}
 	
 	@Override
 	public void setParent(AbstractController parent) {
 		this.parent = (MainController) parent;
+		
+		this.getStage().onHiddenProperty().set(model.controllerClosing); //needs to be done here because stage is null in initialize...
 	}
 	
-	public Double getMWSt() {
-		return Double.parseDouble(this.cbMWSt.getValue());
+	@Override
+	public void loadModel(AbstractObject object) {
+		model.loadModel(object);
 	}
 	
 	public MainController getParent() {
 		return this.parent;
 	}
 	
-	public ObservableList<InvoiceLine> getRechnungszeilen() {
-		return invLines;
+	public void addInvoiceLineItems(ObservableList<InvoiceLine> newInvoiceLines) {
+		tableRechnungszeilen.setItems(newInvoiceLines);
 	}
 	
-	@Override
-	public void loadModel(AbstractObject model) {
-		Invoice rModel = (Invoice) model;
-		//TODO set fields here
-		//disable most fields
-	}
-
-	@Override
-	public void register(Observer o) {
-		MWStList.add(o);
-	}
-
-	@Override
-	public void unregister(Observer o) {
-		MWStList.remove(o);
-	}
-
-	@Override
-	public void notifyObserver() {
-		for(Observer o : MWStList)
-		{
-			o.update();
-		}
-		for(InvoiceLine i : tableRechnungszeilen.getItems()) {
-			i.updateMWSt(Double.parseDouble(cbMWSt.getValue()));
-		}
+	public InvoiceLine getSelectedInvoiceLine() {
+		return tableRechnungszeilen.getSelectionModel().getSelectedItem();
 	}
 	
-	public int getrZeileCount() {
-		return invLineCount;
-	}
-
-	public void setrZeileCount(int rZeileCount) {
-		this.invLineCount = rZeileCount;
-	}
-	
-	public ArrayList<Observer> getMWStList() {
-		return MWStList;
+	public InvoiceModel getFunctions() {
+		return model;
 	}
 }

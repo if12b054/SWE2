@@ -24,17 +24,18 @@ import javafx.util.Callback;
 import javafxModels.InvoiceLineModel;
 
 public class InvoiceLineController extends AbstractController implements Observer {
-	private InvoiceController parent;
-	private int existingID = -1; //if recite-line gets edited
-	@FXML private ComboBox<Article> cbArtikel;
-	@FXML private ComboBox<Integer> cbMenge;
-	@FXML private Label lblNetto, lblMWSt, lblBrutto, lblStueckPreis;
-	@FXML private Button btnSave;
+	protected InvoiceController parent;
+	protected int existingID = -1; //if recite-line gets edited
+	@FXML protected ComboBox<Article> cbArtikel;
+	@FXML protected ComboBox<Integer> cbMenge;
+	@FXML protected Label lblNetto, lblMWSt, lblBrutto, lblStueckPreis;
 	
-	InvoiceLine rechnungszeile;
-	private ObservableList<Article> articles;
-	InvoiceLineModel model = new InvoiceLineModel();
+	protected ObservableList<Article> articles;
+	protected InvoiceLineModel model = new InvoiceLineModel();
 	
+	/** 
+	 * bindings created here 
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {	
 		cbArtikel.valueProperty().bindBidirectional(model.articleProperty());
@@ -48,10 +49,56 @@ public class InvoiceLineController extends AbstractController implements Observe
 		cbMenge.getSelectionModel().selectFirst();
 	}
 	
+	@Override
+	public void loadModel(AbstractObject model) {
+		InvoiceLine invLineModel = (InvoiceLine) model;
+		
+		existingID = invLineModel.getIdNumber();
+		cbArtikel.setValue(invLineModel.getArticle());
+		cbMenge.setValue(invLineModel.getMenge());
+		lblNetto.setText(Double.toString(invLineModel.getNetto()));
+		lblMWSt.setText(parent.getFunctions().getMWSt().toString());
+		lblBrutto.setText(Double.toString(invLineModel.getBrutto()));
+		lblStueckPreis.setText(Double.toString(invLineModel.getStueckPreis()));
+		
+		parent.getFunctions().register(this);
+	}
+	
+	@Override
+	public void setParent(AbstractController newParent) {
+		parent = (InvoiceController) newParent;
+		customInitialize();
+	}
+	
 	/**
-	 * initialize all the elements, which need the parent connection
+	 * exit application on hyperlink-click, first remove from MWStList
+	 * (ObserverList) then close stage
+	 * @param event
+	 */
+	@FXML protected void doExit(ActionEvent event) {
+		close();
+	}
+	
+	public void close() {
+		//parent.getFunctions().getMWStList().remove(this);
+		Stage stage = this.getStage();
+		stage.close();
+	}
+	
+	/**
+	 * delete the current InvoiceLine
+	 * @param event
+	 */
+	@FXML protected void doDelete(ActionEvent event) {
+		
+	}
+	
+	/**
+	 * initialize all the elements, which need the parent connection and if necessary
+	 * also the listeners
 	 */
 	public void customInitialize() {
+		parent.getFunctions().register(this);
 		/* get articles from db and set them, so only article-name gets displayed */
 		articles = parent.getParent().getProxy().getArticles();
 		cbArtikel.getItems().addAll(articles);
@@ -73,36 +120,14 @@ public class InvoiceLineController extends AbstractController implements Observe
                             setText(null);
                         }
                     }
-  
                 };
                 return cell;
             }
         });
-		lblMWSt.setText(parent.getMWSt().toString());
+		lblMWSt.setText(parent.getFunctions().getMWSt().toString());
 		cbArtikel.valueProperty().addListener(model.articleValueChanged);
 		cbMenge.valueProperty().addListener(model.quantityValueChanged);
 		lblMWSt.textProperty().addListener(model.taxValueChanged);
-	}
-	
-	@Override
-	public void setParent(AbstractController newParent) {
-		parent = (InvoiceController) newParent;
-		customInitialize();
-	}
-	
-	@Override
-	public void loadModel(AbstractObject model) {
-		InvoiceLine invLineModel = (InvoiceLine) model;
-		
-		existingID = invLineModel.getIdNumber();
-		cbArtikel.setValue(invLineModel.getArticle());
-		cbMenge.setValue(invLineModel.getMenge());
-		lblNetto.setText(Double.toString(invLineModel.getNetto()));
-		lblMWSt.setText(parent.getMWSt().toString());
-		lblBrutto.setText(Double.toString(invLineModel.getBrutto()));
-		lblStueckPreis.setText(Double.toString(invLineModel.getStueckPreis()));
-		
-		parent.register(this);
 	}
 	
 	/**
@@ -110,53 +135,47 @@ public class InvoiceLineController extends AbstractController implements Observe
 	 * it gets unregistered from observerlist
 	 */
 	public void setOnClose() {
-		Stage stage = this.getStage();
 		this.getStage().setOnHiding(new EventHandler<WindowEvent>() {
 		      public void handle(WindowEvent event) {
-		        parent.unregister(InvoiceLineController.this);
+		        parent.getFunctions().unregister(InvoiceLineController.this);
 		      }
 		});
 	}
 	
 	/**
-	 * On button click "
+	 * On button click
 	 * @param event
 	 */
-	@FXML private void doSave(ActionEvent event) {
-		rechnungszeile = new InvoiceLine(
-				cbArtikel.getValue(), 
-				cbMenge.getValue(), 
-				Double.parseDouble(lblMWSt.getText()));
+	@FXML protected void doSave(ActionEvent event) {
+		/* get invoiceLine object from model */
+		model.updateValues();
+		InvoiceLine invoiceLine = model.getInvoiceLine();
 		
-		System.out.println("ID: " + this.existingID);
-		
-		/* is a new recite-line */
+		/* is a new invoice-line */
 		if(existingID == -1) {
-			rechnungszeile.setIdNumber(parent.getrZeileCount());
-			parent.addRechnungszeileToTable(rechnungszeile);
+			invoiceLine.setIdNumber(parent.getFunctions().getInvoiceLineCount());
+			parent.getFunctions().addInvoiceLineToTable(invoiceLine);
 		}
-		/* recite-line already exists */
+		/* invoice-line already exists */
 		else {
 			int i = 0;
-			for(InvoiceLine r : parent.getRechnungszeilen()) {
+			for(InvoiceLine r : parent.getFunctions().getInvoiceLines()) {
 				if(r.getIdNumber() == existingID) {
-					rechnungszeile.setIdNumber(existingID);
-					parent.getRechnungszeilen().remove(i);
+					invoiceLine.setIdNumber(existingID);
+					parent.getFunctions().getInvoiceLines().remove(i);
 					break;
 				}
 				i++;
 			}
-			parent.getRechnungszeilen().add(rechnungszeile);
-			}
-		
-		Stage stage = (Stage) btnSave.getScene().getWindow();
+			parent.getFunctions().getInvoiceLines().add(invoiceLine);
+		}
+		Stage stage = (Stage) cbArtikel.getScene().getWindow();
 		stage.close();
-		
 	}
 
 	@Override
 	public void update() {
-		String newMWSt = Double.toString(parent.getMWSt());
+		String newMWSt = Double.toString(parent.getFunctions().getMWSt());
 		this.lblMWSt.setText(newMWSt);
 	}
 }

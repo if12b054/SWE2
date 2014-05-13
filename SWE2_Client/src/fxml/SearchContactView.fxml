@@ -8,7 +8,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="465.0000999999975" prefWidth="419.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="javafxControllers.MainController">
+<AnchorPane prefHeight="465.0000999999975" prefWidth="419.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="javafxControllers.ContactSearchController">
   <!-- TODO Add Nodes -->
   <children>
     <SplitPane dividerPositions="0.2829373039012318" focusTraversable="true" orientation="VERTICAL" prefHeight="589.0" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -20,9 +20,9 @@
                 <Label text="Vorname" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <Label text="Nachname" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <Label text="Firma" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <TextField id="tfNachname" fx:id="tfSucheVorname" prefWidth="82.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                <TextField id="tfVorname" fx:id="tfSucheNachname" prefWidth="82.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <TextField id="tfFirma" fx:id="tfSucheFirma" prefWidth="82.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField id="tfNachname" fx:id="tfFirstName" prefWidth="82.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <TextField id="tfVorname" fx:id="tfLastName" prefWidth="82.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField id="tfFirma" fx:id="tfFirm" prefWidth="82.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
               </children>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="76.0" />
@@ -43,7 +43,7 @@
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="385.0" prefWidth="475.0">
           <children>
-            <TableView fx:id="tableKontaktSuche" layoutX="14.0" layoutY="40.0" prefHeight="275.9998779296875" prefWidth="390.0">
+            <TableView id="tableKontaktSuche" fx:id="tableContacts" layoutX="14.0" layoutY="40.0" prefHeight="275.9998779296875" prefWidth="390.0">
               <columns>
                 <TableColumn text="Typ">
                   <cellValueFactory>
@@ -68,6 +68,8 @@
               </columns>
             </TableView>
             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Ergebnisse" />
+            <Button id="btn" fx:id="btnNewContact" layoutX="353.0" layoutY="9.0" mnemonicParsing="false" onAction="#doNewContact" prefWidth="51.0" text="Neu" />
+            <Label id="lblKontaktCount" fx:id="lblContactCount" layoutX="90.0" layoutY="14.0" prefWidth="27.0" text="0" />
           </children>
         </AnchorPane>
       </items>

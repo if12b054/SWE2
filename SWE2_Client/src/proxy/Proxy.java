@@ -17,6 +17,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import applikation.Parameter;
+import applikation.Utils;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
@@ -25,14 +26,29 @@ import businessobjects.InvoiceLine;
 public class Proxy {
 	
 	/**
-	 * Sends an Request to the server, to check if the id is a firm or a person
-	 * e.g. Needed for quick checking, when user enters name in Firm-Field to reference a firm in a Contact
-	 * NO ERROR CHECKING, id needs to be correct
+	 * Happens on Enter in reference field for firm in ContactController
 	 * @param 	id	an id in the contacts table
 	 * @return 		if is a firm or a person, true if firm
 	 */
-	public boolean isFirma(String firma) {
-		return true;
+	public ArrayList<Contact> findFirm(String firm) {
+		if(Utils.isInteger(firm)) {
+			//search just for id
+		} else {
+			//search for firm name
+		}
+		Contact contact = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
+		ArrayList<Contact> contacts = new ArrayList<Contact>();
+		contacts.add(contact);
+		
+		return contacts;
+	}
+	
+	public ArrayList<Contact> findContact(String firstName, String lastName, String firm) {
+		Contact contact = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
+		ArrayList<Contact> contacts = new ArrayList<Contact>();
+		contacts.add(contact);
+		
+		return contacts;
 	}
 	
 	

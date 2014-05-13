@@ -25,8 +25,8 @@ public abstract class AbstractController implements Initializable {
 			e.printStackTrace();
 		}
 		AbstractController controller = loader.getController();
-		controller.setParent(parent);
 		controller.setStage(stage);
+		controller.setParent(parent);
 		if(model != null) {
 			controller.loadModel(model);
 		}

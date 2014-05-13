@@ -22,6 +22,7 @@ public class Contact extends AbstractObject{
 	private String uid;
 	
 	/* Beide */
+	private int id = -1; //db id
 	private StringProperty firma = new SimpleStringProperty();
 	
 	/* für Adressen: [0] = Strasse, [1] = PLZ, [2] = Ort, [3] = Land */
@@ -114,5 +115,13 @@ public class Contact extends AbstractObject{
 
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class InvoiceLine extends AbstractObject {
-	private int idNumber = -1;
+	private int idNumber = -1; //just for GUI-updating purposes, not for DB!
 	private IntegerProperty menge = new SimpleIntegerProperty();
 	private DoubleProperty stueckPreis = new SimpleDoubleProperty();
 	private DoubleProperty brutto = new SimpleDoubleProperty();

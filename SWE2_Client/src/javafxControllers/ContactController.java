@@ -14,6 +14,7 @@ import businessobjects.InvoiceLine;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -22,6 +23,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafxModels.ContactModel;
@@ -31,6 +34,8 @@ import javafxModels.ContactModel;
  *
  */
 public class ContactController extends AbstractController {
+	public final String SEARCH_CONTACT_PATH = "/fxml/SearchContactView.fxml";
+	
 	@FXML private Button btnKontakte, btnKontakteSuche, btnDelete;
 	@FXML private TextField tfTitel, tfVname, tfNname, tfGebdatum, tfFirma;
 	@FXML private TextField tfFname, tfUID;
@@ -42,6 +47,7 @@ public class ContactController extends AbstractController {
 	@FXML private Pane personPane;
 	
 	private ContactModel model = new ContactModel();
+	private Contact firmReference;
 	private MainController parent;
 	
 	@Override
@@ -66,7 +72,7 @@ public class ContactController extends AbstractController {
 		firmaPane.disableProperty().bind(model.disableEditFirmaBinding());
 		
 		/* if firma-field becomes unfocused -> validate firm */
-		tfFirma.focusedProperty().addListener(isFirma);
+		tfFirma.addEventHandler(KeyEvent.KEY_PRESSED, isFirma);
 	}
 	
 	/**
@@ -129,22 +135,25 @@ public class ContactController extends AbstractController {
 	 * correct(checked with server) = check mark
 	 * false(checked with server) = cross mark
 	 */
-	private ChangeListener<Boolean> isFirma = new ChangeListener<Boolean>()
+	private EventHandler<KeyEvent> isFirma = new EventHandler<KeyEvent>()
 	{
 	    @Override
-	    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-	    {
-	    	if (!newPropertyValue)
+	    public void handle(KeyEvent event) {
+			if (event.getCode() == KeyCode.ENTER)
 	        {
-	        	if(tfFirma.getText() == null || tfFirma.getText().isEmpty()) {
-	        		setFirmaFoundImg(getParent().getEmptyImg());
-	        	}
-	        	else if(getParent().getProxy().isFirma(tfFirma.getText())) {
-	        		setFirmaFoundImg(getParent().getCheckMark());
-	        	}
-	        	else {
-	        		setFirmaFoundImg(getParent().getNoCheckMark());
-	        	}
+				ArrayList<Contact> results = getParent().getProxy().findFirm(tfFirma.getText());
+				if(results.size() == 1) {
+					firmReference = results.get(0);
+					setFirmaFoundImg(getParent().getCheckMark());
+				}
+				else if(results.size() == 0) {
+					firmReference = results.get(0);
+					setFirmaFoundImg(getParent().getNoCheckMark());
+				}
+				else {
+					setFirmaFoundImg(getParent().getEmptyImg());
+					showNewDialog(SEARCH_CONTACT_PATH, ContactController.this, null);
+				}
 	        }
 	    }
 	};

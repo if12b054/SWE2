@@ -54,16 +54,16 @@ import javafxModels.MainContactModel;
 import javafxModels.MainInvoiceModel;
 
 public class MainController extends AbstractController {
+	public final String INVOICE_PATH = "/fxml/InvoiceView.fxml";
+	public final String CONTACT_PATH = "/fxml/ContactView.fxml";
 	
 	/* "Kontakte/Suche" Page: */
 	@FXML private Label lblContactCount;
 	@FXML private TextField tfFirstName, tfLastName, tfFirm;
 	@FXML private TableView<Contact> tableContacts;
-	@FXML private Button btnNewContact;
 	
 	/* "Rechnungen/Suche" Page: */
 	@FXML private Label lblInvoiceCount;
-	@FXML private Button btnFindContact, btnNewInvoice;
 	@FXML private TextField tfPriceFrom, tfPriceTill, tfContact;
 	@FXML private ImageView imgContactValid;
 	@FXML private TableView<Invoice> tableInvoices;
@@ -85,7 +85,7 @@ public class MainController extends AbstractController {
 	 * @throws IOException
 	 */
 	@FXML private void doNewContact(ActionEvent event) throws IOException {
-		showNewDialog("/fxml/ContactView.fxml", this, null);
+		showNewDialog(CONTACT_PATH, this, null);
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public class MainController extends AbstractController {
 	 * @throws IOException
 	 */
 	@FXML private void doNewInvoice(ActionEvent event) throws IOException {
-		showNewDialog("/fxml/InvoiceView.fxml", this, null);
+		showNewDialog(INVOICE_PATH, this, null);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class MainController extends AbstractController {
 		                Contact kontakt = (Contact) tableContacts.getSelectionModel().getSelectedItem();
 		                if(kontakt != null) {
 		                	System.out.println("KONTAKT: " + kontakt.getNachname());
-		                	showNewDialog("/fxml/ContactView.fxml", MainController.this, kontakt);
+		                	showNewDialog(CONTACT_PATH, MainController.this, kontakt);
 		                }
 		            }
 		        }
