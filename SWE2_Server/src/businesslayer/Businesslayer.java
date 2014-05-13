@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import javafx.collections.ObservableList;
 import applikation.Parameter;
+import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
@@ -18,16 +19,20 @@ public class Businesslayer {
 		d.insertKontakt(k);
 	}
 	
+	public void insertRechnung(Invoice r) throws SQLException {
+		d.insertRechnung(r);
+	}
+	
 	public ObservableList<Contact> searchContact(Vector<Parameter> parms) {
 		return d.searchContact(parms);
 	}
 
-	public ArrayList<InvoiceLine> searchRechnung() {
-		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
-		
-		searchAll = d.searchRechnung();
-		
-		return searchAll;
+	public ArrayList<InvoiceLine> searchRechnung(Vector<Parameter> parms) {
+		return d.searchRechnung(parms);
+	}
+
+	public ObservableList<Article> getArticles() throws SQLException {
+		return d.getArticles();
 	}
 
 }

@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import applikation.Parameter;
 import businesslayer.Businesslayer;
+import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
@@ -30,6 +31,8 @@ public class Handler implements Runnable{
 	private String _requestHeader = "";
 	private String _requestLine = "";
 	private String _xml;
+	private Vector<Parameter> parms;
+	private String xml;
 	
 	public Handler(Socket client) {
 	 	this.client = client;
@@ -37,7 +40,6 @@ public class Handler implements Runnable{
 	
 	@Override
 	public void run() {
-		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
 		try {
 			
 			readMessage(client);
@@ -62,13 +64,14 @@ public class Handler implements Runnable{
 					}
 				}
 				break;
-			case "/search/Rechnung":
-				//ToDo: Wonach suchen, Roman? Parameter parsen, dude! Und dann mitgeben der searchRechnung methode...
-				searchAll = b.searchRechnung();
+			case "search/Rechnung":
+				ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
+				parms = deserializeVector(_xml);
+				//rechnungen = b.searchRechnung(parms);
 				break;
 			case "search/Kontakt":
 				ObservableList<Contact> kontakte = FXCollections.observableArrayList();
-				Vector<Parameter> parms = deserializeVector(_xml);
+				parms = deserializeVector(_xml);
 				
 				kontakte = b.searchContact(parms);
 				
@@ -80,10 +83,36 @@ public class Handler implements Runnable{
 				String xml = serializeKontaktSearch(kontakte);
 				sendMessage(xml,client);
 				client.close();
+				break;
+			case "insert/Rechnung":
+				if(_xml != null) {
+					Invoice r = deserializeRechnung(_xml);			
+					try {
+						b.insertRechnung(r);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				break;
+			case "get/Artikel":
+				ObservableList<Article> articles = FXCollections.observableArrayList();
+				articles = b.getArticles();
 				
+				for(int i=0; i<articles.size(); i++){
+					System.out.println("gefunden: " + articles.get(i).getName());
+					System.out.println("gefunden: " + articles.get(i).getPrice());
+				}
+				
+				xml = serializeGetArticle(articles);
+				sendMessage(xml,client);
+				client.close();
+				
+				break;
 			}
 			
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -162,6 +191,21 @@ public class Handler implements Runnable{
 		String[] splitArray;
 		splitArray = head.split(" ");
 		return splitArray[3];
+	}
+	
+	public Invoice deserializeRechnung(String xml) {
+		XStream xstream = new XStream();
+		xstream.processAnnotations(Invoice.class);
+		Invoice r = (Invoice)xstream.fromXML(xml);
+		return r;
+	}
+	
+	public String serializeGetArticle(ObservableList<Article> a) {
+		XStream xstream = new XStream(new DomDriver());
+		xstream.processAnnotations(Article.class);
+		//xstream.alias("kontakt", Kontakt.class);
+		String xml = xstream.toXML(a);
+		return xml;
 	}
 }
 

@@ -11,17 +11,41 @@ import java.util.Vector;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import applikation.Parameter;
+import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
 
 public class Dataaccesslayer {
 	
-	final String PCName = "ULTRABOOK\\SQLEXPRESS";
+	final String PCName = "Schlepptop\\SQLEXPRESS";
 	
 	public void insertKontakt(Contact k) throws SQLException {
 		Connection conn = connectDB("ErpDB");
+		/*
+		 * ResultSet rs1;
+		ResultSet rs2;
+		DatabaseMetaData meta = conn.getMetaData();
 		
+		String sql1 = "INSERT INTO Adresse(Straﬂe,PLZ,Ort,Land) VALUES (?,?,?,?)";
+		cmd = conn.prepareStatement(sql1);
+		cmd.setString(1, k.getAdresse().get(0));
+		cmd.setInt(2, Integer.parseInt(k.getAdresse().get(1)));
+		cmd.setString(3, k.getAdresse().get(2));
+		cmd.setString(4, k.getAdresse().get(3));
+		
+		String sql2 = "SELECT COUNT(*) FROM Adresse";
+		cmd = conn.prepareStatement(sql2);
+		rs1 = cmd.executeQuery();
+		
+		int rowCount = rs1.getInt(1);
+		
+		rs2 = meta.getPrimaryKeys(null, null,"Adresse");
+		
+		int lastEntryID = rs2.getInt(rowCount);
+		 * 
+		 * 
+		 * */
 		
 		PreparedStatement cmd;
 		if(k.typProperty().getValue().equals("Person")) {
@@ -45,6 +69,11 @@ public class Dataaccesslayer {
 		}
 		
 		cmd.execute();
+		
+	}
+	
+	public void insertRechnung(Invoice r) {
+		Connection conn = connectDB("ErpDB");
 		
 	}
 	
@@ -161,7 +190,7 @@ public class Dataaccesslayer {
 		return null;
 	}
 
-	public ArrayList<InvoiceLine> searchRechnung() {
+	public ArrayList<InvoiceLine> searchRechnung(Vector<Parameter> parms) {
 		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
 		Connection conn = connectDB("ErpDB");
 		ResultSet rd;
@@ -180,5 +209,27 @@ public class Dataaccesslayer {
 			e.printStackTrace();
 		}
 		return searchAll;
+	}
+
+	public ObservableList<Article> getArticles() throws SQLException {
+		ObservableList<Article> articles = FXCollections.observableArrayList();
+		Connection conn = connectDB("ErpDB");
+		ResultSet rs = null;
+		
+		String sql = "SELECT * FROM Artikel";
+		PreparedStatement cmd;
+		try {
+			cmd = conn.prepareStatement(sql);
+			rs = cmd.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		while(rs.next()) {
+			Article a = new Article(rs.getInt("ID"), rs.getString("Bezeichnung"), rs.getDouble("PreisNetto"));
+			articles.add(a);
+		}
+
+		return articles;
 	}
 }
