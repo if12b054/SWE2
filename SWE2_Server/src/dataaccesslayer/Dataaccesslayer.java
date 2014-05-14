@@ -1,10 +1,12 @@
 package dataaccesslayer;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -22,31 +24,20 @@ public class Dataaccesslayer {
 	
 	public void insertKontakt(Contact k) throws SQLException {
 		Connection conn = connectDB("ErpDB");
-		/*
-		 * ResultSet rs1;
-		ResultSet rs2;
-		DatabaseMetaData meta = conn.getMetaData();
+		ResultSet rs1 = null;
 		
 		String sql1 = "INSERT INTO Adresse(Straﬂe,PLZ,Ort,Land) VALUES (?,?,?,?)";
-		cmd = conn.prepareStatement(sql1);
-		cmd.setString(1, k.getAdresse().get(0));
-		cmd.setInt(2, Integer.parseInt(k.getAdresse().get(1)));
-		cmd.setString(3, k.getAdresse().get(2));
-		cmd.setString(4, k.getAdresse().get(3));
+		PreparedStatement cmd1 = conn.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+		cmd1.setString(1, k.getAdresse().get(0));
+		cmd1.setInt(2, Integer.parseInt(k.getAdresse().get(1)));
+		cmd1.setString(3, k.getAdresse().get(2));
+		cmd1.setString(4, k.getAdresse().get(3));
+		cmd1.execute();
 		
-		String sql2 = "SELECT COUNT(*) FROM Adresse";
-		cmd = conn.prepareStatement(sql2);
-		rs1 = cmd.executeQuery();
+		rs1 = cmd1.getGeneratedKeys();
 		
-		int rowCount = rs1.getInt(1);
-		
-		rs2 = meta.getPrimaryKeys(null, null,"Adresse");
-		
-		int lastEntryID = rs2.getInt(rowCount);
-		 * 
-		 * 
-		 * */
-		
+        int adresseFK = rs1.getInt(1);
+        
 		PreparedStatement cmd;
 		if(k.typProperty().getValue().equals("Person")) {
 			String sql = "INSERT INTO Kontakt(Firmenname,Titel,Vorname,Nachname,Geburtsdatum,Adresse,Typ) VALUES (?,?,?,?,?,?,?)";
@@ -56,7 +47,7 @@ public class Dataaccesslayer {
 			cmd.setString(3,k.getVorname());
 			cmd.setString(4,k.getNachname());
 			cmd.setString(5,k.getGeburtsdatum());
-			cmd.setInt(6,1); //TODO ID of an adress
+			cmd.setInt(6, adresseFK);
 			cmd.setString(7,k.typProperty().getValue());
 		}
 		else {
@@ -64,16 +55,46 @@ public class Dataaccesslayer {
 			cmd = conn.prepareStatement(sql);
 			cmd.setString(1,k.getUid());
 			cmd.setString(2,k.getFirma());
-			cmd.setInt(3,1); //TODO ID of an adress
+			cmd.setInt(3, adresseFK); 
 			cmd.setString(4,k.typProperty().getValue());
 		}
 		
 		cmd.execute();
-		
 	}
 	
-	public void insertRechnung(Invoice r) {
+	public void insertRechnung(Invoice r) throws SQLException {
 		Connection conn = connectDB("ErpDB");
+		
+		ResultSet rs = null;
+		
+		String sql1 = "INSERT INTO Adresse(Straﬂe,PLZ,Ort,Land) VALUES (?,?,?,?)";
+		PreparedStatement cmd = conn.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+		cmd.setString(1, r.getDelAdress().getStreet());
+		cmd.setInt(2, r.getDelAdress().getPostcode());
+		cmd.setString(3, r.getDelAdress().getCity());
+		cmd.setString(4, r.getDelAdress().getCountry());
+		cmd.execute();
+		
+		rs = cmd.getGeneratedKeys();
+        int delAdressFK = rs.getInt(1);
+        
+		ResultSet rs1 = null;
+		
+		String sql2 = "INSERT INTO Adresse(Straﬂe,PLZ,Ort,Land) VALUES (?,?,?,?)";
+		PreparedStatement cmd1 = conn.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+		cmd1.setString(1, r.getInvAdress().getStreet());
+		cmd1.setInt(2, r.getInvAdress().getPostcode());
+		cmd1.setString(3, r.getInvAdress().getCity());
+		cmd1.setString(4, r.getInvAdress().getCountry());
+		cmd1.execute();
+		
+		rs1 = cmd1.getGeneratedKeys();
+        int invAdressFK = rs1.getInt(1);
+		
+        String sql3 = "INSERT INTO Rechnung(Kunde_ID, Datum, F‰lligkeit, Kommentar, Nachricht, MWSt, Netto, Brutto,"
+        		+ "Rechnungsadresse, Lieferadresse) VALUES ()";
+        
+        
 		
 	}
 	
@@ -169,7 +190,6 @@ public class Dataaccesslayer {
 					kontakte.add(k);
 				}
 			}
-			
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}

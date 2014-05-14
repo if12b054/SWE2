@@ -124,7 +124,7 @@ public class InvoiceModel implements Subject{
 		Adress invAdress = new Adress(invStreet.get(), Integer.parseInt(invPostCode.get()), invCity.get(), invCountry.get());
 		Adress delAdress = new Adress(delStreet.get(), Integer.parseInt(delPostCode.get()), delCity.get(), delCountry.get());
 		invoice = new Invoice(invoiceLines, curDate, dueDate.getValue(), contact.get(), message.get(), comment.get(), invAdress, delAdress);
-		controller.getParent().getProxy().insertRechnung(invoice);
+		int invoiceID = controller.getParent().getProxy().insertRechnung(invoice);
 	}
 	
 	public boolean errorsFound() {

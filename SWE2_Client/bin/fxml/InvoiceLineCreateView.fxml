@@ -22,12 +22,12 @@
         <Label font="$x1" text="Netto" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
         <Label font="$x1" text="MWSt" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
         <Label font="$x1" text="Brutto" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-        <Label fx:id="lblNetto" text="00.00" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <Label fx:id="lblBrutto" text="00.00" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <ComboBox fx:id="cbArtikel" prefHeight="21.0" prefWidth="59.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <Label fx:id="lblMWSt" text="00.00" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <Label id="lblMWSt" fx:id="lblStueckPreis" text="00.00" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-        <ComboBox fx:id="cbMenge" prefHeight="21.0" prefWidth="59.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <Label fx:id="lblNetto" prefWidth="50.0" text="00.00" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <Label fx:id="lblBrutto" prefWidth="50.0" text="00.00" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <ComboBox fx:id="cbArtikel" prefHeight="21.0" prefWidth="66.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <Label fx:id="lblMWSt" prefWidth="50.0" text="00.00" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <Label id="lblMWSt" fx:id="lblStueckPreis" prefWidth="50.0" text="00.00" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+        <ComboBox fx:id="cbMenge" prefHeight="21.0" prefWidth="50.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -42,6 +42,7 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
-    <Button id="btnAdd" fx:id="btnSave" layoutX="359.0" layoutY="97.0" mnemonicParsing="false" onAction="#doSave" text="Speichern" />
+    <Button id="btnAdd" layoutX="359.0" layoutY="97.0" mnemonicParsing="false" onAction="#doSave" text="Speichern" />
+    <Hyperlink layoutX="281.0" layoutY="96.0" onAction="#doExit" text="Abbrechen" />
   </children>
 </AnchorPane>

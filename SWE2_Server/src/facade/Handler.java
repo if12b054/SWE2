@@ -96,17 +96,10 @@ public class Handler implements Runnable{
 				break;
 			case "get/Artikel":
 				ObservableList<Article> articles = FXCollections.observableArrayList();
-				articles = b.getArticles();
-				
-				for(int i=0; i<articles.size(); i++){
-					System.out.println("gefunden: " + articles.get(i).getName());
-					System.out.println("gefunden: " + articles.get(i).getPrice());
-				}
-				
+				articles = b.getArticles();				
 				xml = serializeGetArticle(articles);
 				sendMessage(xml,client);
 				client.close();
-				
 				break;
 			}
 			

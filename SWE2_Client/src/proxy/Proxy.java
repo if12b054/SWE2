@@ -110,7 +110,7 @@ public class Proxy {
 	 * same as insertKontakt, just with Rechnung
 	 * @param r		Rechnung-Object to be inserted in database
 	 */
-	public void insertRechnung(Invoice r) {
+	public int insertRechnung(Invoice r) {
 		System.out.println("Sending Rechnung-data to server.");
 		String action = "insert/Rechnung";
 		Socket socket = createSocket();
@@ -118,7 +118,7 @@ public class Proxy {
 		sendMessage(action, xml, socket);
 		
 		System.out.println("inserting Recite with date: " + r.datumProperty().get());
-		
+		return 0;
 	}
 	
 	
