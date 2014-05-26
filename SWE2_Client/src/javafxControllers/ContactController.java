@@ -13,6 +13,7 @@ import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,9 +35,7 @@ import javafxModels.ContactModel;
  *
  */
 public class ContactController extends AbstractController {
-	public final String SEARCH_CONTACT_PATH = "/fxml/SearchContactView.fxml";
-	
-	@FXML private Button btnKontakte, btnKontakteSuche, btnDelete;
+	@FXML private Button btnKontakte, btnDelete;
 	@FXML private TextField tfTitel, tfVname, tfNname, tfGebdatum, tfFirma;
 	@FXML private TextField tfFname, tfUID;
 	@FXML private TextField tfStrasse, tfOrt, tfPLZ, tfLand;
@@ -46,8 +45,7 @@ public class ContactController extends AbstractController {
 	@FXML private Pane firmaPane;
 	@FXML private Pane personPane;
 	
-	private ContactModel model = new ContactModel();
-	private Contact firmReference;
+	public ContactModel model = new ContactModel();
 	private MainController parent;
 	
 	@Override
@@ -82,15 +80,18 @@ public class ContactController extends AbstractController {
 	 * @param 	event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		model.createKontakt();
+		boolean success = model.upsertContact();
+		if(!success) {
+			showErrorDialog(model.errorMsg);
+		}
 	}
 	
 	/**
 	 * happens with click on "Finden" button, search for firm reference
 	 * @param event
 	 */
-	@FXML private void doKontaktSearch(ActionEvent event) {
-		
+	@FXML private void doContactSearch(ActionEvent event) {
+		model.findFirm();
 	}
 	
 	@FXML private void clearAll(ActionEvent event) {
@@ -141,19 +142,7 @@ public class ContactController extends AbstractController {
 	    public void handle(KeyEvent event) {
 			if (event.getCode() == KeyCode.ENTER)
 	        {
-				ArrayList<Contact> results = getParent().getProxy().findFirm(tfFirma.getText());
-				if(results.size() == 1) {
-					firmReference = results.get(0);
-					setFirmaFoundImg(getParent().getCheckMark());
-				}
-				else if(results.size() == 0) {
-					firmReference = results.get(0);
-					setFirmaFoundImg(getParent().getNoCheckMark());
-				}
-				else {
-					setFirmaFoundImg(getParent().getEmptyImg());
-					showNewDialog(SEARCH_CONTACT_PATH, ContactController.this, null);
-				}
+				model.findFirm();
 	        }
 	    }
 	};

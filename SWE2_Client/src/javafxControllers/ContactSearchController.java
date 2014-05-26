@@ -4,49 +4,54 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import businessobjects.AbstractObject;
 import businessobjects.Contact;
+import businessobjects.ResultList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 public class ContactSearchController extends AbstractController {
-	InvoiceController parent;
+	ContactController parent;
 	
 	/* "Kontakte/Suche" Page: */
-	@FXML private Label lblContactCount;
-	@FXML private TextField tfFirstName, tfLastName, tfFirm;
 	@FXML private TableView<Contact> tableContacts;
 	
-	@FXML private void doKontaktSearch(ActionEvent event) throws IOException {
-		/*
-		 * Send Data to Server
-		 * -> Server replies with List of Contacts and Firms which will get displayed
-		 * -> on double click on a search result, it gets chosen, window closes
-		 * 
-		 * */
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		tableContacts.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent mouseEvent) {
+		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+		            if(mouseEvent.getClickCount() == 2){
+		                System.out.println("Double clicked");
+		                Contact kontakt = (Contact) tableContacts.getSelectionModel().getSelectedItem();
+		                if(kontakt != null) {
+		                	System.out.println("KONTAKT: " + kontakt.getNachname());
+		                	parent.model.setFirmReference(kontakt);
+		                	closeStage();
+		                }
+		            }
+		        }
+		    }
+		});
 	}
 	
-	@FXML private void doNewContact(ActionEvent event) throws IOException {
-		/*
-		 * Send Data to Server
-		 * -> Server replies with List of Contacts and Firms which will get displayed
-		 * -> on double click on a search result, it gets chosen, window closes
-		 * 
-		 * */
-	}
-
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		
+	public void loadModel(AbstractObject model) {
+		ResultList resultList = (ResultList) model;
+		tableContacts.setItems(resultList.getResults());
 	}
 	
 	@Override
 	public void setParent(AbstractController parent) {
-		this.parent = (InvoiceController) parent;
+		this.parent = (ContactController) parent;
 	}
 	
 }

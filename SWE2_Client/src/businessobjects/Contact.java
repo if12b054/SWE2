@@ -11,28 +11,31 @@ public class Contact extends AbstractObject{
 	
 	/* Kontakt-type: "Person" or "Firma" */
 	private StringProperty typ = new SimpleStringProperty();
+	private int id = -1; //db id
 	
 	/* Person */
-	private String titel;
+	private StringProperty titel = new SimpleStringProperty();
 	private StringProperty vorname = new SimpleStringProperty();
 	private StringProperty nachname = new SimpleStringProperty();
-	private String geburtsdatum;
+	private StringProperty geburtsdatum = new SimpleStringProperty();
+	private Contact firmaRef = null;
 	
 	/* Firma */
-	private String uid;
+	private StringProperty uid = new SimpleStringProperty();
 	
 	/* Beide */
-	private int id = -1; //db id
 	private StringProperty firma = new SimpleStringProperty();
 	
 	/* für Adressen: [0] = Strasse, [1] = PLZ, [2] = Ort, [3] = Land */
 	private Vector<String> adresse = new Vector<String>(); 
+	private StringProperty adresseProperty = new SimpleStringProperty();
 	
 	public Contact(String firma, String vorname, String nachname, String titel, String geburtsdatum) {
 		this.typ.set("Person");
 		this.firma.set(firma);
 		this.vorname.set(vorname);
 		this.nachname.set(nachname);
+		this.geburtsdatum.set(geburtsdatum);
 	}
 	
 	public Contact(String uid, String firma) {
@@ -40,6 +43,8 @@ public class Contact extends AbstractObject{
 		this.firma.set(firma);
 		this.setUid(uid);
 	}
+	
+	/* properties */
 	
 	public final StringProperty typProperty() {
 		return typ;
@@ -49,6 +54,14 @@ public class Contact extends AbstractObject{
 		return firma;
 	}
 	
+	public final StringProperty uidProperty() {
+		return firma;
+	}
+	
+	public final StringProperty titelProperty() {
+		return vorname;
+	}
+	
 	public final StringProperty vornameProperty() {
 		return vorname;
 	}
@@ -56,14 +69,23 @@ public class Contact extends AbstractObject{
 	public final StringProperty nachnameProperty() {
 		return nachname;
 	}
+
+	public final StringProperty geburtsdatumProperty() {
+		return geburtsdatum;
+	}
 	
+	public final StringProperty adresseProperty() {
+		return adresseProperty;
+	}
+	
+	/* getter and setter */
 	
 	public String getTitel() {
-		return titel;
+		return titel.get();
 	}
 
 	public void setTitel(String titel) {
-		this.titel = titel;
+		this.titel.set(titel);
 	}
 
 	public String getVorname() {
@@ -91,11 +113,11 @@ public class Contact extends AbstractObject{
 	}
 
 	public String getGeburtsdatum() {
-		return geburtsdatum;
+		return geburtsdatum.get();
 	}
 
 	public void setGeburtsdatum(String geburtsdatum) {
-		this.geburtsdatum = geburtsdatum;
+		this.geburtsdatum.set(geburtsdatum);
 	}
 
 	public Vector<String> getAdresse() {
@@ -107,14 +129,16 @@ public class Contact extends AbstractObject{
 		this.adresse.add(PLZ);
 		this.adresse.add(ort);
 		this.adresse.add(land);
+		
+		adresseProperty.set(strasse + ", " + PLZ + " " + ort + ", " + land);
 	}
 
 	public String getUid() {
-		return uid;
+		return uid.get();
 	}
 
 	public void setUid(String uid) {
-		this.uid = uid;
+		this.uid.set(uid);
 	}
 
 	public int getId() {
@@ -123,5 +147,13 @@ public class Contact extends AbstractObject{
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Contact getFirmaRef() {
+		return firmaRef;
+	}
+
+	public void setFirmaRef(Contact firmaRef) {
+		this.firmaRef = firmaRef;
 	}
 }
