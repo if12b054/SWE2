@@ -20,7 +20,8 @@ import businessobjects.InvoiceLine;
 
 public class Dataaccesslayer {
 	
-	final String PCName = "Schlepptop\\SQLEXPRESS";
+	//final String PCName = "Schlepptop\\SQLEXPRESS"; //Roman
+	final String PCName = "ULTRABOOK\\SQLEXPRESS"; //Victor
 	
 	public void insertKontakt(Contact k) throws SQLException {
 		Connection conn = connectDB("ErpDB");

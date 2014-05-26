@@ -60,21 +60,23 @@ public class Proxy {
 		ObservableList<Article> articles = FXCollections.observableArrayList();
 		String action = "get/Artikel";
 		
-		try {
-			Socket socket = new Socket("127.0.0.1",11111);
+		Socket socket;
+		if((socket = createSocket()) == null ){
+			return null;
+		}
+		else {
 			String xml = serializeArtikelSearch(articles);
-
 			sendMessage(action, xml, socket);
 			
-			String xml2 = readMessage(socket);
-			articles = deserializeArtikelSearch(xml2);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			try {
+				String xml2;
+				xml2 = readMessage(socket);
+				articles = deserializeArtikelSearch(xml2);
+			} catch (IOException e) {
+				conErrorMsg = "Connection Error. Server might not be reachable.";
+			}
+			return articles;
 		}
-		
-		return articles;
 	}
 	
 	public Socket createSocket() {
@@ -82,11 +84,9 @@ public class Proxy {
 		try {
 			socket = new Socket("127.0.0.1",11111);
 		} catch (UnknownHostException e) {
-//			e.printStackTrace();
 			conErrorMsg = "Connection Error. Server might not be reachable.";
 		} catch (IOException e) {
-//			e.printStackTrace();
-			conErrorMsg = "Connection Error. Server might not be reachable.";
+			conErrorMsg = "I/O Exception thwron. Computer might explode any second.";
 		}
 		return socket;
 	}
@@ -333,7 +333,6 @@ public class Proxy {
 		//xstream.alias("kontakt", Kontakt.class);
 		String xml = xstream.toXML(articles);
 		return xml;
-		
 	}
 		
 	public String getConError() {
