@@ -34,11 +34,6 @@ import ObserverPattern.Observer;
 import ObserverPattern.Subject;
 
 public class InvoiceModel implements Subject{
-	public final String EDIT_LINE_PATH = "/fxml/InvoiceLineEditView.fxml";
-	public final String VIEW_LINE_PATH = "/fxml/InvoiceLineJustView.fxml";
-	public final String CREATE_LINE_PATH = "/fxml/InvoiceLineCreateView.fxml";
-	public final String SEARCH_CONTACT_PATH = "/fxml/SearchContactView.fxml";
-	public final String ERROR_PATH = "/fxml/ErrorView.fxml";
 	
 	private Invoice invoice;
 	private InvoiceController controller;
@@ -110,12 +105,12 @@ public class InvoiceModel implements Subject{
 	}
 	
 	public void findContact() {
-		ContactSearchController contactSearchWindow = (ContactSearchController) controller.showNewDialog(SEARCH_CONTACT_PATH, controller, null);
+		ContactSearchController contactSearchWindow = (ContactSearchController) controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, null);
 	}
 	
 	public void openInvoiceLine() {
 		setInvoiceLineCount(getInvoiceLineCount() + 1);
-		InvoiceLineController invLineWindow = (InvoiceLineController) controller.showNewDialog(CREATE_LINE_PATH, controller, null); //need to change
+		InvoiceLineController invLineWindow = (InvoiceLineController) controller.showNewDialog(controller.CREATE_LINE_PATH, controller, null); //need to change
 		invLineWindow.setOnClose();
 	}
 	
@@ -129,12 +124,12 @@ public class InvoiceModel implements Subject{
 	
 	public boolean errorsFound() {
 		if(dueDate.getValue() == null) {
-			controller.showErrorDialog(ERROR_PATH, "Due Date cannot be empty. Format: 2000-01-01");
+			controller.showErrorDialog("Due Date cannot be empty. Format: 2000-01-01");
 			return true;
 		} 
 		/* checking if postcode correct */
 		else if(!Utils.isInteger(invPostCode.get()) || !Utils.isInteger(delPostCode.get())) {
-			controller.showErrorDialog(ERROR_PATH, "The postcode needs to be numeric(0-9).");
+			controller.showErrorDialog("The postcode needs to be numeric(0-9).");
 			return true;
 			
 		}
@@ -155,7 +150,7 @@ public class InvoiceModel implements Subject{
 	                
 	            	InvoiceLine rZeile = controller.getSelectedInvoiceLine();
 	                if(rZeile != null) {
-	                	InvoiceLineController invLineWindow = (InvoiceLineController) controller.showNewDialog(EDIT_LINE_PATH, controller, rZeile);
+	                	InvoiceLineController invLineWindow = (InvoiceLineController) controller.showNewDialog(controller.EDIT_LINE_PATH, controller, rZeile);
 	                	invLineWindow.setOnClose();
 	                }
 	            }

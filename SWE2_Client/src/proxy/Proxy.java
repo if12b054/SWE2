@@ -12,40 +12,39 @@ import java.util.Vector;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
 import applikation.Parameter;
-import applikation.Utils;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+
 public class Proxy {
+	
+	private String conErrorMsg;
 	
 	/**
 	 * Happens on Enter in reference field for firm in ContactController
 	 * @param 	id	an id in the contacts table
 	 * @return 		if is a firm or a person, true if firm
 	 */
-	public ArrayList<Contact> findFirm(String firm) {
-		if(Utils.isInteger(firm)) {
-			//search just for id
-		} else {
-			//search for firm name
-		}
+	public ObservableList<Contact> findFirm(String firm) {
 		Contact contact = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
-		ArrayList<Contact> contacts = new ArrayList<Contact>();
+		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
+		ObservableList<Contact> contacts = FXCollections.observableArrayList();
 		contacts.add(contact);
+		
+		Contact contact2 = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
+		contacts.add(contact2);
 		
 		return contacts;
 	}
 	
-	public ArrayList<Contact> findContact(String firstName, String lastName, String firm) {
+	public ObservableList<Contact> findContact(String firstName, String lastName, String firm) {
 		Contact contact = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
-		ArrayList<Contact> contacts = new ArrayList<Contact>();
+		ObservableList<Contact> contacts = FXCollections.observableArrayList();
 		contacts.add(contact);
 		
 		return contacts;
@@ -77,9 +76,11 @@ public class Proxy {
 		try {
 			socket = new Socket("127.0.0.1",11111);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			conErrorMsg = "Connection Error. Server might not be reachable.";
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			conErrorMsg = "Connection Error. Server might not be reachable.";
 		}
 		return socket;
 	}
@@ -89,27 +90,40 @@ public class Proxy {
 	 * CHECK on server-side if contact already exists, if
 	 * it does, do UPDATE!
 	 * @param k		Kontakt-Object which data is inserted into database
+	 * @return		int - the id, so entry can be edited
 	 */
-	public void insertKontakt(Contact k) {
-		
-		System.out.println("Sending Kontakt-data to server.");
-		String action = "insert/Kontakt";
-		Socket socket = createSocket();
-		String xml = serializeKontakt(k);
-		sendMessage(action, xml, socket);
-
+	public int upsertContact(Contact k) {
+		String action;
+		if(k.getId() != -1) {
+			//EDIT contact
+			action = "update/Kontakt";
+		} else {
+			//INSERT contact
+			action = "insert/Kontakt";
+		}
+		Socket socket;
+		if((socket = createSocket()) == null ){
+			return -1;
+		}
+		else {
+			String xml = serializeKontakt(k);
+			sendMessage(action, xml, socket);
+			
+			return 1; //the ID
+		}
 	}
 	
 	/**
-	 * same as insertKontakt, just with Rechnung
+	 * same as insertKontakt, just with Rechnung, except no update possible
 	 * @param r		Rechnung-Object to be inserted in database
 	 */
-	public void insertRechnung(Invoice r) {
+	public int insertRechnung(Invoice r) {
 		System.out.println("Sending Rechnung-data to server.");
 		String action = "insert/Rechnung";
 		
 		System.out.println("inserting Recite with date: " + r.datumProperty().get());
 		
+		return 0;
 	}
 	
 	
@@ -257,5 +271,13 @@ public class Proxy {
 		xstream.processAnnotations(Contact.class);
 		ObservableList<Contact> k = (ObservableList<Contact>) xstream.fromXML(xml);
 		return k;
+	}
+	
+	public String getConError() {
+		return conErrorMsg;
+	}
+	
+	public void setConError(String error) {
+		conErrorMsg = error;
 	}
 }

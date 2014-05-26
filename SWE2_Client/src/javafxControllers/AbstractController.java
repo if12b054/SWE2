@@ -12,6 +12,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public abstract class AbstractController implements Initializable {
+	public final String EDIT_LINE_PATH = "/fxml/InvoiceLineEditView.fxml";
+	public final String VIEW_LINE_PATH = "/fxml/InvoiceLineJustView.fxml";
+	public final String CREATE_LINE_PATH = "/fxml/InvoiceLineCreateView.fxml";
+	public final String SEARCH_CONTACT_PATH = "/fxml/ContactSearchView.fxml";
+	public final String INVOICE_PATH = "/fxml/InvoiceView.fxml";
+	public final String ERROR_PATH = "/fxml/ErrorView.fxml";
+	
 	private Stage stage;
 	
 	public AbstractController showNewDialog(String fxmlPath, AbstractController parent, AbstractObject model) {
@@ -34,9 +41,9 @@ public abstract class AbstractController implements Initializable {
 		return controller;
 	}
 	
-	public AbstractController showErrorDialog(String fxmlPath, String errorMsg) {
+	public AbstractController showErrorDialog(String errorMsg) {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource(fxmlPath));
+		loader.setLocation(getClass().getResource(ERROR_PATH));
 		Stage stage = new Stage(StageStyle.DECORATED);
 		stage.setTitle("Error");
 		stage.initModality(Modality.APPLICATION_MODAL);
@@ -50,6 +57,11 @@ public abstract class AbstractController implements Initializable {
 		controller.setMsg(errorMsg);
 		stage.show();
 		return controller;
+	}
+	
+	public void closeStage() {
+		Stage stage = this.getStage();
+		stage.close();
 	}
 	
 	public Stage getStage() {
