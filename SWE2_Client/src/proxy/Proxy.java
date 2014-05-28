@@ -8,11 +8,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import applikation.Parameter;
+import businessobjects.Adress;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
@@ -22,8 +24,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class Proxy {
-	
-	private String conErrorMsg;
 	
 	/**
 	 * Happens on Enter in reference field for firm in ContactController
@@ -42,10 +42,14 @@ public class Proxy {
 		return contacts;
 	}
 	
-	public ObservableList<Contact> findContact(String firstName, String lastName, String firm) {
+	public ObservableList<Contact> findContact(String searchString) {
 		Contact contact = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
+		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
 		ObservableList<Contact> contacts = FXCollections.observableArrayList();
 		contacts.add(contact);
+		
+		Contact contact2 = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
+		contacts.add(contact2);
 		
 		return contacts;
 	}
@@ -73,22 +77,10 @@ public class Proxy {
 				xml2 = readMessage(socket);
 				articles = deserializeArtikelSearch(xml2);
 			} catch (IOException e) {
-				conErrorMsg = "Connection Error. Server might not be reachable.";
+				e.printStackTrace();
 			}
 			return articles;
 		}
-	}
-	
-	public Socket createSocket() {
-		Socket socket = null;
-		try {
-			socket = new Socket("127.0.0.1",11111);
-		} catch (UnknownHostException e) {
-			conErrorMsg = "Connection Error. Server might not be reachable.";
-		} catch (IOException e) {
-			conErrorMsg = "I/O Exception thwron. Computer might explode any second.";
-		}
-		return socket;
 	}
 	
 	/**
@@ -107,6 +99,7 @@ public class Proxy {
 			//INSERT contact
 			action = "insert/Kontakt";
 		}
+		action = "insert/Kontakt";
 		Socket socket;
 		if((socket = createSocket()) == null ){
 			return -1;
@@ -123,7 +116,7 @@ public class Proxy {
 	 * same as insertKontakt, just with Rechnung, except no update possible
 	 * @param r		Rechnung-Object to be inserted in database
 	 */
-	public int insertRechnung(Invoice r) {
+	public int insertInvoice(Invoice r) {
 		System.out.println("Sending Rechnung-data to server.");
 		String action = "insert/Rechnung";
 		Socket socket = createSocket();
@@ -195,32 +188,47 @@ public class Proxy {
 		System.out.println("BisPreis: " + searchParms.get(3).getStringParameter());
 		System.out.println("Kontakt: " + searchParms.get(4).getStringParameter());
 		
-		/* Server-SQL abfr hier */
+//		try {
+//			Socket socket = new Socket("127.0.0.1",11111);
+//			String xml = serializeRechnungSearch(searchParms);
+//
+//			sendMessage(action, xml, socket);
+//			
+//			String xml2 = readMessage(socket);
+//			rechnungen = deserializeRechnungSearch(xml2);
+//			
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
+		Contact contact = new Contact("blaa", "sddsaas", "asaddssad", "sss", "10.01.1999");
+		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
+		
+		/* TEST */
+		System.out.println("WORKING..");
+		ObservableList<InvoiceLine> testRechnungszeilen = FXCollections.observableArrayList();
+		testRechnungszeilen.add(new InvoiceLine(new Article(6, "Artikel", 12.3), 13, 0.20));
+		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
+		rechnungen.add(new Invoice(testRechnungszeilen, new Date(), new Date(), contact, nachricht, kommentar, 
+				new Adress("streeeet", 11221, "cityyy", "countryyyyyyy"), 
+				new Adress("strettt", 12345, "cityyy", "countryyyyyyy")));
+		/* TEST-ENDE */
+		
+		return rechnungen;
+	}
+	
+	public Socket createSocket() {
+		Socket socket = null;
 		try {
-			Socket socket = new Socket("127.0.0.1",11111);
-			String xml = serializeRechnungSearch(searchParms);
-
-			sendMessage(action, xml, socket);
-			
-			String xml2 = readMessage(socket);
-			rechnungen = deserializeRechnungSearch(xml2);
-			
+			socket = new Socket("127.0.0.1",11111);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		/* TEST */
-		System.out.println("WORKING..");
-		ArrayList<InvoiceLine> testRechnungszeilen = new ArrayList<InvoiceLine>();
-//		testRechnungszeilen.add(new InvoiceLine("Artikel", 1, 1, 1));
-		String datum="10.10.2000", faelligkeit="11.11.2000", kunde="Gott", nachricht="Deree", kommentar="Könnt wichtig sein...";
-//		rechnungen.add(new Invoice(testRechnungszeilen, datum, faelligkeit, kunde, nachricht, kommentar));
-		/* TEST-ENDE */
-		
-		return rechnungen;
+		return socket;
 	}
 	
 	public String serializeKontakt(Contact k) {
@@ -333,13 +341,5 @@ public class Proxy {
 		//xstream.alias("kontakt", Kontakt.class);
 		String xml = xstream.toXML(articles);
 		return xml;
-	}
-		
-	public String getConError() {
-		return conErrorMsg;
-	}
-	
-	public void setConError(String error) {
-		conErrorMsg = error;
 	}
 }

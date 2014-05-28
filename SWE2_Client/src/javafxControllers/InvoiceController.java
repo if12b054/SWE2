@@ -19,7 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafxControllerFunctions.InvoiceModel;
+import javafxModels.InvoiceModel;
 
 /**
  * Controller for creating new or viewing old recites, gets created, if user clicks
@@ -48,11 +48,7 @@ public class InvoiceController extends AbstractController {
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
 		/* initialize DatePicker*/
-		dpDeadLine = new DatePicker(Locale.GERMAN);
-		dpDeadLine.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-		dpDeadLine.getCalendarView().todayButtonTextProperty().set("Today");
-		dpDeadLine.getCalendarView().setShowWeeks(false);
-		dpDeadLine.getStylesheets().add("fxml/datepicker.css");
+		dpDeadLine = model.createDatePicker();
 		pFaelligkeit.getChildren().add(dpDeadLine);
 		
 		/* bidirectional bind to functions */
@@ -68,7 +64,6 @@ public class InvoiceController extends AbstractController {
 		tfLOrt.textProperty().bindBidirectional(model.delCityProperty());
 		tfLPLZ.textProperty().bindBidirectional(model.delPLZProperty());
 		tfLLand.textProperty().bindBidirectional(model.delCountryProperty());
-		dpDeadLine.selectedDateProperty().bindBidirectional(model.tillDateProperty());
 		
 		/* on double click on table entry open that entry in new InvoiceLineView */
 		tableRechnungszeilen.setOnMouseClicked(model.handleDoubleClick);
@@ -134,7 +129,7 @@ public class InvoiceController extends AbstractController {
 		return tableRechnungszeilen.getSelectionModel().getSelectedItem();
 	}
 	
-	public InvoiceModel getFunctions() {
+	public InvoiceModel getModel() {
 		return model;
 	}
 }

@@ -12,14 +12,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+ 
 public final class Utils {
 	public static final boolean isNullOrEmpty(String str) {
 		return str == null || str.isEmpty();
-	}
-
-	public static final String toRGBCode(Color color) {
-		return String.format("#%02X%02X%02X", (int) (color.getRed() * 255),
-				(int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
 	}
 	
 	public static final boolean isInteger(String str)
@@ -33,4 +34,57 @@ public final class Utils {
 		}
 		return true;
 	}
+	
+	public static final boolean isDouble(String str)
+	{
+		try {
+			double i = Double.parseDouble(str);
+		}
+		catch(NumberFormatException nfe)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	// List of all date formats that we want to parse.
+    // Add your own format here.
+    private static List<SimpleDateFormat>
+            dateFormats = new ArrayList<SimpleDateFormat>() {{
+            add(new SimpleDateFormat("M/dd/yyyy"));
+            add(new SimpleDateFormat("dd.M.yyyy"));
+            add(new SimpleDateFormat("M/dd/yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.M.yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.MMM.yyyy"));
+            add(new SimpleDateFormat("dd-MMM-yyyy"));
+        }
+    };
+ 
+    /**
+     * Convert String with various formats into java.util.Date
+     * 
+     * @param input
+     *            Date as a string
+     * @return java.util.Date object if input string is parsed 
+     *          successfully else returns null
+     */
+    public static Date convertToDate(String input) {
+        Date date = null;
+        if(null == input) {
+            return null;
+        }
+        for (SimpleDateFormat format : dateFormats) {
+            try {
+                format.setLenient(false);
+                date = format.parse(input);
+            } catch (ParseException e) {
+                //Shhh.. try other formats
+            }
+            if (date != null) {
+                break;
+            }
+        }
+ 
+        return date;
+    }
 }

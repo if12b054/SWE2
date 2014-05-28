@@ -57,11 +57,11 @@ public class InvoiceLineController extends AbstractController implements Observe
 		cbArtikel.setValue(invLineModel.getArticle());
 		cbMenge.setValue(invLineModel.getMenge());
 		lblNetto.setText(Double.toString(invLineModel.getNetto()));
-		lblMWSt.setText(parent.getFunctions().getMWSt().toString());
+		lblMWSt.setText(parent.getModel().getMWSt().toString());
 		lblBrutto.setText(Double.toString(invLineModel.getBrutto()));
 		lblStueckPreis.setText(Double.toString(invLineModel.getStueckPreis()));
 		
-		parent.getFunctions().register(this);
+		parent.getModel().register(this);
 	}
 	
 	@Override
@@ -98,7 +98,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 	 * also the listeners
 	 */
 	public void customInitialize() {
-		parent.getFunctions().register(this);
+		parent.getModel().register(this);
 		/* get articles from db and set them, so only article-name gets displayed */
 		articles = parent.getParent().getProxy().getArticles();
 		cbArtikel.getItems().addAll(articles);
@@ -124,7 +124,7 @@ public class InvoiceLineController extends AbstractController implements Observe
                 return cell;
             }
         });
-		lblMWSt.setText(parent.getFunctions().getMWSt().toString());
+		lblMWSt.setText(parent.getModel().getMWSt().toString());
 		cbArtikel.valueProperty().addListener(model.articleValueChanged);
 		cbMenge.valueProperty().addListener(model.quantityValueChanged);
 		lblMWSt.textProperty().addListener(model.taxValueChanged);
@@ -137,7 +137,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 	public void setOnClose() {
 		this.getStage().setOnHiding(new EventHandler<WindowEvent>() {
 		      public void handle(WindowEvent event) {
-		        parent.getFunctions().unregister(InvoiceLineController.this);
+		    	  parent.getModel().unregister(InvoiceLineController.this);
 		      }
 		});
 	}
@@ -153,21 +153,21 @@ public class InvoiceLineController extends AbstractController implements Observe
 		
 		/* is a new invoice-line */
 		if(existingID == -1) {
-			invoiceLine.setIdNumber(parent.getFunctions().getInvoiceLineCount());
-			parent.getFunctions().addInvoiceLineToTable(invoiceLine);
+			invoiceLine.setIdNumber(parent.getModel().getInvLineCnt());
+			parent.getModel().addInvoiceLineToTable(invoiceLine);
 		}
 		/* invoice-line already exists */
 		else {
 			int i = 0;
-			for(InvoiceLine r : parent.getFunctions().getInvoiceLines()) {
+			for(InvoiceLine r : parent.getModel().getInvoiceLines()) {
 				if(r.getIdNumber() == existingID) {
 					invoiceLine.setIdNumber(existingID);
-					parent.getFunctions().getInvoiceLines().remove(i);
+					parent.getModel().getInvoiceLines().remove(i);
 					break;
 				}
 				i++;
 			}
-			parent.getFunctions().getInvoiceLines().add(invoiceLine);
+			parent.getModel().getInvoiceLines().add(invoiceLine);
 		}
 		Stage stage = (Stage) cbArtikel.getScene().getWindow();
 		stage.close();
@@ -175,7 +175,7 @@ public class InvoiceLineController extends AbstractController implements Observe
 
 	@Override
 	public void update() {
-		String newMWSt = Double.toString(parent.getFunctions().getMWSt());
+		String newMWSt = Double.toString(parent.getModel().getMWSt());
 		this.lblMWSt.setText(newMWSt);
 	}
 }

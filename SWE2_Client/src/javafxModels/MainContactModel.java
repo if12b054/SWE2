@@ -45,46 +45,25 @@ public class MainContactModel {
 	 * @param event
 	 */
 	public void searchKontakts() {
-		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
-		int results = 0;
-		
-		/* get search parms from TextFields */
-		Vector<Parameter> searchParms = new Vector<Parameter>();
-		searchParms.addElement(new Parameter (kVorname.getValue()));
-		searchParms.addElement(new Parameter(kNachname.getValue()));
-		searchParms.addElement(new Parameter(kFirma.getValue()));
-		
-		/* get Rechnung objects from server according to searchParms */
-		kontakte = controller.getProxy().searchKontakt(searchParms);
-		results = kontakte.size();
-		
-		/* display kontakte in table */
-		kResultCount.setValue(Integer.toString(results));
-		controller.setTableKontaktSuche(kontakte);
+		if(controller.serverConnection()) {
+			ObservableList<Contact> kontakte = FXCollections.observableArrayList();
+			int results = 0;
+			
+			/* get search parms from TextFields */
+			Vector<Parameter> searchParms = new Vector<Parameter>();
+			searchParms.addElement(new Parameter (kVorname.getValue()));
+			searchParms.addElement(new Parameter(kNachname.getValue()));
+			searchParms.addElement(new Parameter(kFirma.getValue()));
+			
+			/* get Rechnung objects from server according to searchParms */
+			kontakte = controller.getProxy().searchKontakt(searchParms);
+			results = kontakte.size();
+			
+			/* display kontakte in table */
+			kResultCount.setValue(Integer.toString(results));
+			controller.setTableKontaktSuche(kontakte);
+		}
 	}
-	
-	/* Listeners */
-	public ChangeListener<Boolean> kontaktSearchListener = new ChangeListener<Boolean>()
-	{
-	    @Override
-	    public void changed(ObservableValue<? extends Boolean> arg0, 
-	    		Boolean oldPropertyValue, 
-	    		Boolean newPropertyValue)
-	    {
-	        if (!newPropertyValue)
-	        {
-	        	String errorMsg = InputChecks.searchKontaktError(
-	        			kVorname.getValue(), 
-	        			kNachname.getValue(), 
-	        			kFirma.getValue());
-	        	if(errorMsg == null) {
-	        		searchKontakts();
-	        	} else {
-	        		//set error Msg
-	        	}
-	        }
-	    }
-	};
 	
 	public StringProperty getkVorname() {
 		return kVorname;

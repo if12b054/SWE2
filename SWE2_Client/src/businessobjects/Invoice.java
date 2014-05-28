@@ -13,9 +13,13 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 
 public class Invoice extends AbstractObject{
+	/* general data */
+	private int id = -1;
+	private ObjectProperty<Date> creationDate = new SimpleObjectProperty<Date>();
+	
+	/* invoice data */
 	private ObservableList<InvoiceLine> invoiceLines;
 	private DoubleProperty amount = new SimpleDoubleProperty();
-	private ObjectProperty<Date> creationDate = new SimpleObjectProperty<Date>();
 	private ObjectProperty<Date> dueDate = new SimpleObjectProperty<Date>();
 	private StringProperty contact = new SimpleStringProperty();
 	private String message, comment;
@@ -25,15 +29,20 @@ public class Invoice extends AbstractObject{
 			ObservableList<InvoiceLine> invoiceLines, 
 			Date date, 
 			Date dueDate, 
-			String contact, 
+			Contact contact, 
 			String message, 
 			String comment,
 			Adress invAdress, 
 			Adress delAdress) {
-		this.invoiceLines = invoiceLines;	
+		this.setInvoiceLines(invoiceLines);	
 		this.creationDate.set(date);
 		this.dueDate.set(dueDate);
-		this.contact.set(contact);
+		if(contact.getType().equals("Person")) {
+			this.contact.set(contact.getVorname() + ", " + contact.getNachname());
+		} else {
+			this.contact.set(contact.getFirma());
+		}
+		
 		this.message = message;
 		this.comment = comment;
 		this.setInvAdress(invAdress);
@@ -102,5 +111,21 @@ public class Invoice extends AbstractObject{
 
 	public void setDelAdress(Adress delAdress) {
 		this.delAdress = delAdress;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public ObservableList<InvoiceLine> getInvoiceLines() {
+		return invoiceLines;
+	}
+
+	public void setInvoiceLines(ObservableList<InvoiceLine> invoiceLines) {
+		this.invoiceLines = invoiceLines;
 	}
 }

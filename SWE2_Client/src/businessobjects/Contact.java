@@ -80,6 +80,10 @@ public class Contact extends AbstractObject{
 	
 	/* getter and setter */
 	
+	public String getType() {
+		return typ.get();
+	}
+	
 	public String getTitel() {
 		return titel.get();
 	}

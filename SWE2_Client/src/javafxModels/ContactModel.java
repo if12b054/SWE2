@@ -19,8 +19,6 @@ import javafx.scene.image.ImageView;
 import javafxControllers.ContactController;
 
 public class ContactModel {
-	public String errorMsg;
-	
 	private ContactController controller;
 	public Contact curContact = null;
 	public Contact firmReference = null;
@@ -56,22 +54,22 @@ public class ContactModel {
 	}
 	
 	public void findFirm() {
-		/* send to proxy */
-		ObservableList<Contact> results = controller.getParent().getProxy().findFirm(firmenname.get());
-		
-		if(results == null || results.isEmpty()) {
-			//no Contact found
-			firmReference = null;
-			controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
-		} else if(results.size() == 1) {
-			//one Contact found
-			setFirmReference(results.get(0));
-		} else {
-			//multiple Contacts found
-			//open new dialog
-			controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, new ResultList(results));
+		if(controller.serverConnection()) {
+			ObservableList<Contact> results = controller.getParent().getProxy().findFirm(firmenname.get());
+			
+			if(results == null || results.isEmpty()) {
+				//no Contact found
+				firmReference = null;
+				controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
+			} else if(results.size() == 1) {
+				//one Contact found
+				setFirmReference(results.get(0));
+			} else {
+				//multiple Contacts found
+				//open new dialog
+				controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, new ResultList(results));
+			}
 		}
-		
 	}
 	
 	/* saving data and error checking */
@@ -80,20 +78,20 @@ public class ContactModel {
 	 * Checks for errors, then creates new Contact-Object and sends it over to proxy, which will send it to server,
 	 * where the new "Contact" is inserted into the database
 	 * */
-	public boolean upsertContact() {
+	public void upsertContact() {
 		int id;
 		Contact newContact;
 		
 		/* contact is person */
 		if(disableEditFirma.get()) {
 			if(!validPerson())
-				return false;
+				return;
 			newContact = new Contact(firma.get(), vorname.get(), nachname.get(), titel.get(), geburtsdatum.get());
 		}
 		/* contact is firm */
 		else {
 			if(!validFirm())
-				return false;
+				return;
 			newContact = new Contact(UID.get(), firmenname.get());
 		}
 		newContact.setAdresse(street.get(), PLZ.get(), city.get(), country.get());
@@ -105,20 +103,15 @@ public class ContactModel {
 		curContact = newContact;
 		
 		/* send to proxy */
-		id = controller.getParent().getProxy().upsertContact(newContact);
-		if(!controller.getParent().getProxy().getConError().isEmpty() || controller.getParent().getProxy().getConError() != null) {
-			errorMsg = controller.getParent().getProxy().getConError();
-			controller.getParent().getProxy().setConError(null);
-			return false;
-		} else {
-			firmReference.setId(id);
-			return true;
+		if(controller.serverConnection()) {
+			id = controller.getParent().getProxy().upsertContact(newContact);
+			curContact.setId(id);
 		}
 	}
 	
 	public boolean validPerson() {
-		if(firmReference == null) {
-			errorMsg = "Not a valid Firm! Try to click on 'Finden' button.";
+		if(firmReference == null && firma.get() != null && !firma.get().isEmpty()) {
+			controller.showErrorDialog("Not a valid Firm! Try to click on 'Finden' button.");
 			return false;
 		}
 		if(!validAdress())

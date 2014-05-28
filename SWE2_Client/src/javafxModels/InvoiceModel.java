@@ -1,14 +1,18 @@
-package javafxControllerFunctions;
+package javafxModels;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
+import eu.schudt.javafx.controls.calendar.DatePicker;
 import businessobjects.AbstractObject;
 import businessobjects.Adress;
+import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
 import applikation.Utils;
@@ -34,8 +38,9 @@ import ObserverPattern.Observer;
 import ObserverPattern.Subject;
 
 public class InvoiceModel implements Subject{
+	private Invoice curInvoice = null;
+	public Contact contactReference = null;
 	
-	private Invoice invoice;
 	private InvoiceController controller;
 	private ObservableList<InvoiceLine> invoiceLines = FXCollections.observableArrayList();
 	
@@ -51,7 +56,8 @@ public class InvoiceModel implements Subject{
 	private StringProperty delPostCode = new SimpleStringProperty();
 	private StringProperty delCity = new SimpleStringProperty();
 	private StringProperty delCountry = new SimpleStringProperty();
-	private ObjectProperty<Date> dueDate = new SimpleObjectProperty<Date>();
+	
+	private DatePicker dp;
 	
 	private ArrayList<Observer> MWStList = new ArrayList<Observer>(); //List which gets affected if MWSt ComboBox changes values
 	private int invoiceLineCount = 0;
@@ -60,9 +66,35 @@ public class InvoiceModel implements Subject{
 		this.controller = controller;
 	}
 	
+	public DatePicker createDatePicker() {
+		dp = new DatePicker(Locale.GERMAN);
+		dp.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		dp.getCalendarView().todayButtonTextProperty().set("Today");
+		dp.getCalendarView().setShowWeeks(false);
+		dp.getStylesheets().add("fxml/datepicker.css");
+		return dp;
+	}
+	
 	public void save() {
-		if(!errorsFound()) {
-			createInvoice();
+		if(contactReference == null) {
+			controller.showErrorDialog("You need to find a valid contact in database. Try searching for it.");
+			return;
+		} else if(!Utils.isDouble(MWSt.get())) {
+			controller.showErrorDialog("MWSt needs to be a double value.");
+			return;
+		} else if(!validInvoiceAdress()) {
+			return;
+		} else if(!validDeliveryAdress()) {
+			return;
+		} else if(dp.getSelectedDate() == null) {
+			return;
+		} else if( dp.invalidProperty().get()) {
+			return;
+		} else if(!controller.serverConnection()) {
+			controller.showErrorDialog("Cannot connect to server. Please try again later.");
+			return;
+		} else {
+			insertInvoice();
 		}
 	}
 	
@@ -70,22 +102,6 @@ public class InvoiceModel implements Subject{
 		closeChildren();
 		Stage stage = controller.getStage();
 		stage.close();
-	}
-	
-	public void clear() {
-		contact.set(null);
-		message.set(null);
-		comment.set(null);
-		invStreet.set(null);
-		invPostCode.set(null);
-		invCity.set(null);
-		invCountry.set(null);
-		delStreet.set(null);
-		delPostCode.set(null);
-		delCity.set(null);
-		delCountry.set(null);
-		
-		invoiceLines.clear();
 	}
 	
 	public void loadModel(AbstractObject model) {
@@ -109,31 +125,49 @@ public class InvoiceModel implements Subject{
 	}
 	
 	public void openInvoiceLine() {
-		setInvoiceLineCount(getInvoiceLineCount() + 1);
+		setInvoiceLineCount(getInvLineCnt() + 1);
 		InvoiceLineController invLineWindow = (InvoiceLineController) controller.showNewDialog(controller.CREATE_LINE_PATH, controller, null); //need to change
 		invLineWindow.setOnClose();
 	}
 	
-	public void createInvoice() {
+	public void insertInvoice() {
 		Date curDate = Calendar.getInstance().getTime();
 		Adress invAdress = new Adress(invStreet.get(), Integer.parseInt(invPostCode.get()), invCity.get(), invCountry.get());
 		Adress delAdress = new Adress(delStreet.get(), Integer.parseInt(delPostCode.get()), delCity.get(), delCountry.get());
-		invoice = new Invoice(invoiceLines, curDate, dueDate.getValue(), contact.get(), message.get(), comment.get(), invAdress, delAdress);
-		int invoiceID = controller.getParent().getProxy().insertRechnung(invoice);
+		curInvoice = new Invoice(invoiceLines, curDate, dp.getSelectedDate(), contactReference, message.get(), comment.get(), invAdress, delAdress);
+		int invoiceID = controller.getParent().getProxy().insertInvoice(curInvoice);
 	}
 	
-	public boolean errorsFound() {
-		if(dueDate.getValue() == null) {
-			controller.showErrorDialog("Due Date cannot be empty. Format: 2000-01-01");
-			return true;
-		} 
-		/* checking if postcode correct */
-		else if(!Utils.isInteger(invPostCode.get()) || !Utils.isInteger(delPostCode.get())) {
-			controller.showErrorDialog("The postcode needs to be numeric(0-9).");
-			return true;
-			
+	public boolean validInvoiceAdress() {
+		if(Utils.isNullOrEmpty(invStreet.get())) {
+			return false;
+		} else if(Utils.isNullOrEmpty(invCity.get())) {
+			return false;
+		} else if(Utils.isNullOrEmpty(invCountry.get())) {
+			return false;
+		} else if(Utils.isNullOrEmpty(invPostCode.get())) {
+			return false;
+		} else if(!Utils.isInteger(invPostCode.get())) {
+			controller.showErrorDialog("The invoice adress postcode needs to be numeric(0-9).");
+			return false;
 		}
-		return false;
+		return true;
+	}
+	
+	public boolean validDeliveryAdress() {
+		if(Utils.isNullOrEmpty(delStreet.get())) {
+			return false;
+		} else if(Utils.isNullOrEmpty(delCity.get())) {
+			return false;
+		} else if(Utils.isNullOrEmpty(delCountry.get())) {
+			return false;
+		} else if(Utils.isNullOrEmpty(delPostCode.get())) {
+			return false;
+		} else if(!Utils.isInteger(delPostCode.get())) {
+			controller.showErrorDialog("The delivery adress postcode needs to be numeric(0-9).");
+			return false;
+		}
+		return true;
 	}
 	
 	public void addInvoiceLineToTable(InvoiceLine rechnungszeile) {
@@ -150,7 +184,9 @@ public class InvoiceModel implements Subject{
 	                
 	            	InvoiceLine rZeile = controller.getSelectedInvoiceLine();
 	                if(rZeile != null) {
+	                	//TODO check if invoice line is already open
 	                	InvoiceLineController invLineWindow = (InvoiceLineController) controller.showNewDialog(controller.EDIT_LINE_PATH, controller, rZeile);
+	                	
 	                	invLineWindow.setOnClose();
 	                }
 	            }
@@ -172,6 +208,26 @@ public class InvoiceModel implements Subject{
 	    	closeChildren();
 	    }
 	};
+	
+	public ArrayList<Observer> getMWStList() {
+		return MWStList;
+	}
+	
+	public Double getMWSt() {
+		return Double.parseDouble(MWSt.get());
+	}
+	
+	public ObservableList<InvoiceLine> getInvoiceLines() {
+		return invoiceLines;
+	}
+
+	public int getInvLineCnt() {
+		return invoiceLineCount;
+	}
+
+	public void setInvoiceLineCount(int invoiceLineCount) {
+		this.invoiceLineCount = invoiceLineCount;
+	}
 	
 	/* returning properties */
 	public final StringProperty MWStProperty() {
@@ -222,10 +278,6 @@ public class InvoiceModel implements Subject{
 		return delCountry;
 	}
 	
-	public final ObjectProperty<Date> tillDateProperty() {
-		return dueDate;
-	}
-	
 	@Override
 	public void register(Observer o) {
 		MWStList.add(o);
@@ -242,23 +294,18 @@ public class InvoiceModel implements Subject{
 		}
 	}
 	
-	public ArrayList<Observer> getMWStList() {
-		return MWStList;
-	}
-	
-	public Double getMWSt() {
-		return Double.parseDouble(MWSt.get());
-	}
-	
-	public ObservableList<InvoiceLine> getInvoiceLines() {
-		return invoiceLines;
-	}
-
-	public int getInvoiceLineCount() {
-		return invoiceLineCount;
-	}
-
-	public void setInvoiceLineCount(int invoiceLineCount) {
-		this.invoiceLineCount = invoiceLineCount;
+	public void clear() {
+		contact.set(null);
+		message.set(null);
+		comment.set(null);
+		invStreet.set(null);
+		invPostCode.set(null);
+		invCity.set(null);
+		invCountry.set(null);
+		delStreet.set(null);
+		delPostCode.set(null);
+		delCity.set(null);
+		delCountry.set(null);
+		invoiceLines.clear();
 	}
 }

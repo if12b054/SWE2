@@ -80,10 +80,7 @@ public class ContactController extends AbstractController {
 	 * @param 	event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		boolean success = model.upsertContact();
-		if(!success) {
-			showErrorDialog(model.errorMsg);
-		}
+		model.upsertContact();
 	}
 	
 	/**

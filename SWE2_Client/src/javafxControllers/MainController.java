@@ -102,7 +102,7 @@ public class MainController extends AbstractController {
 	 * @param event
 	 */
 	@FXML void doFindContact(ActionEvent event) {
-		
+		invoiceModel.findContact();
 	}
 	
 	@Override
@@ -115,7 +115,6 @@ public class MainController extends AbstractController {
 		checkMark = new Image("file:assets/check.png");
 		noCheckMark = new Image("file:assets/nocheck.gif");
 		emptyImg = new Image("file:assets/transparent.png");
-		initDatePickers();
 		
 		/* bind contact data to model */
 		tfFirstName.textProperty().bindBidirectional(contactModel.getkVorname());
@@ -123,15 +122,9 @@ public class MainController extends AbstractController {
 		tfFirm.textProperty().bindBidirectional(contactModel.getkFirma());
 		lblContactCount.textProperty().bindBidirectional(contactModel.getkResultCount());
 		
-		/* add listeners from models */
-		tfFirstName.focusedProperty().addListener(contactModel.kontaktSearchListener);
-		tfLastName.focusedProperty().addListener(contactModel.kontaktSearchListener);
-		tfFirm.focusedProperty().addListener(contactModel.kontaktSearchListener);
-		dpFrom.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
-		dpTill.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
-		tfPriceFrom.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
-		tfPriceTill.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
-		tfContact.focusedProperty().addListener(invoiceModel.invoiceSearchListener);
+		tfPriceFrom.textProperty().bindBidirectional(invoiceModel.priceFromProperty());
+		tfPriceTill.textProperty().bindBidirectional(invoiceModel.priceTillProperty());
+		tfContact.textProperty().bindBidirectional(invoiceModel.contactProperty());
 		
 		tableContacts.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override
@@ -149,6 +142,20 @@ public class MainController extends AbstractController {
 		    }
 		});
 		
+		tableInvoices.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent mouseEvent) {
+		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+		            if(mouseEvent.getClickCount() == 2){
+		                Invoice invoice = (Invoice) tableInvoices.getSelectionModel().getSelectedItem();
+		                if(invoice != null) {
+		                	showNewDialog(INVOICE_PATH, MainController.this, invoice);
+		                }
+		            }
+		        }
+		    }
+		});
+		
 		/* set prompt texts */
 		tfFirstName.setPromptText("Vorname");
 		tfLastName.setPromptText("Nachname");
@@ -158,6 +165,14 @@ public class MainController extends AbstractController {
 		tfPriceFrom.setPromptText("Von");
 		tfPriceTill.setPromptText("Bis");
 		tfContact.setPromptText("Kontakt");
+	}
+	
+	@FXML private void doSearchContact(ActionEvent event) {
+		contactModel.searchKontakts();
+	}
+	
+	@FXML private void doSearchInvoice(ActionEvent event) {
+		invoiceModel.searchInvoices();
 	}
 	
 	/* GETTERs and SETTERs*/
@@ -174,19 +189,9 @@ public class MainController extends AbstractController {
 		tableInvoices.setItems(rechnungen);
 	}
 	
-	public void initDatePickers() {
-		/* Initialize and create the DatePickers */
-		dpFrom = new DatePicker(Locale.GERMAN);
-		dpFrom.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-		dpFrom.getCalendarView().todayButtonTextProperty().set("Today");
-		dpFrom.getCalendarView().setShowWeeks(false);
-		dpFrom.getStylesheets().add("fxml/datepicker.css");
-		dpTill = new DatePicker(Locale.GERMAN);
-		dpTill.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-		dpTill.getCalendarView().todayButtonTextProperty().set("Today");
-		dpTill.getCalendarView().setShowWeeks(false);
-		dpTill.getStylesheets().add("fxml/datepicker.css");
-
+	public void initDatePickers(DatePicker from, DatePicker till) {
+		dpFrom = from;
+		dpTill = till;
 		pDateFrom.getChildren().add(dpFrom);
 		pDateTill.getChildren().add(dpTill);
 	}
@@ -201,6 +206,10 @@ public class MainController extends AbstractController {
 
 	public Image getEmptyImg() {
 		return emptyImg;
+	}
+	
+	public void setValidContactImg(Image newImg) {
+		imgContactValid.setImage(newImg);
 	}
 	
 }
