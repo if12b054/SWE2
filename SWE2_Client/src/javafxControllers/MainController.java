@@ -102,7 +102,11 @@ public class MainController extends AbstractController {
 	 * @param event
 	 */
 	@FXML void doFindContact(ActionEvent event) {
-		invoiceModel.findContact();
+		if(Proxy.serverConnection()) {
+			invoiceModel.findContact();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 	}
 	
 	@Override
@@ -168,11 +172,19 @@ public class MainController extends AbstractController {
 	}
 	
 	@FXML private void doSearchContact(ActionEvent event) {
-		contactModel.searchKontakts();
+		if(Proxy.serverConnection()) {
+			contactModel.searchKontakts();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 	}
 	
 	@FXML private void doSearchInvoice(ActionEvent event) {
-		invoiceModel.searchInvoices();
+		if(Proxy.serverConnection()) {
+			invoiceModel.searchInvoices();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 	}
 	
 	/* GETTERs and SETTERs*/

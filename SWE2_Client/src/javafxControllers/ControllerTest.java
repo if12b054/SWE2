@@ -19,7 +19,7 @@ public class ControllerTest {
 	public void testKontakt2(){
 		Contact k;
 		//new KontaktModel(tfFirma.getText(), tfVname.getText(), tfNname.getText(), tfTitel.getText(), tfGebdatum.getText());
-		k = new Contact("Beispielfirma", "Max", "Mustermann", "Herr", "29.03.1934");
+		k = new Contact(null, "Max", "Mustermann", "Herr", "29.03.1934");
 		assertNotNull(k);
 	}
 	

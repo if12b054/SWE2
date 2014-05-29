@@ -36,8 +36,8 @@ public class Dataaccesslayer {
 		cmd1.execute();
 		
 		rs1 = cmd1.getGeneratedKeys();
-		
-        int adresseFK = rs1.getInt(1);
+		rs1.next();
+		int adresseFK = rs1.getInt(1);
         
 		PreparedStatement cmd;
 		if(k.typProperty().getValue().equals("Person")) {
@@ -176,7 +176,10 @@ public class Dataaccesslayer {
 					}
 				}
 			}
-
+			
+			//TODO bei contact, contact referenz ist ein Contact objekt! falls keine firma eingetragen wurde
+			// ist es null, habe mal vorübergehen statisch null eingetragen!
+			
 			while(rs.next()) {				
 				//Kontakt ist eine Firma
 				if(rs.getString("Vorname").equals(null)){
@@ -186,7 +189,9 @@ public class Dataaccesslayer {
 				
 				//Kontakt ein Mensch
 				if(!rs.getString("Vorname").equals(null)){
-					Contact k = new Contact(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
+//					Contact k = new Contact(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
+//							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
+					Contact k = new Contact(null, rs.getString("Vorname"), rs.getString("Nachname")
 							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
 					kontakte.add(k);
 				}

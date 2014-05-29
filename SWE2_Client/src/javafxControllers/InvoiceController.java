@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import proxy.Proxy;
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import businessobjects.AbstractObject;
 import businessobjects.InvoiceLine;
@@ -17,6 +18,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafxModels.InvoiceModel;
@@ -81,7 +83,11 @@ public class InvoiceController extends AbstractController {
 	 * @param event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		model.save();
+		if(Proxy.serverConnection()) {
+			model.save();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 	}
 	
 	/**
@@ -94,7 +100,11 @@ public class InvoiceController extends AbstractController {
 	}
 	
 	@FXML private void doOpenInvoiceLine(ActionEvent event) throws IOException {	
-		model.openInvoiceLine();
+		if(Proxy.serverConnection()) {
+			model.openInvoiceLine();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 	}
 	
 	@FXML private void doClear(ActionEvent event) {	
@@ -102,14 +112,12 @@ public class InvoiceController extends AbstractController {
 	}
 	
 	@FXML private void doFindContact(ActionEvent event) {	
-		model.findContact();
-	}
-	
-	@Override
-	public void setParent(AbstractController parent) {
-		this.parent = (MainController) parent;
+		if(Proxy.serverConnection()) {
+			model.findContact();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 		
-		this.getStage().onHiddenProperty().set(model.controllerClosing); //needs to be done here because stage is null in initialize...
 	}
 	
 	@Override
@@ -121,12 +129,22 @@ public class InvoiceController extends AbstractController {
 		return this.parent;
 	}
 	
+	@Override
+	public void setParent(AbstractController parent) {
+		this.parent = (MainController) parent;
+		this.getStage().onHiddenProperty().set(model.controllerClosing); //needs to be done here because stage is null in initialize...
+	}
+	
 	public void addInvoiceLineItems(ObservableList<InvoiceLine> newInvoiceLines) {
 		tableRechnungszeilen.setItems(newInvoiceLines);
 	}
 	
 	public InvoiceLine getSelectedInvoiceLine() {
 		return tableRechnungszeilen.getSelectionModel().getSelectedItem();
+	}
+	
+	public void setContactImg(Image image) {
+		imgRechKundeInput.setImage(image);
 	}
 	
 	public InvoiceModel getModel() {

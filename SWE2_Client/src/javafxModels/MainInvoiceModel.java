@@ -35,7 +35,6 @@ public class MainInvoiceModel {
 	}
 	
 	public void findContact() {
-		if(controller.serverConnection()) {
 			/* send to proxy */
 			ObservableList<Contact> results = controller.getProxy().findContact(contactString.get());
 			
@@ -50,28 +49,25 @@ public class MainInvoiceModel {
 				//multiple Contacts found
 				controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, new ResultList(results));
 			}
-		}
 	}
 	
 	public void searchInvoices() {
-		if(controller.serverConnection()) {
-			ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
-			
-			/* get search parms from TextFields */
-			Vector<Parameter> searchParms = new Vector<Parameter>();
-			searchParms.addElement(new Parameter(dpFrom.getSelectedDate()));
-			searchParms.addElement(new Parameter(dpTill.getSelectedDate()));
-			searchParms.addElement(new Parameter(priceFrom.getValue()));
-			searchParms.addElement(new Parameter(priceTill.getValue()));
-			searchParms.addElement(new Parameter(contactString.getValue()));
-			
-			/* get Rechnung objects from server according to searchParms */
-			rechnungen = controller.getProxy().searchRechnung(searchParms);
-			rResultCount.setValue(Integer.toString(rechnungen.size()));
-			
-			/* display rechnungen in table */
-			controller.setTableRechnungSuche(rechnungen);
-		}
+		ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
+		
+		/* get search parms from TextFields */
+		Vector<Parameter> searchParms = new Vector<Parameter>();
+		searchParms.addElement(new Parameter(dpFrom.getSelectedDate()));
+		searchParms.addElement(new Parameter(dpTill.getSelectedDate()));
+		searchParms.addElement(new Parameter(priceFrom.getValue()));
+		searchParms.addElement(new Parameter(priceTill.getValue()));
+		searchParms.addElement(new Parameter(contactString.getValue()));
+		
+		/* get Rechnung objects from server according to searchParms */
+		rechnungen = controller.getProxy().searchRechnung(searchParms);
+		rResultCount.setValue(Integer.toString(rechnungen.size()));
+		
+		/* display rechnungen in table */
+		controller.setTableRechnungSuche(rechnungen);
 	}
 	
 	public void setContactReference(Contact contact) {

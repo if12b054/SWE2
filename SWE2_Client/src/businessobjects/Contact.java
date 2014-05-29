@@ -30,9 +30,12 @@ public class Contact extends AbstractObject{
 	private Vector<String> adresse = new Vector<String>(); 
 	private StringProperty adresseProperty = new SimpleStringProperty();
 	
-	public Contact(String firma, String vorname, String nachname, String titel, String geburtsdatum) {
+	public Contact(Contact firmReference, String vorname, String nachname, String titel, String geburtsdatum) {
 		this.typ.set("Person");
-		this.firma.set(firma);
+		this.titel.set(titel);
+		firmaRef = firmReference;
+		if(firmReference != null)
+			this.firma.set(firmReference.getFirma());
 		this.vorname.set(vorname);
 		this.nachname.set(nachname);
 		this.geburtsdatum.set(geburtsdatum);

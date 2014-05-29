@@ -74,13 +74,26 @@ public class ContactController extends AbstractController {
 	}
 	
 	/**
+	 * exit application on hyperlink-click, first close all InvoiceLineControllers,
+	 * then clos InvoiceController
+	 * @param event
+	 */
+	@FXML protected void doExit(ActionEvent event) {
+		model.exit();
+	}
+	
+	/**
 	 * @called 	when save button gets clicked
 	 * @action 	activates function in model to check fields for errors and 
 	 * 			then send data along if none exist
 	 * @param 	event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		model.upsertContact();
+		if(Proxy.serverConnection()) {
+			model.upsertContact();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 	}
 	
 	/**
@@ -88,13 +101,15 @@ public class ContactController extends AbstractController {
 	 * @param event
 	 */
 	@FXML private void doContactSearch(ActionEvent event) {
-		model.findFirm();
+		if(Proxy.serverConnection()) {
+			model.findFirm();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+		}
 	}
 	
-	@FXML private void clearAll(ActionEvent event) {
-		tfFirma.setText(null);
-		imgFirmaInput.setImage(parent.getEmptyImg());
-		System.out.println("Contact form cleared.");
+	@FXML private void clear(ActionEvent event) {
+		model.clear();
 	}
 	
 	@Override
@@ -103,28 +118,9 @@ public class ContactController extends AbstractController {
 	}
 	
 	@Override
-	public void loadModel(AbstractObject model) {
-		Contact kModel = (Contact) model;
-		//set fields here
-		switch(kModel.typProperty().get())
-		{
-		case "Person":
-			System.out.println("It's a Person!");
-			tfTitel.setText(kModel.getTitel());
-			tfVname.setText(kModel.getVorname());
-			tfNname.setText(kModel.getNachname());
-			tfGebdatum.setText(kModel.getGeburtsdatum());
-			tfFirma.setText(kModel.getFirma());
-			
-			break;
-		case "Firma":
-			System.out.println("It's a Firm!");
-			break;
-		}
-//		tfStrasse.setText(kModel.getAdresse().get(0)); 
-//		tfPLZ.setText(kModel.getAdresse().get(1)); 
-//		tfOrt.setText(kModel.getAdresse().get(2)); 
-//		tfLand.setText(kModel.getAdresse().get(3)); 
+	public void loadModel(AbstractObject contact) {
+		Contact kModel = (Contact) contact;
+		model.loadModel(kModel);
 	}
 	
 	/**

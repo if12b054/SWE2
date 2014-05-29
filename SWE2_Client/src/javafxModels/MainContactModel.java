@@ -39,30 +39,23 @@ public class MainContactModel {
 		this.controller = controller;
 	}
 	
-	/**
-	 * happens on the fly, everytime a field on the Kontakt-page LOSES focus,
-	 * this function is called 
-	 * @param event
-	 */
 	public void searchKontakts() {
-		if(controller.serverConnection()) {
-			ObservableList<Contact> kontakte = FXCollections.observableArrayList();
-			int results = 0;
-			
-			/* get search parms from TextFields */
-			Vector<Parameter> searchParms = new Vector<Parameter>();
-			searchParms.addElement(new Parameter (kVorname.getValue()));
-			searchParms.addElement(new Parameter(kNachname.getValue()));
-			searchParms.addElement(new Parameter(kFirma.getValue()));
-			
-			/* get Rechnung objects from server according to searchParms */
-			kontakte = controller.getProxy().searchKontakt(searchParms);
-			results = kontakte.size();
-			
-			/* display kontakte in table */
-			kResultCount.setValue(Integer.toString(results));
-			controller.setTableKontaktSuche(kontakte);
-		}
+		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
+		int results = 0;
+		
+		/* get search parms from TextFields */
+		Vector<Parameter> searchParms = new Vector<Parameter>();
+		searchParms.addElement(new Parameter (kVorname.getValue()));
+		searchParms.addElement(new Parameter(kNachname.getValue()));
+		searchParms.addElement(new Parameter(kFirma.getValue()));
+		
+		/* get Rechnung objects from server according to searchParms */
+		kontakte = controller.getProxy().searchKontakt(searchParms);
+		results = kontakte.size();
+		
+		/* display kontakte in table */
+		kResultCount.setValue(Integer.toString(results));
+		controller.setTableKontaktSuche(kontakte);
 	}
 	
 	public StringProperty getkVorname() {
@@ -89,7 +82,4 @@ public class MainContactModel {
 	public void setkResultCount(StringProperty kResultCount) {
 		this.kResultCount = kResultCount;
 	}
-	
-	
-	
 }

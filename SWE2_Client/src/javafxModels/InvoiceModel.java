@@ -15,6 +15,7 @@ import businessobjects.Adress;
 import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
+import businessobjects.ResultList;
 import applikation.Utils;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -90,9 +91,6 @@ public class InvoiceModel implements Subject{
 			return;
 		} else if( dp.invalidProperty().get()) {
 			return;
-		} else if(!controller.serverConnection()) {
-			controller.showErrorDialog("Cannot connect to server. Please try again later.");
-			return;
 		} else {
 			insertInvoice();
 		}
@@ -108,20 +106,21 @@ public class InvoiceModel implements Subject{
 		
 	}
 	
-	public void closeChildren() {
-		Iterator <Observer> iterator = MWStList.iterator();
-		int i = 0;
-		while(iterator.hasNext()) {
-			Observer controller = iterator.next();
-			if(controller instanceof InvoiceLineController) {
-				System.out.println("Is an InvoiceLineController");
-				((InvoiceLineController) controller).close();
-			}
-		}
-	}
-	
 	public void findContact() {
-		ContactSearchController contactSearchWindow = (ContactSearchController) controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, null);
+		ObservableList<Contact> results = controller.getParent().getProxy().findFirm(contact.get());
+		
+		if(results == null || results.isEmpty()) {
+			//no Contact found
+			contactReference = null;
+			controller.setContactImg(controller.getParent().getNoCheckMark());
+		} else if(results.size() == 1) {
+			//one Contact found
+			contactReference = results.get(0);
+		} else {
+			//multiple Contacts found
+			//open new dialog
+			controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, new ResultList(results));
+		}
 	}
 	
 	public void openInvoiceLine() {
@@ -208,6 +207,18 @@ public class InvoiceModel implements Subject{
 	    	closeChildren();
 	    }
 	};
+	
+	public void closeChildren() {
+		Iterator <Observer> iterator = MWStList.iterator();
+		int i = 0;
+		while(iterator.hasNext()) {
+			Observer controller = iterator.next();
+			if(controller instanceof InvoiceLineController) {
+				System.out.println("Is an InvoiceLineController");
+				((InvoiceLineController) controller).close();
+			}
+		}
+	}
 	
 	public ArrayList<Observer> getMWStList() {
 		return MWStList;

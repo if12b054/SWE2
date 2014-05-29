@@ -1,9 +1,11 @@
 package javafxControllers;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import proxy.Proxy;
 import businessobjects.AbstractObject;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,8 +22,6 @@ public abstract class AbstractController implements Initializable {
 	public final String SEARCH_CONTACT_PATH = "/fxml/ContactSearchView.fxml";
 	public final String INVOICE_PATH = "/fxml/InvoiceView.fxml";
 	public final String ERROR_PATH = "/fxml/ErrorView.fxml";
-	
-	public final int SOCKET_NUMBER = 11111;
 	
 	private Stage stage;
 	
@@ -61,21 +61,6 @@ public abstract class AbstractController implements Initializable {
 		controller.setMsg(errorMsg);
 		stage.show();
 		return controller;
-	}
-	
-	public boolean serverConnection() {
-		Socket socket = null;
-		try {
-			socket = new Socket("127.0.0.1", SOCKET_NUMBER);
-			socket.close();
-		} catch (UnknownHostException e) {
-			showErrorDialog("Connection Error. Server might not be reachable.");
-			return false;
-		} catch (IOException e) {
-			showErrorDialog("I/O Exception thwron. Computer might explode any second.");
-			return false;
-		}
-		return true;
 	}
 	
 	public void closeStage() {

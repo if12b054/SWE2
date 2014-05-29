@@ -2,6 +2,7 @@ package javafxModels;
 
 import java.util.ArrayList;
 
+import proxy.Proxy;
 import businessobjects.AbstractObject;
 import businessobjects.Contact;
 import businessobjects.ResultList;
@@ -16,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import javafxControllers.ContactController;
 
 public class ContactModel {
@@ -36,6 +38,16 @@ public class ContactModel {
 	private StringProperty country = new SimpleStringProperty();
 
 	public ContactModel() {
+		/* if firm field gets modified manually, reference object gets deleted */
+		firma.addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				firmReference = null;
+				controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
+			}
+		});
+		
 		ChangeListener<String> canEditListener = new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
@@ -53,22 +65,25 @@ public class ContactModel {
 		firma.addListener(canEditListener);
 	}
 	
+	public void exit() {
+		Stage stage = controller.getStage();
+		stage.close();
+	}
+	
 	public void findFirm() {
-		if(controller.serverConnection()) {
-			ObservableList<Contact> results = controller.getParent().getProxy().findFirm(firmenname.get());
-			
-			if(results == null || results.isEmpty()) {
-				//no Contact found
-				firmReference = null;
-				controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
-			} else if(results.size() == 1) {
-				//one Contact found
-				setFirmReference(results.get(0));
-			} else {
-				//multiple Contacts found
-				//open new dialog
-				controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, new ResultList(results));
-			}
+		ObservableList<Contact> results = controller.getParent().getProxy().findFirm(firmenname.get());
+		
+		if(results == null || results.isEmpty()) {
+			//no Contact found
+			firmReference = null;
+			controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
+		} else if(results.size() == 1) {
+			//one Contact found
+			setFirmReference(results.get(0));
+		} else {
+			//multiple Contacts found
+			//open new dialog
+			controller.showNewDialog(controller.SEARCH_CONTACT_PATH, controller, new ResultList(results));
 		}
 	}
 	
@@ -79,14 +94,13 @@ public class ContactModel {
 	 * where the new "Contact" is inserted into the database
 	 * */
 	public void upsertContact() {
-		int id;
 		Contact newContact;
 		
 		/* contact is person */
 		if(disableEditFirma.get()) {
 			if(!validPerson())
 				return;
-			newContact = new Contact(firma.get(), vorname.get(), nachname.get(), titel.get(), geburtsdatum.get());
+			newContact = new Contact(firmReference, vorname.get(), nachname.get(), titel.get(), geburtsdatum.get());
 		}
 		/* contact is firm */
 		else {
@@ -103,15 +117,47 @@ public class ContactModel {
 		curContact = newContact;
 		
 		/* send to proxy */
-		if(controller.serverConnection()) {
-			id = controller.getParent().getProxy().upsertContact(newContact);
-			curContact.setId(id);
+		curContact.setId(controller.getParent().getProxy().upsertContact(newContact));
+		exit();
+	}
+	
+	public void loadModel(Contact contact) {
+		//set fields here
+		switch(contact.typProperty().get())
+		{
+		case "Person":
+			System.out.println("It's a Person!");
+			titel.set(contact.getTitel());
+			vorname.set(contact.getVorname());
+			nachname.set(contact.getNachname());
+			geburtsdatum.set(contact.getGeburtsdatum());
+			firma.set(contact.getFirma());
+			firmReference = contact.getFirmaRef();
+			break;
+		case "Firma":
+			System.out.println("It's a Firm!");
+			UID.set(contact.getUid());
+			firmenname.set(contact.getFirma());
+			break;
 		}
+		street.set(contact.getAdresse().get(0)); 
+		PLZ.set(contact.getAdresse().get(1)); 
+		city.set(contact.getAdresse().get(2)); 
+		country.set(contact.getAdresse().get(3)); 
 	}
 	
 	public boolean validPerson() {
-		if(firmReference == null && firma.get() != null && !firma.get().isEmpty()) {
-			controller.showErrorDialog("Not a valid Firm! Try to click on 'Finden' button.");
+		if(Utils.isNullOrEmpty(titel.get())) {
+			controller.showErrorDialog("No title entered!");
+			return false;
+		} else if(Utils.isNullOrEmpty(vorname.get())) {
+			controller.showErrorDialog("No first name entered!");
+			return false;
+		} else if(Utils.isNullOrEmpty(titel.get())) {
+			controller.showErrorDialog("No last name entered!");
+			return false;
+		} else if(Utils.convertToDate(geburtsdatum.get()) == null) {
+			controller.showErrorDialog("Wrong DateFormat! E.g. 2000-05-13");
 			return false;
 		}
 		if(!validAdress())
@@ -120,13 +166,32 @@ public class ContactModel {
 	}
 	
 	public boolean validFirm() {
-		
+		if(!Utils.isInteger(UID.get())) {
+			controller.showErrorDialog("Wrong UID!");
+			return false;
+		}
 		if(!validAdress())
 			return false;
 		return true;
 	}
 	
 	public boolean validAdress() {
+		if(Utils.isNullOrEmpty(street.get())) {
+			controller.showErrorDialog("No street entered!");
+			return false;
+		} else if(Utils.isNullOrEmpty(PLZ.get())) {
+			controller.showErrorDialog("No postcode entered!");
+			return false;
+		} else if(!Utils.isInteger(PLZ.get())) {
+			controller.showErrorDialog("Wrong postcode format! Only numbers(0-9) allowed!");
+			return false;
+		}else if(Utils.isNullOrEmpty(city.get())) {
+			controller.showErrorDialog("No city entered!");
+			return false;
+		} else if(Utils.isNullOrEmpty(country.get())) {
+			controller.showErrorDialog("No country entered!");
+			return false;
+		} 
 		return true;
 	}
 	
@@ -206,12 +271,12 @@ public class ContactModel {
 	public BooleanBinding disableEditFirmaBinding() {
 		return disableEditFirma;
 	}
+	
+	/* getter and setter */
 
 	public void setController(ContactController controller) {
 		this.controller = controller;
 	}
-	
-	/* getter and setter */
 	
 	public Contact getFirmReference() {
 		return firmReference;
@@ -221,5 +286,20 @@ public class ContactModel {
 		this.firmReference = firmReference;
 		firma.set(firmReference.getFirma());
 		controller.setFirmaFoundImg(controller.getParent().getCheckMark());
+	}
+	
+	public void clear() {
+		titel.set(null);
+		vorname.set(null);
+		nachname.set(null);
+		geburtsdatum.set(null);
+		firma.set(null);
+		firmenname.set(null);
+		UID.set(null);
+		street.set(null);
+		PLZ.set(null);
+		city.set(null);
+		country.set(null);
+		firmReference = null;
 	}
 }

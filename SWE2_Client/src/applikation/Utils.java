@@ -51,12 +51,8 @@ public final class Utils {
     // Add your own format here.
     private static List<SimpleDateFormat>
             dateFormats = new ArrayList<SimpleDateFormat>() {{
-            add(new SimpleDateFormat("M/dd/yyyy"));
-            add(new SimpleDateFormat("dd.M.yyyy"));
-            add(new SimpleDateFormat("M/dd/yyyy hh:mm:ss a"));
-            add(new SimpleDateFormat("dd.M.yyyy hh:mm:ss a"));
-            add(new SimpleDateFormat("dd.MMM.yyyy"));
-            add(new SimpleDateFormat("dd-MMM-yyyy"));
+            add(new SimpleDateFormat("yyyy-MM-dd"));
+            add(new SimpleDateFormat("dd-MM-yyyy"));
         }
     };
  
