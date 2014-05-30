@@ -13,7 +13,7 @@
   <children>
     <SplitPane dividerPositions="0.5439393115243488" focusTraversable="true" orientation="VERTICAL" prefHeight="841.0000999999975" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <items>
-        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="238.0" prefWidth="401.0">
+        <AnchorPane id="Content" fx:id="paneData" minHeight="0.0" minWidth="0.0" prefHeight="238.0" prefWidth="401.0">
           <children>
             <Label layoutX="14.0" layoutY="14.0" text="Fälligkeit" />
             <Pane fx:id="pFaelligkeit" layoutX="92.0" layoutY="12.0" prefHeight="21.0" prefWidth="144.0" />
@@ -21,8 +21,8 @@
             <ComboBox id="tfMWSt" fx:id="cbMWSt" layoutX="347.0" layoutY="12.0" value="0.15" />
             <Label layoutX="14.0" layoutY="43.0" text="Kunde" />
             <TextField id="tfPreisName" fx:id="tfKunde" layoutX="92.0" layoutY="40.0" prefWidth="176.0" />
-            <ImageView id="imgCmpInput" fx:id="imgRechKundeInput" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="279.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
-            <Button id="btnKontakteSuche" layoutX="316.0" layoutY="40.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="91.0" text="Finden" />
+            <ImageView id="imgCmpInput" fx:id="imgContactValid" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="279.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
+            <Button id="btnKontakteSuche" fx:id="btnFind" layoutX="316.0" layoutY="40.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="91.0" text="Finden" />
             <Label layoutX="12.0" layoutY="70.0" text="Nachricht" />
             <TextArea id="nachricht" fx:id="taMessage" layoutX="92.0" layoutY="70.0" prefHeight="43.0" prefWidth="315.0" wrapText="true" />
             <Label layoutX="12.0" layoutY="119.0" text="Kommentar" />
@@ -53,7 +53,7 @@
         </AnchorPane>
         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="280.0" prefWidth="401.0">
           <children>
-            <Button id="hinzufuegen" layoutX="324.0" layoutY="14.0" mnemonicParsing="false" onAction="#doOpenInvoiceLine" text="Hinzufügen" />
+            <Button id="hinzufuegen" fx:id="btnAdd" layoutX="324.0" layoutY="14.0" mnemonicParsing="false" onAction="#doOpenInvoiceLine" text="Hinzufügen" />
             <TableView id="tableRechnungen" fx:id="tableRechnungszeilen" layoutX="14.0" layoutY="44.0" prefHeight="212.0" prefWidth="393.0">
               <columns>
                 <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="96.0" text="Artikel">
@@ -84,8 +84,8 @@
               </columns>
             </TableView>
             <Hyperlink layoutX="132.0" layoutY="263.0" onAction="#doExit" text="Abbrechen" />
-            <Button id="btnRechnungen" layoutX="211.0" layoutY="264.0" mnemonicParsing="false" onAction="#doClear" prefWidth="89.0" text="Leeren" />
-            <Button id="btnRechnungen" layoutX="317.0" layoutY="264.0" mnemonicParsing="false" onAction="#doSave" prefWidth="89.0" text="Speichern" />
+            <Button id="btnRechnungen" fx:id="btnClear" layoutX="211.0" layoutY="264.0" mnemonicParsing="false" onAction="#doClear" prefWidth="89.0" text="Leeren" />
+            <Button id="btnRechnungen" fx:id="btnSave" layoutX="317.0" layoutY="264.0" mnemonicParsing="false" onAction="#doSave" prefWidth="89.0" text="Speichern" />
           </children>
         </AnchorPane>
       </items>

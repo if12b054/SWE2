@@ -1,33 +1,21 @@
 package javafxControllers;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import proxy.Proxy;
-import applikation.InputChecks;
 import businessobjects.AbstractObject;
-import businessobjects.Article;
 import businessobjects.Contact;
-import businessobjects.Invoice;
-import businessobjects.InvoiceLine;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import javafxModels.ContactModel;
 
 /**
@@ -35,11 +23,13 @@ import javafxModels.ContactModel;
  *
  */
 public class ContactController extends AbstractController {
+	private String title = "Kontakt";
+	
 	@FXML private Button btnKontakte, btnDelete;
 	@FXML private TextField tfTitel, tfVname, tfNname, tfGebdatum, tfFirma;
 	@FXML private TextField tfFname, tfUID;
 	@FXML private TextField tfStrasse, tfOrt, tfPLZ, tfLand;
-	@FXML private ImageView imgFirmaInput;
+	@FXML private ImageView imgContactValid;
 	
 	/* zum Ausblenden der jeweiligen Pane bei Eingabe in die andere */
 	@FXML private Pane firmaPane;
@@ -123,6 +113,16 @@ public class ContactController extends AbstractController {
 		model.loadModel(kModel);
 	}
 	
+	@Override
+	public String getTitle() {
+		return this.title;
+	}
+	
+	@Override
+	public void setFoundContact(Contact contact) {
+		model.setContactReference(contact);
+	}
+	
 	/**
 	 * Sets the image beside the firm field accordingly to input:
 	 * null = empty image
@@ -135,7 +135,7 @@ public class ContactController extends AbstractController {
 	    public void handle(KeyEvent event) {
 			if (event.getCode() == KeyCode.ENTER)
 	        {
-				model.findFirm();
+				doContactSearch(null);
 	        }
 	    }
 	};
@@ -144,7 +144,7 @@ public class ContactController extends AbstractController {
 		return this.parent;
 	}
 	
-	public void setFirmaFoundImg(Image newImg) {
-		imgFirmaInput.setImage(newImg);
+	public void setImgContactValid(Image newImg) {
+		imgContactValid.setImage(newImg);
 	}
 }

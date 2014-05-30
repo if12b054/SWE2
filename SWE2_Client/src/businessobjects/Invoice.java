@@ -1,6 +1,9 @@
 package businessobjects;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
@@ -15,18 +18,26 @@ import javafx.collections.ObservableList;
 public class Invoice extends AbstractObject{
 	/* general data */
 	private int id = -1;
-	private ObjectProperty<Date> creationDate = new SimpleObjectProperty<Date>();
+	private Contact contact;
+	
+	/* date stuff */
+	private Date todayDate, dueDate;
+	private StringProperty todayDateStr = new SimpleStringProperty();
+	private StringProperty dueDateStr = new SimpleStringProperty();
 	
 	/* invoice data */
 	private ObservableList<InvoiceLine> invoiceLines;
 	private DoubleProperty amount = new SimpleDoubleProperty();
-	private ObjectProperty<Date> dueDate = new SimpleObjectProperty<Date>();
-	private StringProperty contact = new SimpleStringProperty();
+	private StringProperty contactString = new SimpleStringProperty();
 	private String message, comment;
 	private Adress invAdress, delAdress;
+	private double MWSt;
+	
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 	
 	public Invoice(
-			ObservableList<InvoiceLine> invoiceLines, 
+			ObservableList<InvoiceLine> invoiceLines,
+			double MWSt,
 			Date date, 
 			Date dueDate, 
 			Contact contact, 
@@ -34,13 +45,18 @@ public class Invoice extends AbstractObject{
 			String comment,
 			Adress invAdress, 
 			Adress delAdress) {
+		this.MWSt = MWSt;
+		this.contact = contact;
+		this.todayDate = date;
+		this.dueDate = dueDate;
+		this.todayDateStr.set(format.format(date));
+		this.dueDateStr.set(format.format(dueDate));
+		
 		this.setInvoiceLines(invoiceLines);	
-		this.creationDate.set(date);
-		this.dueDate.set(dueDate);
 		if(contact.getType().equals("Person")) {
-			this.contact.set(contact.getVorname() + ", " + contact.getNachname());
+			this.contactString.set(contact.getVorname() + ", " + contact.getNachname());
 		} else {
-			this.contact.set(contact.getFirma());
+			this.contactString.set(contact.getFirma());
 		}
 		
 		this.message = message;
@@ -57,16 +73,16 @@ public class Invoice extends AbstractObject{
 		return amount;
 	}
 	
-	public final ObjectProperty<Date> datumProperty() {
-		return creationDate;
+	public final StringProperty datumProperty() {
+		return todayDateStr;
 	}
 	
-	public final ObjectProperty<Date> faelligkeitProperty() {
-		return dueDate;
+	public final StringProperty faelligkeitProperty() {
+		return dueDateStr;
 	}
 
 	public final StringProperty kundeProperty() {
-		return contact;
+		return contactString;
 	}
 	
 	public String getMessage() {
@@ -77,16 +93,18 @@ public class Invoice extends AbstractObject{
 		return comment;
 	}
 	
-	public final void setDatum(Date datum) {
-		this.creationDate.set(datum);
+	public final void setTodayDate(Date date) {
+		this.todayDate = date;
+		this.todayDateStr.set(format.format(date));
 	}
 	
-	public final void setFaelligkeit(Date faelligkeit) {
-		this.creationDate.set(faelligkeit);
+	public final void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+		this.dueDateStr.set(format.format(dueDate));
 	}
 	
 	public final void setKunde(String kunde) {
-		this.contact.set(kunde);
+		this.contactString.set(kunde);
 	}
 	
 	public void setNachricht(String message) {
@@ -127,5 +145,25 @@ public class Invoice extends AbstractObject{
 
 	public void setInvoiceLines(ObservableList<InvoiceLine> invoiceLines) {
 		this.invoiceLines = invoiceLines;
+	}
+
+	public double getMWSt() {
+		return MWSt;
+	}
+
+	public void setMWSt(double mWSt) {
+		MWSt = mWSt;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+	
+	public String getContactString() {
+		return contactString.get();
 	}
 }

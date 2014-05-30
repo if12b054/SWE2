@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import proxy.Proxy;
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import businessobjects.AbstractObject;
+import businessobjects.Contact;
 import businessobjects.InvoiceLine;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,18 +33,21 @@ import javafxModels.InvoiceModel;
  *
  */
 public class InvoiceController extends AbstractController {
+	private String title = "Rechnung";
+	
 	public MainController parent;
 	
 	private InvoiceModel model = new InvoiceModel(this);
 	
-	@FXML private Pane pFaelligkeit;
+	@FXML private Pane pFaelligkeit, paneData;
 	@FXML private TextField tfKunde;
 	@FXML private TextArea taMessage, taComment;
 	@FXML private TableView<InvoiceLine> tableRechnungszeilen;
-	@FXML private ImageView imgRechKundeInput;
+	@FXML private ImageView imgContactValid;
 	@FXML private ComboBox<String> cbMWSt;
 	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
 	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
+	@FXML private Button btnAdd, btnClear, btnSave, btnFind;
 	private DatePicker dpDeadLine;
 	
 	
@@ -83,11 +87,7 @@ public class InvoiceController extends AbstractController {
 	 * @param event
 	 */
 	@FXML private void doSave(ActionEvent event) {
-		if(Proxy.serverConnection()) {
-			model.save();
-		} else {
-			showErrorDialog("Connection Error. Server might not be reachable.");
-		}
+		model.save();
 	}
 	
 	/**
@@ -100,29 +100,47 @@ public class InvoiceController extends AbstractController {
 	}
 	
 	@FXML private void doOpenInvoiceLine(ActionEvent event) throws IOException {	
-		if(Proxy.serverConnection()) {
-			model.openInvoiceLine();
-		} else {
-			showErrorDialog("Connection Error. Server might not be reachable.");
-		}
+		model.openInvoiceLine();
 	}
 	
+	/**
+	 * if in creating mode form gets cleared
+	 * if in edit mode, printing happens
+	 * @param event
+	 */
 	@FXML private void doClear(ActionEvent event) {	
-		model.clear();
+		if(model.contactReference != null) {
+			model.print();
+		} else {
+			model.clear();
+		}
 	}
 	
 	@FXML private void doFindContact(ActionEvent event) {	
-		if(Proxy.serverConnection()) {
-			model.findContact();
-		} else {
-			showErrorDialog("Connection Error. Server might not be reachable.");
-		}
-		
+		model.findContact();
 	}
 	
-	@Override
-	public void loadModel(AbstractObject object) {
-		model.loadModel(object);
+	public void setEditMode() {
+		cbMWSt.setDisable(true);
+		dpDeadLine.setDisable(true);
+		
+		tfKunde.setEditable(false);
+		taMessage.setEditable(false);
+		taComment.setEditable(false);
+		
+		tfRStrasse.setEditable(false);
+		tfROrt.setEditable(false);
+		tfRPLZ.setEditable(false);
+		tfRLand.setEditable(false);
+		tfLStrasse.setEditable(false);
+		tfLOrt.setEditable(false);
+		tfLPLZ.setEditable(false);
+		tfLLand.setEditable(false);
+		
+		btnAdd.disableProperty().set(true);
+		btnSave.disableProperty().set(true);
+		btnFind.disableProperty().set(true);
+		btnClear.setText("Drucken");
 	}
 	
 	public MainController getParent() {
@@ -130,9 +148,23 @@ public class InvoiceController extends AbstractController {
 	}
 	
 	@Override
+	public void loadModel(AbstractObject object) {
+		model.loadModel(object);
+	}
+	
+	@Override
 	public void setParent(AbstractController parent) {
 		this.parent = (MainController) parent;
-		this.getStage().onHiddenProperty().set(model.controllerClosing); //needs to be done here because stage is null in initialize...
+	}
+	
+	@Override
+	public String getTitle() {
+		return this.title;
+	}
+	
+	@Override
+	public void setFoundContact(Contact contact) {
+		model.setContactReference(contact);
 	}
 	
 	public void addInvoiceLineItems(ObservableList<InvoiceLine> newInvoiceLines) {
@@ -143,11 +175,11 @@ public class InvoiceController extends AbstractController {
 		return tableRechnungszeilen.getSelectionModel().getSelectedItem();
 	}
 	
-	public void setContactImg(Image image) {
-		imgRechKundeInput.setImage(image);
-	}
-	
 	public InvoiceModel getModel() {
 		return model;
+	}
+	
+	public void setImgContactValid(Image newImg) {
+		imgContactValid.setImage(newImg);
 	}
 }

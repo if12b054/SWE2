@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import utils.Parameter;
 import javafx.collections.ObservableList;
-import applikation.Parameter;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;

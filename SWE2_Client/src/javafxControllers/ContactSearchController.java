@@ -18,23 +18,29 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class ContactSearchController extends AbstractController {
-	ContactController parent;
+	String title = "Kontakt Finden";
+	AbstractController parent = null;
 	
 	/* "Kontakte/Suche" Page: */
 	@FXML private TableView<Contact> tableContacts;
-	
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+		
+	}
+	
+	@Override
+	public void loadModel(AbstractObject model) {
+		ResultList resultList = (ResultList) model;
+		tableContacts.setItems(resultList.getResults());
 		tableContacts.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override
 		    public void handle(MouseEvent mouseEvent) {
 		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
 		            if(mouseEvent.getClickCount() == 2){
-		                System.out.println("Double clicked");
-		                Contact kontakt = (Contact) tableContacts.getSelectionModel().getSelectedItem();
-		                if(kontakt != null) {
-		                	System.out.println("KONTAKT: " + kontakt.getNachname());
-		                	parent.model.setFirmReference(kontakt);
+		                Contact contact = tableContacts.getSelectionModel().getSelectedItem();
+		                if(contact != null) {
+		                	parent.setFoundContact(contact);
 		                	closeStage();
 		                }
 		            }
@@ -44,14 +50,13 @@ public class ContactSearchController extends AbstractController {
 	}
 	
 	@Override
-	public void loadModel(AbstractObject model) {
-		ResultList resultList = (ResultList) model;
-		tableContacts.setItems(resultList.getResults());
+	public void setParent(AbstractController parent) {
+		this.parent = parent;
 	}
 	
 	@Override
-	public void setParent(AbstractController parent) {
-		this.parent = (ContactController) parent;
+	public String getTitle() {
+		return this.title;
 	}
 	
 }

@@ -12,9 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import utils.Parameter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import applikation.Parameter;
 import businesslayer.Businesslayer;
 import businessobjects.Article;
 import businessobjects.Contact;

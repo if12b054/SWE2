@@ -3,10 +3,10 @@ package javafxModels;
 import java.util.ArrayList;
 
 import proxy.Proxy;
+import utils.ErrorCheckUtils;
 import businessobjects.AbstractObject;
 import businessobjects.Contact;
 import businessobjects.ResultList;
-import applikation.Utils;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -36,26 +36,12 @@ public class ContactModel {
 	private StringProperty PLZ = new SimpleStringProperty();
 	private StringProperty city = new SimpleStringProperty();
 	private StringProperty country = new SimpleStringProperty();
+	
+	private boolean settingReference = false;
 
 	public ContactModel() {
 		/* if firm field gets modified manually, reference object gets deleted */
-		firma.addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				firmReference = null;
-				controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
-			}
-		});
-		
-		ChangeListener<String> canEditListener = new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable,
-					String oldValue, String newValue) {
-				disableEditPerson.invalidate();
-				disableEditFirma.invalidate();
-			}
-		};
+		firma.addListener(delContactReference);
 		UID.addListener(canEditListener);
 		titel.addListener(canEditListener);
 		vorname.addListener(canEditListener);
@@ -76,10 +62,11 @@ public class ContactModel {
 		if(results == null || results.isEmpty()) {
 			//no Contact found
 			firmReference = null;
-			controller.setFirmaFoundImg(controller.getParent().getNoCheckMark());
+			controller.setImgContactValid(controller.getParent().getNoCheckMark());
 		} else if(results.size() == 1) {
 			//one Contact found
-			setFirmReference(results.get(0));
+			setContactReference(results.get(0));
+			controller.setImgContactValid(controller.getParent().getCheckMark());
 		} else {
 			//multiple Contacts found
 			//open new dialog
@@ -147,16 +134,16 @@ public class ContactModel {
 	}
 	
 	public boolean validPerson() {
-		if(Utils.isNullOrEmpty(titel.get())) {
+		if(ErrorCheckUtils.isNullOrEmpty(titel.get())) {
 			controller.showErrorDialog("No title entered!");
 			return false;
-		} else if(Utils.isNullOrEmpty(vorname.get())) {
+		} else if(ErrorCheckUtils.isNullOrEmpty(vorname.get())) {
 			controller.showErrorDialog("No first name entered!");
 			return false;
-		} else if(Utils.isNullOrEmpty(titel.get())) {
+		} else if(ErrorCheckUtils.isNullOrEmpty(titel.get())) {
 			controller.showErrorDialog("No last name entered!");
 			return false;
-		} else if(Utils.convertToDate(geburtsdatum.get()) == null) {
+		} else if(ErrorCheckUtils.convertToDate(geburtsdatum.get()) == null) {
 			controller.showErrorDialog("Wrong DateFormat! E.g. 2000-05-13");
 			return false;
 		}
@@ -166,7 +153,7 @@ public class ContactModel {
 	}
 	
 	public boolean validFirm() {
-		if(!Utils.isInteger(UID.get())) {
+		if(!ErrorCheckUtils.isInteger(UID.get())) {
 			controller.showErrorDialog("Wrong UID!");
 			return false;
 		}
@@ -176,19 +163,19 @@ public class ContactModel {
 	}
 	
 	public boolean validAdress() {
-		if(Utils.isNullOrEmpty(street.get())) {
+		if(ErrorCheckUtils.isNullOrEmpty(street.get())) {
 			controller.showErrorDialog("No street entered!");
 			return false;
-		} else if(Utils.isNullOrEmpty(PLZ.get())) {
+		} else if(ErrorCheckUtils.isNullOrEmpty(PLZ.get())) {
 			controller.showErrorDialog("No postcode entered!");
 			return false;
-		} else if(!Utils.isInteger(PLZ.get())) {
+		} else if(!ErrorCheckUtils.isInteger(PLZ.get())) {
 			controller.showErrorDialog("Wrong postcode format! Only numbers(0-9) allowed!");
 			return false;
-		}else if(Utils.isNullOrEmpty(city.get())) {
+		}else if(ErrorCheckUtils.isNullOrEmpty(city.get())) {
 			controller.showErrorDialog("No city entered!");
 			return false;
-		} else if(Utils.isNullOrEmpty(country.get())) {
+		} else if(ErrorCheckUtils.isNullOrEmpty(country.get())) {
 			controller.showErrorDialog("No country entered!");
 			return false;
 		} 
@@ -200,19 +187,19 @@ public class ContactModel {
 	private BooleanBinding disableEditFirma = new BooleanBinding() {
 		@Override
 		protected boolean computeValue() {
-			return !Utils.isNullOrEmpty(vorname.get())
-					|| !Utils.isNullOrEmpty(nachname.get())
-					|| !Utils.isNullOrEmpty(geburtsdatum.get())
-					|| !Utils.isNullOrEmpty(firma.get())
-					|| !Utils.isNullOrEmpty(titel.get());
+			return !ErrorCheckUtils.isNullOrEmpty(vorname.get())
+					|| !ErrorCheckUtils.isNullOrEmpty(nachname.get())
+					|| !ErrorCheckUtils.isNullOrEmpty(geburtsdatum.get())
+					|| !ErrorCheckUtils.isNullOrEmpty(firma.get())
+					|| !ErrorCheckUtils.isNullOrEmpty(titel.get());
 		}
 	};
 
 	private BooleanBinding disableEditPerson = new BooleanBinding() {
 		@Override
 		protected boolean computeValue() {
-			return !Utils.isNullOrEmpty(firmenname.get())
-					|| !Utils.isNullOrEmpty(UID.get());
+			return !ErrorCheckUtils.isNullOrEmpty(firmenname.get())
+					|| !ErrorCheckUtils.isNullOrEmpty(UID.get());
 		}
 	};
 	
@@ -281,11 +268,11 @@ public class ContactModel {
 	public Contact getFirmReference() {
 		return firmReference;
 	}
-
-	public void setFirmReference(Contact firmReference) {
-		this.firmReference = firmReference;
+	
+	public void setContactReference(Contact contact) {
+		this.firmReference = contact;
 		firma.set(firmReference.getFirma());
-		controller.setFirmaFoundImg(controller.getParent().getCheckMark());
+		controller.setImgContactValid(controller.getParent().getCheckMark());
 	}
 	
 	public void clear() {
@@ -302,4 +289,25 @@ public class ContactModel {
 		country.set(null);
 		firmReference = null;
 	}
+	
+	/* listener */
+	private ChangeListener<String> canEditListener = new ChangeListener<String>() {
+		@Override
+		public void changed(ObservableValue<? extends String> observable,
+				String oldValue, String newValue) {
+			disableEditPerson.invalidate();
+			disableEditFirma.invalidate();
+		}
+	};
+	
+	private ChangeListener<String> delContactReference = new ChangeListener<String>() {
+		@Override
+		public void changed(ObservableValue<? extends String> observable,
+				String oldValue, String newValue) {
+			if(!settingReference) {
+				firmReference = null;
+				controller.setImgContactValid(controller.getParent().getNoCheckMark());
+			}
+		}
+	};
 }

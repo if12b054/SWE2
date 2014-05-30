@@ -2,54 +2,26 @@ package javafxControllers;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.Vector;
 
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import proxy.Proxy;
-import applikation.Parameter;
-import applikation.Utils;
-import applikation.InputChecks;
-import businessobjects.AbstractObject;
-import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
-import businessobjects.InvoiceLine;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.StringConverter;
 import javafxModels.MainContactModel;
 import javafxModels.MainInvoiceModel;
 
@@ -68,6 +40,7 @@ public class MainController extends AbstractController {
 	@FXML private ImageView imgContactValid;
 	@FXML private TableView<Invoice> tableInvoices;
 	@FXML private Pane pDateFrom, pDateTill;
+	private Contact foundContact = null;
 	
 	/* Allgmein benörigte Daten */
 	private MainContactModel contactModel;
@@ -169,6 +142,16 @@ public class MainController extends AbstractController {
 		tfPriceFrom.setPromptText("Von");
 		tfPriceTill.setPromptText("Bis");
 		tfContact.setPromptText("Kontakt");
+		
+		tfFirstName.addEventHandler(KeyEvent.KEY_PRESSED, contactHandler);
+		tfLastName.addEventHandler(KeyEvent.KEY_PRESSED, contactHandler);
+		tfFirm.addEventHandler(KeyEvent.KEY_PRESSED, contactHandler);
+		
+		dpFrom.addEventHandler(KeyEvent.KEY_PRESSED, invoiceHandler);
+		dpTill.addEventHandler(KeyEvent.KEY_PRESSED, invoiceHandler);
+		tfPriceFrom.addEventHandler(KeyEvent.KEY_PRESSED, invoiceHandler);
+		tfPriceTill.addEventHandler(KeyEvent.KEY_PRESSED, invoiceHandler);
+		tfContact.addEventHandler(KeyEvent.KEY_PRESSED, isContact);
 	}
 	
 	@FXML private void doSearchContact(ActionEvent event) {
@@ -185,6 +168,50 @@ public class MainController extends AbstractController {
 		} else {
 			showErrorDialog("Connection Error. Server might not be reachable.");
 		}
+	}
+	
+	private EventHandler<KeyEvent> contactHandler = new EventHandler<KeyEvent>()
+	{
+	    @Override
+	    public void handle(KeyEvent event) {
+			if (event.getCode() == KeyCode.ENTER)
+	        {
+				doSearchContact(null);
+	        }
+	    }
+	};
+	
+	private EventHandler<KeyEvent> invoiceHandler = new EventHandler<KeyEvent>()
+	{
+	    @Override
+	    public void handle(KeyEvent event) {
+			if (event.getCode() == KeyCode.ENTER)
+	        {
+				doSearchInvoice(null);
+	        }
+	    }
+	};
+	
+	/**
+	 * Sets the image beside the firm field accordingly to input:
+	 * null = empty image
+	 * correct(checked with server) = check mark
+	 * false(checked with server) = cross mark
+	 */
+	private EventHandler<KeyEvent> isContact = new EventHandler<KeyEvent>()
+	{
+	    @Override
+	    public void handle(KeyEvent event) {
+			if (event.getCode() == KeyCode.ENTER)
+	        {
+				doFindContact(null);
+	        }
+	    }
+	};
+	
+	@Override
+	public void setFoundContact(Contact contact) {
+		invoiceModel.setContactReference(contact);
 	}
 	
 	/* GETTERs and SETTERs*/
@@ -207,7 +234,9 @@ public class MainController extends AbstractController {
 		pDateFrom.getChildren().add(dpFrom);
 		pDateTill.getChildren().add(dpTill);
 	}
-
+	
+	/* valid contact image handling */
+	
 	public Image getCheckMark() {
 		return checkMark;
 	}
@@ -220,7 +249,7 @@ public class MainController extends AbstractController {
 		return emptyImg;
 	}
 	
-	public void setValidContactImg(Image newImg) {
+	public void setImgContactValid(Image newImg) {
 		imgContactValid.setImage(newImg);
 	}
 	

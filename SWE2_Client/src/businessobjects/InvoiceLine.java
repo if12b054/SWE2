@@ -1,6 +1,6 @@
 package businessobjects;
 
-import ObserverPattern.Observer;
+import utils.Observer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
@@ -10,27 +10,32 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class InvoiceLine extends AbstractObject {
+public class InvoiceLine extends AbstractObject implements Observer {
 	private int idNumber = -1; //just for GUI-updating purposes, not for DB!
 	private IntegerProperty menge = new SimpleIntegerProperty();
 	private DoubleProperty stueckPreis = new SimpleDoubleProperty();
 	private DoubleProperty brutto = new SimpleDoubleProperty();
+	private DoubleProperty netto = new SimpleDoubleProperty();
 	private StringProperty articleName = new SimpleStringProperty();
 	private Article article;
-	
-	private double netto;
+	private double MWSt;
 	
 	public InvoiceLine(Article article, int newMenge, double newMWSt) {
+		this.MWSt = newMWSt;
 		this.setArticle(article);
 		this.articleName.set(article.getName());
 		this.menge.set(newMenge);
 		this.stueckPreis.set(article.getPrice());
-		netto = Math.round(article.getPrice()*menge.get()*100.0)/100.0;
+		netto.set(Math.round(article.getPrice()*menge.get()*100.0)/100.0);
 		brutto.set(Math.round((article.getPrice()*menge.get()*(newMWSt+1))*100.0)/100.0);
 	}
 	
 	public final StringProperty articleNameProperty() {
 		return articleName;
+	}
+	
+	public final DoubleProperty nettoProperty() {
+		return netto;
 	}
 
 	public final DoubleProperty stueckPreisProperty() {
@@ -48,6 +53,7 @@ public class InvoiceLine extends AbstractObject {
 	/* getters and setters */
 	
 	public void updateMWSt(double newMWSt) {
+		this.MWSt = newMWSt;
 		brutto.set(Math.round((article.getPrice()*menge.get()*(newMWSt+1))*100.0)/100.0);
 	}
 	
@@ -66,9 +72,15 @@ public class InvoiceLine extends AbstractObject {
 	public final int getMenge() {
 		return menge.get();
 	}
+	
+	public void setMenge(int menge) {
+		this.menge.set(menge);
+		netto.set(Math.round(article.getPrice()*menge*100.0)/100.0);
+		brutto.set(Math.round((article.getPrice()*menge*(MWSt+1))*100.0)/100.0);
+	}
 
 	public double getNetto() {
-		return netto;
+		return netto.get();
 	}
 
 	public int getIdNumber() {
@@ -85,5 +97,10 @@ public class InvoiceLine extends AbstractObject {
 
 	public void setArticle(Article article) {
 		this.article = article;
+	}
+
+	@Override
+	public void update(double newMWSt) {
+		brutto.set(Math.round((article.getPrice()*menge.get()*(newMWSt+1))*100.0)/100.0);
 	}
 }

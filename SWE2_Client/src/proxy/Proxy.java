@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 
+import utils.Parameter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import applikation.Parameter;
 import businessobjects.Adress;
 import businessobjects.Article;
 import businessobjects.Contact;
@@ -41,7 +41,7 @@ public class Proxy {
 	/**
 	 * Happens on Enter in reference field for firm in ContactController
 	 * @param 	id	an id in the contacts table
-	 * @return 		if is a firm or a person, true if firm
+	 * @return 		the found firms
 	 */
 	public ObservableList<Contact> findFirm(String firm) {
 		Contact contact = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
@@ -51,6 +51,9 @@ public class Proxy {
 		
 		Contact contact2 = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
 		contacts.add(contact2);
+		
+		String action = "just so server doesn't throw socketexception...";
+		sendMessage(action, "some xml here");
 		
 		return contacts;
 	}
@@ -63,6 +66,9 @@ public class Proxy {
 		
 		Contact contact2 = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
 		contacts.add(contact2);
+		
+		String action = "just so server doesn't throw socketexception...";
+		sendMessage(action, "some xml here");
 		
 		return contacts;
 	}
@@ -126,6 +132,9 @@ public class Proxy {
 		
 		System.out.println("inserting Recite with date: " + r.datumProperty().get());
 		
+		action = "just so server doesn't throw socketexception...";
+		sendMessage(action, "some xml here");
+		
 		return 0;
 	}
 	
@@ -138,14 +147,6 @@ public class Proxy {
 	public ObservableList<Contact> searchKontakt(Vector<Parameter> searchParms) {
 		String action = "search/Kontakt";
 		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
-		
-		System.out.println("Searching for Kontakt: ");
-		System.out.println("Vorname: " + searchParms.get(0).getStringParameter());
-		System.out.println("Nachname: " + searchParms.get(1).getStringParameter());
-		System.out.println("Firma: " + searchParms.get(2).getStringParameter());
-		
-		
-		/* Server-SQL abfr hier */
 	
 		try {
 			String xml = serializeKontaktSearch(searchParms);
@@ -153,15 +154,15 @@ public class Proxy {
 			
 			String xml2 = readMessage();
 			kontakte = deserializeKontaktSearch(xml2);
-			
+			socket.close();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		
-		String typ="Person", firma="Smartass GmbH", vorname="Bart", nachname="Simpson";
+		/* test while adress is not returned proeprly! */
+		String vorname="Bart", nachname="Simpson";
 		Contact testKontakt = new Contact(null, vorname, nachname, "Herr", "10-10-2012");
 		testKontakt.setAdresse("Hauptgasse", "12345", "Wieeen", "Austria!");
 		kontakte.add(testKontakt);
@@ -199,7 +200,8 @@ public class Proxy {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-		
+		action = "just so server doesn't throw socketexception...";
+		sendMessage(action, "some xml here");
 		Contact contact = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
 		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
 		
@@ -208,7 +210,7 @@ public class Proxy {
 		ObservableList<InvoiceLine> testRechnungszeilen = FXCollections.observableArrayList();
 		testRechnungszeilen.add(new InvoiceLine(new Article(6, "Artikel", 12.3), 13, 0.20));
 		String nachricht="Deree", kommentar="Könnt wichtig sein...";
-		rechnungen.add(new Invoice(testRechnungszeilen, new Date(), new Date(), contact, nachricht, kommentar, 
+		rechnungen.add(new Invoice(testRechnungszeilen, 0.25, new Date(), new Date(), contact, nachricht, kommentar, 
 				new Adress("streeeet", 11221, "cityyy", "countryyyyyyy"), 
 				new Adress("strettt", 12345, "cityyy", "countryyyyyyy")));
 		/* TEST-ENDE */

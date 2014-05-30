@@ -73,7 +73,7 @@
                   </rowConstraints>
                 </GridPane>
                 <Button id="btnKontakteSuche" layoutX="294.0" layoutY="121.0" mnemonicParsing="false" onAction="#doContactSearch" prefWidth="91.0" text="Finden" />
-                <ImageView id="imgCmpInput" fx:id="imgFirmaInput" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="259.0" layoutY="121.0" pickOnBounds="true" preserveRatio="true" />
+                <ImageView id="imgCmpInput" fx:id="imgContactValid" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="259.0" layoutY="121.0" pickOnBounds="true" preserveRatio="true" />
                 <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Person" />
               </children>
             </Pane>

@@ -4,7 +4,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import ObserverPattern.Observer;
+import proxy.Proxy;
+import utils.Observer;
 import businessobjects.AbstractObject;
 import businessobjects.Article;
 import businessobjects.Contact;
@@ -23,7 +24,8 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafxModels.InvoiceLineModel;
 
-public class InvoiceLineController extends AbstractController implements Observer {
+public class InvoiceLineController extends AbstractController {
+	private String title = "Rechnungszeile";
 	protected InvoiceController parent;
 	protected int existingID = -1; //if recite-line gets edited
 	@FXML protected ComboBox<Article> cbArtikel;
@@ -50,24 +52,14 @@ public class InvoiceLineController extends AbstractController implements Observe
 	}
 	
 	@Override
-	public void loadModel(AbstractObject model) {
-		InvoiceLine invLineModel = (InvoiceLine) model;
-		
-		existingID = invLineModel.getIdNumber();
-		cbArtikel.setValue(invLineModel.getArticle());
-		cbMenge.setValue(invLineModel.getMenge());
-		lblNetto.setText(Double.toString(invLineModel.getNetto()));
-		lblMWSt.setText(parent.getModel().getMWSt().toString());
-		lblBrutto.setText(Double.toString(invLineModel.getBrutto()));
-		lblStueckPreis.setText(Double.toString(invLineModel.getStueckPreis()));
-		
-		parent.getModel().register(this);
-	}
-	
-	@Override
 	public void setParent(AbstractController newParent) {
 		parent = (InvoiceController) newParent;
 		customInitialize();
+	}
+	
+	@Override
+	public String getTitle() {
+		return this.title;
 	}
 	
 	/**
@@ -80,7 +72,6 @@ public class InvoiceLineController extends AbstractController implements Observe
 	}
 	
 	public void close() {
-		//parent.getFunctions().getMWStList().remove(this);
 		Stage stage = this.getStage();
 		stage.close();
 	}
@@ -90,7 +81,15 @@ public class InvoiceLineController extends AbstractController implements Observe
 	 * @param event
 	 */
 	@FXML protected void doDelete(ActionEvent event) {
-		
+		int i = 0;
+		for(InvoiceLine r : parent.getModel().getInvoiceLines()) {
+			if(r.getIdNumber() == existingID) {
+				parent.getModel().getInvoiceLines().remove(i);
+				break;
+			}
+			i++;
+		}
+		close();
 	}
 	
 	/**
@@ -98,9 +97,13 @@ public class InvoiceLineController extends AbstractController implements Observe
 	 * also the listeners
 	 */
 	public void customInitialize() {
-		parent.getModel().register(this);
 		/* get articles from db and set them, so only article-name gets displayed */
-		articles = parent.getParent().getProxy().getArticles();
+		if(Proxy.serverConnection()) {
+			articles = parent.getParent().getProxy().getArticles();
+		} else {
+			showErrorDialog("Connection Error. Server might not be reachable.");
+			close();
+		}
 		cbArtikel.getItems().addAll(articles);
 		cbArtikel.getSelectionModel().selectFirst(); //select the first element
         cbArtikel.setCellFactory(new Callback<ListView<Article>,ListCell<Article>>(){
@@ -131,18 +134,6 @@ public class InvoiceLineController extends AbstractController implements Observe
 	}
 	
 	/**
-	 * after stage gets created, this event is set, so when the window closes,
-	 * it gets unregistered from observerlist
-	 */
-	public void setOnClose() {
-		this.getStage().setOnHiding(new EventHandler<WindowEvent>() {
-		      public void handle(WindowEvent event) {
-		    	  parent.getModel().unregister(InvoiceLineController.this);
-		      }
-		});
-	}
-	
-	/**
 	 * On button click
 	 * @param event
 	 */
@@ -150,15 +141,25 @@ public class InvoiceLineController extends AbstractController implements Observe
 		/* get invoiceLine object from model */
 		model.updateValues();
 		InvoiceLine invoiceLine = model.getInvoiceLine();
-		
+		int i = 0;
 		/* is a new invoice-line */
 		if(existingID == -1) {
-			invoiceLine.setIdNumber(parent.getModel().getInvLineCnt());
-			parent.getModel().addInvoiceLineToTable(invoiceLine);
+			boolean articleAlreadyAdded = false;
+			for(InvoiceLine r : parent.getModel().getInvoiceLines()) {
+				if(r.getArticle().getName().equals(invoiceLine.getArticle().getName())) {
+					articleAlreadyAdded = true;
+					r.setMenge(r.getMenge() + invoiceLine.getMenge());
+					break;
+				}
+				i++;
+			}
+			if(!articleAlreadyAdded) {
+				invoiceLine.setIdNumber(parent.getModel().getInvLineCnt());
+				parent.getModel().addInvoiceLineToTable(invoiceLine);
+			}
 		}
 		/* invoice-line already exists */
 		else {
-			int i = 0;
 			for(InvoiceLine r : parent.getModel().getInvoiceLines()) {
 				if(r.getIdNumber() == existingID) {
 					invoiceLine.setIdNumber(existingID);
@@ -172,10 +173,17 @@ public class InvoiceLineController extends AbstractController implements Observe
 		Stage stage = (Stage) cbArtikel.getScene().getWindow();
 		stage.close();
 	}
-
+	
 	@Override
-	public void update() {
-		String newMWSt = Double.toString(parent.getModel().getMWSt());
-		this.lblMWSt.setText(newMWSt);
+	public void loadModel(AbstractObject model) {
+		InvoiceLine invLineModel = (InvoiceLine) model;
+		
+		existingID = invLineModel.getIdNumber();
+		cbArtikel.setValue(invLineModel.getArticle());
+		cbMenge.setValue(invLineModel.getMenge());
+		lblNetto.setText(Double.toString(invLineModel.getNetto()));
+		lblMWSt.setText(parent.getModel().getMWSt().toString());
+		lblBrutto.setText(Double.toString(invLineModel.getBrutto()));
+		lblStueckPreis.setText(Double.toString(invLineModel.getStueckPreis()));
 	}
 }

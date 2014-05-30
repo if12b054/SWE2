@@ -1,28 +1,13 @@
 package javafxModels;
 
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Vector;
 
+import utils.Parameter;
 import businessobjects.Contact;
-import businessobjects.Invoice;
-import applikation.InputChecks;
-import applikation.Parameter;
-import applikation.Utils;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafxControllers.MainController;
 
 public class MainContactModel {

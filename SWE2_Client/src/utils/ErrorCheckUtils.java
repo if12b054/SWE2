@@ -1,4 +1,4 @@
-package applikation;
+package utils;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
  
-public final class Utils {
+public final class ErrorCheckUtils {
 	public static final boolean isNullOrEmpty(String str) {
 		return str == null || str.isEmpty();
 	}
