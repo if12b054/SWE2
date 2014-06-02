@@ -20,7 +20,9 @@ import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceLine;
 import businessobjects.ResultList;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -58,6 +60,7 @@ public class InvoiceModel implements Subject{
 	private StringProperty delPostCode = new SimpleStringProperty();
 	private StringProperty delCity = new SimpleStringProperty();
 	private StringProperty delCountry = new SimpleStringProperty();
+	private BooleanProperty searchFirm = new SimpleBooleanProperty();
 	
 	private DatePicker dp;
 	
@@ -149,7 +152,12 @@ public class InvoiceModel implements Subject{
 	public void findContact() {
 		ObservableList<Contact> results;
 		if(Proxy.serverConnection()) {
-			results = controller.getParent().getProxy().findFirm(contact.get());
+			/* send to proxy */
+			if(searchFirm.get()) {
+				results = controller.getParent().getProxy().findFirm(contact.get());
+			} else {
+				results = controller.getParent().getProxy().findPerson(contact.get());
+			}
 		} else {
 			controller.showErrorDialog("Connection Error. Server might not be reachable.");
 			return;
@@ -276,6 +284,10 @@ public class InvoiceModel implements Subject{
 	}
 	
 	/* returning properties */
+	public BooleanProperty searchFirmProperty() {
+		return searchFirm;
+	}
+	
 	public final StringProperty MWStProperty() {
 		return MWSt;
 	}

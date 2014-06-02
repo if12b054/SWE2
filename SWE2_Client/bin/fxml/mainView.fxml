@@ -96,9 +96,9 @@
               <children>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="589.0" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <children>
-                    <SplitPane dividerPositions="0.2823275862068966" focusTraversable="true" orientation="VERTICAL" prefHeight="589.0" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <SplitPane dividerPositions="0.34051724137931033" focusTraversable="true" orientation="VERTICAL" prefHeight="589.0" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                       <items>
-                        <AnchorPane id="Content" maxHeight="128.0" minHeight="128.0" minWidth="0.0" prefHeight="115.0" prefWidth="445.0">
+                        <AnchorPane id="Content" maxHeight="155.0" minHeight="155.0" minWidth="0.0" prefHeight="197.0" prefWidth="417.0">
                           <children>
                             <Label layoutX="15.0" layoutY="37.0" text="Datum" />
                             <Pane id="pDatumVon" fx:id="pDateFrom" layoutX="66.0" layoutY="36.0" prefHeight="19.0" prefWidth="112.0" />
@@ -108,18 +108,26 @@
                             <TextField id="tfVon" fx:id="tfPriceFrom" layoutX="66.0" layoutY="64.0" prefWidth="71.0" />
                             <Label layoutX="152.0" layoutY="67.0" text="-" />
                             <TextField id="tfPreisBis" fx:id="tfPriceTill" layoutX="172.0" layoutY="64.0" prefWidth="71.0" />
-                            <TextField id="tfPreisName" fx:id="tfContact" layoutX="66.0" layoutY="93.0" prefWidth="107.0" />
+                            <TextField id="tfPreisName" fx:id="tfContact" layoutX="66.0" layoutY="93.0" prefWidth="101.0" />
                             <Label layoutX="17.0" layoutY="96.0" text="Kunde" />
-                            <ImageView id="imgCmpInput" fx:id="imgContactValid" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="181.0" layoutY="92.0" pickOnBounds="true" preserveRatio="true" />
-                            <Button id="btn" layoutX="217.0" layoutY="93.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="89.0" text="Finden" />
+                            <ImageView id="imgCmpInput" fx:id="imgContactValid" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="172.0" layoutY="93.0" pickOnBounds="true" preserveRatio="true" />
+                            <Button id="btn" layoutX="341.0" layoutY="92.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="62.0" text="Finden" />
                             <Label font="$x1" layoutX="14.0" layoutY="14.0" text="Suche" />
-                            <ImageView fx:id="imgWrongDate" fitHeight="21.49999872354357" fitWidth="28.666664123535156" layoutX="371.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true" />
-                            <Button layoutX="319.0" layoutY="94.0" mnemonicParsing="false" onAction="#doSearchInvoice" prefWidth="84.0" text="Suchen" />
+                            <Button layoutX="279.0" layoutY="122.0" mnemonicParsing="false" onAction="#doSearchInvoice" prefWidth="124.0" text="Suchen" />
+                            <HBox id="HBox" alignment="CENTER" layoutX="214.0" layoutY="96.0" spacing="16.0">
+                              <fx:define>
+                                <ToggleGroup fx:id="toggleParm" />
+                              </fx:define>
+                              <children>
+                                <RadioButton fx:id="radioFirm" mnemonicParsing="false" selected="true" text="Firma" toggleGroup="$toggleParm" />
+                                <RadioButton fx:id="radioPerson" mnemonicParsing="false" selected="false" text="Person" toggleGroup="$toggleParm" />
+                              </children>
+                            </HBox>
                           </children>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                           <children>
-                            <TableView id="tableSuche" fx:id="tableInvoices" layoutX="14.0" layoutY="41.0" prefHeight="275.0" prefWidth="389.0">
+                            <TableView id="tableSuche" fx:id="tableInvoices" layoutX="14.0" layoutY="41.0" prefHeight="248.0" prefWidth="389.0">
                               <columns>
                                 <TableColumn text="Datum">
                                   <cellValueFactory>

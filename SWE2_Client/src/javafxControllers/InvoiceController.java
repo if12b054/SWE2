@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -48,6 +49,7 @@ public class InvoiceController extends AbstractController {
 	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
 	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
 	@FXML private Button btnAdd, btnClear, btnSave, btnFind;
+	@FXML private RadioButton radioFirm;
 	private DatePicker dpDeadLine;
 	
 	
@@ -70,6 +72,7 @@ public class InvoiceController extends AbstractController {
 		tfLOrt.textProperty().bindBidirectional(model.delCityProperty());
 		tfLPLZ.textProperty().bindBidirectional(model.delPLZProperty());
 		tfLLand.textProperty().bindBidirectional(model.delCountryProperty());
+		radioFirm.selectedProperty().bindBidirectional(model.searchFirmProperty());
 		
 		/* on double click on table entry open that entry in new InvoiceLineView */
 		tableRechnungszeilen.setOnMouseClicked(model.handleDoubleClick);

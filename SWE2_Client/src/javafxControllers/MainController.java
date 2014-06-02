@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -41,6 +42,8 @@ public class MainController extends AbstractController {
 	@FXML private TableView<Invoice> tableInvoices;
 	@FXML private Pane pDateFrom, pDateTill;
 	private Contact foundContact = null;
+	
+	@FXML private RadioButton radioFirm;
 	
 	/* Allgmein benörigte Daten */
 	private MainContactModel contactModel;
@@ -102,6 +105,7 @@ public class MainController extends AbstractController {
 		tfPriceFrom.textProperty().bindBidirectional(invoiceModel.priceFromProperty());
 		tfPriceTill.textProperty().bindBidirectional(invoiceModel.priceTillProperty());
 		tfContact.textProperty().bindBidirectional(invoiceModel.contactProperty());
+		radioFirm.selectedProperty().bindBidirectional(invoiceModel.searchFirmProperty());
 		
 		tableContacts.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override

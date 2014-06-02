@@ -9,6 +9,8 @@ import eu.schudt.javafx.controls.calendar.DatePicker;
 import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.ResultList;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -29,6 +31,8 @@ public class MainInvoiceModel {
 	private StringProperty contactString = new SimpleStringProperty();
 	private StringProperty rResultCount = new SimpleStringProperty();
 	
+	private BooleanProperty searchFirm = new SimpleBooleanProperty();
+	
 	private boolean settingReference = false;
 	
 	public MainInvoiceModel(MainController controller) {
@@ -45,8 +49,13 @@ public class MainInvoiceModel {
 	 * multiple results: new dialog is opened where one can be selected
 	 */
 	public void findContact() {
+		ObservableList<Contact> results;
 		/* send to proxy */
-		ObservableList<Contact> results = controller.getProxy().findContact(contactString.get());
+		if(searchFirm.get()) {
+			results = controller.getProxy().findFirm(contactString.get());
+		} else {
+			results = controller.getProxy().findPerson(contactString.get());
+		}
 		
 		if(results == null || results.isEmpty()) {
 			//no Contact found
@@ -118,6 +127,9 @@ public class MainInvoiceModel {
 	}
 	public StringProperty contactProperty() {
 		return contactString;
+	}
+	public BooleanProperty searchFirmProperty() {
+		return searchFirm;
 	}
 	
 	/* listeners */

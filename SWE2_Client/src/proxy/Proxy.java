@@ -39,9 +39,10 @@ public class Proxy {
 	}
 	
 	/**
-	 * Happens on Enter in reference field for firm in ContactController
-	 * @param 	id	an id in the contacts table
-	 * @return 		the found firms
+	 * Happens on Enter in reference field for firm in ContactController, or if firm is toggled
+	 * in the mainSearch or invoiceSearch(on button "Finden" click(
+	 * @param 	firm	the firm string
+	 * @return 			the found firms
 	 */
 	public ObservableList<Contact> findFirm(String firm) {
 		Contact contact = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
@@ -58,7 +59,13 @@ public class Proxy {
 		return contacts;
 	}
 	
-	public ObservableList<Contact> findContact(String searchString) {
+	/**
+	 * Happens on Enter in reference field in mainSearch or InvoiceSearch if Person is
+	 * toggled
+	 * @param person	the person string
+	 * @return
+	 */
+	public ObservableList<Contact> findPerson(String person) {
 		Contact contact = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
 		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
 		ObservableList<Contact> contacts = FXCollections.observableArrayList();

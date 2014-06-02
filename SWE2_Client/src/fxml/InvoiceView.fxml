@@ -19,10 +19,6 @@
             <Pane fx:id="pFaelligkeit" layoutX="92.0" layoutY="12.0" prefHeight="21.0" prefWidth="144.0" />
             <Label layoutX="299.0" layoutY="14.0" text="MWSt" />
             <ComboBox id="tfMWSt" fx:id="cbMWSt" layoutX="347.0" layoutY="12.0" value="0.15" />
-            <Label layoutX="14.0" layoutY="43.0" text="Kunde" />
-            <TextField id="tfPreisName" fx:id="tfKunde" layoutX="92.0" layoutY="40.0" prefWidth="176.0" />
-            <ImageView id="imgCmpInput" fx:id="imgContactValid" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="279.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
-            <Button id="btnKontakteSuche" fx:id="btnFind" layoutX="316.0" layoutY="40.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="91.0" text="Finden" />
             <Label layoutX="12.0" layoutY="70.0" text="Nachricht" />
             <TextArea id="nachricht" fx:id="taMessage" layoutX="92.0" layoutY="70.0" prefHeight="43.0" prefWidth="315.0" wrapText="true" />
             <Label layoutX="12.0" layoutY="119.0" text="Kommentar" />
@@ -49,6 +45,19 @@
             <TextField id="tfLadresse" fx:id="tfLOrt" layoutX="60.0" layoutY="318.0" prefWidth="176.0" />
             <Label layoutX="273.0" layoutY="321.0" text="Land" />
             <TextField id="tfLadresse" fx:id="tfLLand" layoutX="316.0" layoutY="318.0" prefWidth="91.0" />
+            <TextField id="tfPreisName" fx:id="tfKunde" layoutX="63.0" layoutY="41.0" prefWidth="101.0" />
+            <Label layoutX="14.0" layoutY="44.0" text="Kunde" />
+            <ImageView id="imgCmpInput" fx:id="imgContactValid" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="169.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
+            <Button id="btn" layoutX="345.0" layoutY="41.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="62.0" text="Finden" />
+            <HBox id="HBox" alignment="CENTER" layoutX="211.0" layoutY="44.0" spacing="16.0">
+              <fx:define>
+                <ToggleGroup fx:id="toggleParm" />
+              </fx:define>
+              <children>
+                <RadioButton fx:id="radioFirm" mnemonicParsing="false" selected="true" text="Firma" toggleGroup="$toggleParm" />
+                <RadioButton id="radioPerson" mnemonicParsing="false" selected="false" text="Person" toggleGroup="$toggleParm" />
+              </children>
+            </HBox>
           </children>
         </AnchorPane>
         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="280.0" prefWidth="401.0">
