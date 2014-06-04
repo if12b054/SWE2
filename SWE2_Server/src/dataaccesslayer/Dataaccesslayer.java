@@ -20,8 +20,8 @@ import businessobjects.InvoiceLine;
 
 public class Dataaccesslayer {
 	
-	//final String PCName = "Schlepptop\\SQLEXPRESS"; //Roman
-	final String PCName = "ULTRABOOK\\SQLEXPRESS"; //Victor
+	final String PCName = "Schlepptop\\SQLEXPRESS"; //Roman
+	//final String PCName = "ULTRABOOK\\SQLEXPRESS"; //Victor
 	
 	public void insertKontakt(Contact k) throws SQLException {
 		Connection conn = connectDB("ErpDB");
@@ -179,21 +179,44 @@ public class Dataaccesslayer {
 			
 			//TODO bei contact, contact referenz ist ein Contact objekt! falls keine firma eingetragen wurde
 			// ist es null, habe mal vorübergehen statisch null eingetragen!
+					
+			Contact k = null;
+			ResultSet rs1;
 			
-			while(rs.next()) {				
+			while(rs.next()) {
+				
+				int AdressID = rs.getInt("Adresse");
+				
 				//Kontakt ist eine Firma
 				if(rs.getString("Vorname").equals(null)){
-					Contact k = new Contact(rs.getString("UID"),rs.getString("Firmenname"));
+					k = new Contact(rs.getString("UID"),rs.getString("Firmenname"));
 					kontakte.add(k);
+					
+					String sql = "SELECT * FROM Adresse WHERE ID = ?";
+					PreparedStatement cmd = conn.prepareStatement(sql);
+					cmd.setInt(1, AdressID);
+					rs1 = cmd.executeQuery();
+					while(rs1.next()) {
+						k.setAdresse(rs1.getString("Straße"), rs1.getString("PLZ"), rs1.getString("Ort"), rs1.getString("Land"));
+					}
 				}
 				
 				//Kontakt ein Mensch
 				if(!rs.getString("Vorname").equals(null)){
 //					Contact k = new Contact(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
 //							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
-					Contact k = new Contact(null, rs.getString("Vorname"), rs.getString("Nachname")
+					k = new Contact(null, rs.getString("Vorname"), rs.getString("Nachname")
 							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
 					kontakte.add(k);
+					
+					String sql = "SELECT * FROM Adresse WHERE ID = ?";
+					PreparedStatement cmd = conn.prepareStatement(sql);
+					cmd.setInt(1, AdressID);
+					rs1 = cmd.executeQuery();
+					while(rs1.next()) {
+						k.setAdresse(rs1.getString("Straße"), rs1.getString("PLZ"), rs1.getString("Ort"), rs1.getString("Land"));
+					}
+					
 				}
 			}
 		}catch (SQLException e) {

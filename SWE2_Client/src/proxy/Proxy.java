@@ -168,11 +168,11 @@ public class Proxy {
 			e.printStackTrace();
 		}
 		
-		/* test while adress is not returned proeprly! */
+		/* test while adress is not returned proeprly! 
 		String vorname="Bart", nachname="Simpson";
 		Contact testKontakt = new Contact(null, vorname, nachname, "Herr", "10-10-2012");
 		testKontakt.setAdresse("Hauptgasse", "12345", "Wieeen", "Austria!");
-		kontakte.add(testKontakt);
+		kontakte.add(testKontakt);*/
 		
 		return kontakte;
 	}

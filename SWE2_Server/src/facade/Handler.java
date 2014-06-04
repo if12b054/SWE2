@@ -128,8 +128,6 @@ public class Handler implements Runnable{
 			buff.append(line);
 		}
 		
-		
-		
 		//bufferedReader.close();	
 			
 		String content = buff.toString();

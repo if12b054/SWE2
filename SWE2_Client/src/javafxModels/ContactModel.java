@@ -128,6 +128,7 @@ public class ContactModel {
 			firmenname.set(contact.getFirma());
 			break;
 		}
+		
 		street.set(contact.getAdresse().get(0)); 
 		PLZ.set(contact.getAdresse().get(1)); 
 		city.set(contact.getAdresse().get(2)); 
