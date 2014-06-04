@@ -48,14 +48,14 @@
             <TextField id="tfPreisName" fx:id="tfKunde" layoutX="63.0" layoutY="41.0" prefWidth="101.0" />
             <Label layoutX="14.0" layoutY="44.0" text="Kunde" />
             <ImageView id="imgCmpInput" fx:id="imgContactValid" fitHeight="21.0" fitWidth="27.999999379002773" layoutX="169.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true" />
-            <Button id="btn" layoutX="345.0" layoutY="41.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="62.0" text="Finden" />
+            <Button id="btn" fx:id="btnFind" layoutX="345.0" layoutY="41.0" mnemonicParsing="false" onAction="#doFindContact" prefWidth="62.0" text="Finden" />
             <HBox id="HBox" alignment="CENTER" layoutX="211.0" layoutY="44.0" spacing="16.0">
               <fx:define>
                 <ToggleGroup fx:id="toggleParm" />
               </fx:define>
               <children>
                 <RadioButton fx:id="radioFirm" mnemonicParsing="false" selected="true" text="Firma" toggleGroup="$toggleParm" />
-                <RadioButton id="radioPerson" mnemonicParsing="false" selected="false" text="Person" toggleGroup="$toggleParm" />
+                <RadioButton fx:id="radioPerson" mnemonicParsing="false" selected="false" text="Person" toggleGroup="$toggleParm" />
               </children>
             </HBox>
           </children>

@@ -146,6 +146,7 @@ public class MainController extends AbstractController {
 		tfPriceFrom.setPromptText("Von");
 		tfPriceTill.setPromptText("Bis");
 		tfContact.setPromptText("Kontakt");
+		radioFirm.setSelected(true);
 		
 		tfFirstName.addEventHandler(KeyEvent.KEY_PRESSED, contactHandler);
 		tfLastName.addEventHandler(KeyEvent.KEY_PRESSED, contactHandler);

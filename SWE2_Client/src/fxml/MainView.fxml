@@ -141,12 +141,12 @@
                                 </TableColumn>
                                 <TableColumn text="Betrag">
                                   <cellValueFactory>
-                                    <PropertyValueFactory property="betrag" />
+                                    <PropertyValueFactory property="amount" />
                                   </cellValueFactory>
                                 </TableColumn>
                                 <TableColumn text="Fälligkeit">
                                   <cellValueFactory>
-                                    <PropertyValueFactory property="faelligkeit" />
+                                    <PropertyValueFactory property="dueDate" />
                                   </cellValueFactory>
                                 </TableColumn>
                               </columns>

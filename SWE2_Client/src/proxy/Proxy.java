@@ -142,7 +142,7 @@ public class Proxy {
 		action = "just so server doesn't throw socketexception...";
 		sendMessage(action, "some xml here");
 		
-		return 0;
+		return 1; //TODO return the ID
 	}
 	
 	
