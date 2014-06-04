@@ -109,6 +109,7 @@ public class ContactModel {
 	}
 	
 	public void loadModel(Contact contact) {
+		curContact = contact;
 		//set fields here
 		switch(contact.typProperty().get())
 		{
