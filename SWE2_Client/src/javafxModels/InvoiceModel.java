@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import proxy.Proxy;
+import utils.InvoicePDF;
 import utils.Observer;
 import utils.Subject;
 import utils.ErrorCheckUtils;
@@ -42,7 +43,7 @@ import javafxControllers.InvoiceLineController;
 import javafxControllers.MainController;
 
 public class InvoiceModel implements Subject{
-	private Invoice curInvoice = null;
+	public Invoice curInvoice = null;
 	public Contact contactReference = null;
 	
 	private InvoiceController controller;
@@ -61,6 +62,7 @@ public class InvoiceModel implements Subject{
 	private StringProperty delCity = new SimpleStringProperty();
 	private StringProperty delCountry = new SimpleStringProperty();
 	private BooleanProperty searchFirm = new SimpleBooleanProperty();
+	private BooleanProperty searchPerson = new SimpleBooleanProperty();
 	
 	private DatePicker dp;
 	
@@ -124,7 +126,7 @@ public class InvoiceModel implements Subject{
 	}
 	
 	public void print() {
-		//TODO
+		InvoicePDF pdf = new InvoicePDF(curInvoice);
 	}
 	
 	public void loadModel(AbstractObject model) {
@@ -133,8 +135,15 @@ public class InvoiceModel implements Subject{
 		controller.setEditMode();
 		/* load invoice to gui */
 		curInvoice = invoice;
+		controller.getDatePicker().selectedDateProperty().set(invoice.getDueDate());
 		MWSt.set(Double.toString(invoice.getMWSt()));
 		contact.set(invoice.getContactString());
+		if(invoice.getContact().getType().equals("Person")) {
+			searchPerson.set(true);
+		} else {
+			searchFirm.set(true);
+		}
+		
 		comment.set(invoice.getComment());
 		message.set(invoice.getMessage());
 		invStreet.set(invoice.getInvAdress().getStreet());
@@ -286,6 +295,10 @@ public class InvoiceModel implements Subject{
 	/* returning properties */
 	public BooleanProperty searchFirmProperty() {
 		return searchFirm;
+	}
+	
+	public BooleanProperty searchPersonProperty() {
+		return searchPerson;
 	}
 	
 	public final StringProperty MWStProperty() {
