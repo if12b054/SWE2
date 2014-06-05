@@ -64,6 +64,13 @@ public class Handler implements Runnable{
 					}
 				}
 				break;
+			case "update/Kontakt":
+				if(_xml != null) {
+					System.out.println("Updating Contact!");
+					Contact k = deserializeKontakt(_xml);			
+					b.updateKontakt(k);
+				}
+				break;
 			case "search/Rechnung":
 				ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
 				parms = deserializeVector(_xml);

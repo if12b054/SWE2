@@ -5,6 +5,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -22,6 +23,20 @@ public class Dataaccesslayer {
 	
 	final String PCName = "Schlepptop\\SQLEXPRESS"; //Roman
 	//final String PCName = "ULTRABOOK\\SQLEXPRESS"; //Victor
+	
+	public Connection connectDB(String dbName) {
+		try {
+			String url = "jdbc:sqlserver://" + PCName + ";databaseName=" + dbName + ";integratedSecurity=true";
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver"); 
+			Connection conn = DriverManager.getConnection(url, "Test", "test");
+			return conn;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	public void insertKontakt(Contact k) throws SQLException {
 		Connection conn = connectDB("ErpDB");
@@ -94,9 +109,6 @@ public class Dataaccesslayer {
 		
         String sql3 = "INSERT INTO Rechnung(Kunde_ID, Datum, F‰lligkeit, Kommentar, Nachricht, MWSt, Netto, Brutto,"
         		+ "Rechnungsadresse, Lieferadresse) VALUES ()";
-        
-        
-		
 	}
 	
 	public ObservableList<Contact> searchContact(Vector<Parameter> parms) {
@@ -104,6 +116,7 @@ public class Dataaccesslayer {
 		Connection conn = connectDB("ErpDB");
 		
 		ResultSet rs = null;
+		ResultSet rsmd = null;
 		
 			try{
 			//Check ob Vorname != 0
@@ -199,6 +212,7 @@ public class Dataaccesslayer {
 					while(rs1.next()) {
 						k.setAdresse(rs1.getString("Straﬂe"), rs1.getString("PLZ"), rs1.getString("Ort"), rs1.getString("Land"));
 					}
+					k.setId(rs.getInt("ID"));
 				}
 				
 				//Kontakt ein Mensch
@@ -216,7 +230,7 @@ public class Dataaccesslayer {
 					while(rs1.next()) {
 						k.setAdresse(rs1.getString("Straﬂe"), rs1.getString("PLZ"), rs1.getString("Ort"), rs1.getString("Land"));
 					}
-					
+					k.setId(rs.getInt("ID"));
 				}
 			}
 		}catch (SQLException e) {
@@ -225,19 +239,7 @@ public class Dataaccesslayer {
 		return kontakte;
 	}
 	
-	public Connection connectDB(String dbName) {
-		try {
-			String url = "jdbc:sqlserver://" + PCName + ";databaseName=" + dbName + ";integratedSecurity=true";
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver"); 
-			Connection conn = DriverManager.getConnection(url, "Test", "test");
-			return conn;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+
 
 	public ArrayList<InvoiceLine> searchRechnung(Vector<Parameter> parms) {
 		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
@@ -280,5 +282,53 @@ public class Dataaccesslayer {
 		}
 
 		return articles;
+	}
+
+	public void updateKontakt(Contact k) {
+		Connection conn = connectDB("ErpDB");
+		ResultSet rs = null;
+		PreparedStatement cmd;
+		try{
+		String sql = "UPDATE Kontakt "
+				+ "SET UID = ?, Firmenname = ?, Titel = ?, Vorname = ?,Nachname = ?,Geburtsdatum = ?,Typ = ? WHERE ID = ?;";
+		
+		cmd = conn.prepareStatement(sql);
+		cmd.setString(1,k.getUid());
+		cmd.setString(2,k.getFirma());
+		cmd.setString(3,k.getTitel());
+		cmd.setString(4,k.getVorname());
+		cmd.setString(5,k.getNachname());
+		cmd.setString(6, k.getGeburtsdatum());
+		cmd.setString(7,k.getType());
+		cmd.setInt(8, k.getId());
+		cmd.execute();
+		
+		String sql1 = "SELECT Adresse FROM Kontakt WHERE ID = ?";
+		
+		cmd = conn.prepareStatement(sql1);
+		cmd.setInt(1, k.getId());
+		rs = cmd.executeQuery();
+		int AdressID = 0;
+		
+		if(rs.next())AdressID = rs.getInt("Adresse");
+		
+		String sql2 = "UPDATE Adresse "
+				+ "SET Straﬂe = ?,"
+				+ "PLZ = ?,"
+				+ "Ort = ?,"
+				+ "Land = ? "
+				+ "WHERE ID = ?;";
+		
+		cmd = conn.prepareStatement(sql2);
+		cmd.setString(1,k.getAdresse().get(0));
+		cmd.setString(2,k.getAdresse().get(1));
+		cmd.setString(3,k.getAdresse().get(2));
+		cmd.setString(4,k.getAdresse().get(3));
+		cmd.setInt(5, AdressID);
+		cmd.execute();
+		
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

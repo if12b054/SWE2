@@ -19,6 +19,10 @@ public class Businesslayer {
 		d.insertKontakt(k);
 	}
 	
+	public void updateKontakt(Contact k) {
+		d.updateKontakt(k);
+	}
+	
 	public void insertRechnung(Invoice r) throws SQLException {
 		d.insertRechnung(r);
 	}
@@ -34,5 +38,7 @@ public class Businesslayer {
 	public ObservableList<Article> getArticles() throws SQLException {
 		return d.getArticles();
 	}
+
+
 
 }
