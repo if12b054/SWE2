@@ -48,10 +48,7 @@ public class Proxy {
 		
 		ObservableList<Contact> contacts = FXCollections.observableArrayList();
 		Vector<Parameter> searchParms = new Vector<Parameter>();
-		System.out.println("Firma: " + firm);
 		searchParms.add(new Parameter(firm));
-		
-		System.out.println("parms0: " + searchParms.get(0).getStringParameter());
 		
 		String action = "find/Firm";
 		String xml = serializeKontaktSearch(searchParms);

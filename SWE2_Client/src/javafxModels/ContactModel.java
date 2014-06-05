@@ -57,7 +57,7 @@ public class ContactModel {
 	}
 	
 	public void findFirm() {
-		ObservableList<Contact> results = controller.getParent().getProxy().findFirm(firmenname.get());
+		ObservableList<Contact> results = controller.getParent().getProxy().findFirm(firma.get());
 		
 		if(results == null || results.isEmpty()) {
 			//no Contact found

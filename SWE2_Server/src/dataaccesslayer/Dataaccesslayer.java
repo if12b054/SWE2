@@ -335,11 +335,10 @@ public class Dataaccesslayer {
 		PreparedStatement cmd;
 		Contact k;
 		try {
-			//String sql = "SELECT * FROM Kontakt WHERE Firmenname LIKE ('%' || ? || '%')";
-			System.out.println("parms0: " + parms.get(0).getStringParameter());
-			String sql = "SELECT * FROM Kontakt WHERE Firmenname = ?";
+			String sql = "SELECT * FROM Kontakt WHERE Firmenname LIKE ?";
+			//String sql = "SELECT * FROM Kontakt WHERE Firmenname = ?";
 			cmd = conn.prepareStatement(sql);
-			cmd.setString(1, parms.get(0).getStringParameter());
+			cmd.setString(1, "%" + parms.get(0).getStringParameter() + "%");
 			rs = cmd.executeQuery();
 			
 			while(rs.next()) {
@@ -347,7 +346,7 @@ public class Dataaccesslayer {
 				int AdressID = rs.getInt("Adresse");
 				
 				//Kontakt ist eine Firma
-				if(rs.getString("Vorname").equals(null)){
+				if(rs.getString("Vorname") == null){
 					k = new Contact(rs.getString("UID"),rs.getString("Firmenname"));
 					kontakte.add(k);
 					
@@ -355,7 +354,7 @@ public class Dataaccesslayer {
 					cmd = conn.prepareStatement(sql);
 					cmd.setInt(1, AdressID);
 					rs1 = cmd.executeQuery();
-					while(rs.next()) {
+					while(rs1.next()) {
 						k.setAdresse(rs1.getString("Straﬂe"), rs1.getString("PLZ"), rs1.getString("Ort"), rs1.getString("Land"));
 					}
 					k.setId(rs.getInt("ID"));
