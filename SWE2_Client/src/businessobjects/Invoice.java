@@ -77,7 +77,7 @@ public class Invoice extends AbstractObject{
 		return todayDateStr;
 	}
 	
-	public final StringProperty dueDateProperty() {
+	public final StringProperty faelligkeitProperty() {
 		return dueDateStr;
 	}
 
@@ -165,9 +165,5 @@ public class Invoice extends AbstractObject{
 	
 	public String getContactString() {
 		return contactString.get();
-	}
-	
-	public Date getDueDate() {
-		return dueDate;
 	}
 }

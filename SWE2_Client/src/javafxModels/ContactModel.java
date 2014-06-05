@@ -104,7 +104,9 @@ public class ContactModel {
 		curContact = newContact;
 		
 		/* send to proxy */
-		curContact.setId(controller.getParent().getProxy().upsertContact(newContact));
+		controller.getParent().getProxy().upsertContact(newContact);
+		
+		
 		exit();
 	}
 	

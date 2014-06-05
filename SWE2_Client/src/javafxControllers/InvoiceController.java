@@ -49,7 +49,7 @@ public class InvoiceController extends AbstractController {
 	@FXML private TextField tfRStrasse, tfROrt, tfRPLZ, tfRLand;
 	@FXML private TextField tfLStrasse, tfLOrt, tfLPLZ, tfLLand;
 	@FXML private Button btnAdd, btnClear, btnSave, btnFind;
-	@FXML private RadioButton radioFirm, radioPerson;
+	@FXML private RadioButton radioFirm;
 	private DatePicker dpDeadLine;
 	
 	
@@ -73,7 +73,6 @@ public class InvoiceController extends AbstractController {
 		tfLPLZ.textProperty().bindBidirectional(model.delPLZProperty());
 		tfLLand.textProperty().bindBidirectional(model.delCountryProperty());
 		radioFirm.selectedProperty().bindBidirectional(model.searchFirmProperty());
-		radioPerson.selectedProperty().bindBidirectional(model.searchPersonProperty());
 		
 		/* on double click on table entry open that entry in new InvoiceLineView */
 		tableRechnungszeilen.setOnMouseClicked(model.handleDoubleClick);
@@ -83,7 +82,6 @@ public class InvoiceController extends AbstractController {
 		cbMWSt.getItems().setAll("0.15","0.17","0.19","0.21","0.23","0.25");
 		cbMWSt.getSelectionModel().selectFirst();
 		cbMWSt.getEditor().textProperty().addListener(model.updateObservers);
-		radioFirm.setSelected(true);
 	}
 	
 	/**
@@ -114,7 +112,7 @@ public class InvoiceController extends AbstractController {
 	 * @param event
 	 */
 	@FXML private void doClear(ActionEvent event) {	
-		if(model.curInvoice != null) {
+		if(model.contactReference != null) {
 			model.print();
 		} else {
 			model.clear();
@@ -130,8 +128,6 @@ public class InvoiceController extends AbstractController {
 		dpDeadLine.setDisable(true);
 		
 		tfKunde.setEditable(false);
-		radioFirm.disableProperty().set(true);
-		radioPerson.disableProperty().set(true);
 		taMessage.setEditable(false);
 		taComment.setEditable(false);
 		
@@ -188,9 +184,5 @@ public class InvoiceController extends AbstractController {
 	
 	public void setImgContactValid(Image newImg) {
 		imgContactValid.setImage(newImg);
-	}
-	
-	public DatePicker getDatePicker() {
-		return dpDeadLine;
 	}
 }

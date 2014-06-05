@@ -45,16 +45,25 @@ public class Proxy {
 	 * @return 			the found firms
 	 */
 	public ObservableList<Contact> findFirm(String firm) {
-		Contact contact = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
-		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
+		
 		ObservableList<Contact> contacts = FXCollections.observableArrayList();
-		contacts.add(contact);
+		Vector<Parameter> searchParms = new Vector<Parameter>();
+		System.out.println("Firma: " + firm);
+		searchParms.add(new Parameter(firm));
 		
-		Contact contact2 = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
-		contacts.add(contact2);
+		System.out.println("parms0: " + searchParms.get(0).getStringParameter());
 		
-		String action = "just so server doesn't throw socketexception...";
-		sendMessage(action, "some xml here");
+		String action = "find/Firm";
+		String xml = serializeKontaktSearch(searchParms);
+		sendMessage(action, xml);
+		
+		try {
+			String xml2;
+			xml2 = readMessage();
+			contacts = deserializeKontaktSearch(xml2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return contacts;
 	}
@@ -110,7 +119,7 @@ public class Proxy {
 	 * @param k		Kontakt-Object which data is inserted into database
 	 * @return		int - the id, so entry can be edited
 	 */
-	public int upsertContact(Contact k) {
+	public void upsertContact(Contact k) {
 		String action;
 		if(k.getId() != -1) {
 			//EDIT contact
@@ -124,7 +133,6 @@ public class Proxy {
 		String xml = serializeKontakt(k);
 		sendMessage(action, xml);
 		
-		return 1; //TODO return the ID
 	}
 	
 	/**
@@ -142,7 +150,7 @@ public class Proxy {
 		action = "just so server doesn't throw socketexception...";
 		sendMessage(action, "some xml here");
 		
-		return 1; //TODO return the ID
+		return 0;
 	}
 	
 	

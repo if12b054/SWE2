@@ -51,6 +51,9 @@ public class Handler implements Runnable{
 			
 			System.out.println("Action: " + action);
 			
+			ObservableList<Contact> kontakte = FXCollections.observableArrayList();
+			String xml;
+			
 			switch(action) 
 			{
 			case "insert/Kontakt":
@@ -77,17 +80,10 @@ public class Handler implements Runnable{
 				//rechnungen = b.searchRechnung(parms);
 				break;
 			case "search/Kontakt":
-				ObservableList<Contact> kontakte = FXCollections.observableArrayList();
 				parms = deserializeVector(_xml);
 				
-				kontakte = b.searchContact(parms);
-				
-				for(int i=0; i<kontakte.size(); i++){
-					System.out.println("gefunden: " + kontakte.get(i).getVorname());
-					System.out.println("gefunden: " + kontakte.get(i).getNachname());
-				}
-				
-				String xml = serializeKontaktSearch(kontakte);
+				kontakte = b.searchContact(parms);				
+				xml = serializeKontaktSearch(kontakte);
 				sendMessage(xml,client);
 				client.close();
 				break;
@@ -105,6 +101,13 @@ public class Handler implements Runnable{
 				ObservableList<Article> articles = FXCollections.observableArrayList();
 				articles = b.getArticles();				
 				xml = serializeGetArticle(articles);
+				sendMessage(xml,client);
+				client.close();
+				break;
+			case "find/Firm":
+				parms = deserializeVector(_xml);
+				kontakte = b.findFirm(parms);				
+				xml = serializeKontaktSearch(kontakte);
 				sendMessage(xml,client);
 				client.close();
 				break;

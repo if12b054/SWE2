@@ -116,15 +116,14 @@ public class Dataaccesslayer {
 		Connection conn = connectDB("ErpDB");
 		
 		ResultSet rs = null;
-		ResultSet rsmd = null;
 		
 			try{
 			//Check ob Vorname != 0
-			if(!(parms.get(0).getStringParameter()==null)) {
+			if(!(parms.get(0).getStringParameter()==null) && !(parms.get(0).getStringParameter()=="")) {
 				//Check ob Nachname != 0
-				if(!(parms.get(1).getStringParameter()==null)){
+				if(!(parms.get(1).getStringParameter()==null) && !(parms.get(1).getStringParameter()=="")){
 					//Check ob Firma != 0
-					if(!(parms.get(2).getStringParameter()==null)){
+					if(!(parms.get(2).getStringParameter()==null) && !(parms.get(2).getStringParameter()=="")){
 						//Alle drei
 						String sql = "SELECT * FROM Kontakt WHERE Vorname = ? AND Nachname = ? AND Firmenname = ?";
 						PreparedStatement cmd;
@@ -144,7 +143,7 @@ public class Dataaccesslayer {
 				}
 				else {
 					//Vorname und Firma
-					if(!(parms.get(2).getStringParameter()==null)){
+					if(!(parms.get(2).getStringParameter()==null) && !(parms.get(2).getStringParameter()=="")){
 						String sql = "SELECT * FROM Kontakt WHERE Vorname = ? AND Firmenname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
 						cmd.setString(1, parms.get(0).getStringParameter());
@@ -161,9 +160,9 @@ public class Dataaccesslayer {
 			}
 			else{
 				//Check ob Nachname != 0	
-				if(parms.get(1).getStringParameter()==null) {
+				if(!(parms.get(1).getStringParameter()==null) && !(parms.get(1).getStringParameter()=="")) {
 					//Check ob Firma != 0
-					if(parms.get(2).getStringParameter()==null) {
+					if(!(parms.get(2).getStringParameter()==null) && !(parms.get(2).getStringParameter()=="")) {
 						//Nachname und Firma
 						String sql = "SELECT * FROM Kontakt WHERE Nachname = ? AND Firmenname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
@@ -180,7 +179,7 @@ public class Dataaccesslayer {
 				}
 				else{
 					//Check ob Firma != 0
-					if(parms.get(2).getStringParameter()==null) {
+					if(!(parms.get(2).getStringParameter()==null) && !(parms.get(2).getStringParameter()=="")) {
 						//nur Firma
 						String sql = "SELECT * FROM Kontakt WHERE Firmenname = ?";
 						PreparedStatement cmd = conn.prepareStatement(sql);
@@ -189,19 +188,15 @@ public class Dataaccesslayer {
 					}
 				}
 			}
-			
-			//TODO bei contact, contact referenz ist ein Contact objekt! falls keine firma eingetragen wurde
-			// ist es null, habe mal vorübergehen statisch null eingetragen!
 					
 			Contact k = null;
 			ResultSet rs1;
 			
-			while(rs.next()) {
-				
+			while(rs.next()) {		
 				int AdressID = rs.getInt("Adresse");
 				
 				//Kontakt ist eine Firma
-				if(rs.getString("Vorname").equals(null)){
+				if(!(rs.getString("UID") == null)){
 					k = new Contact(rs.getString("UID"),rs.getString("Firmenname"));
 					kontakte.add(k);
 					
@@ -213,10 +208,9 @@ public class Dataaccesslayer {
 						k.setAdresse(rs1.getString("Straße"), rs1.getString("PLZ"), rs1.getString("Ort"), rs1.getString("Land"));
 					}
 					k.setId(rs.getInt("ID"));
-				}
+				}//Kontakt ein Mensch
 				
-				//Kontakt ein Mensch
-				if(!rs.getString("Vorname").equals(null)){
+				if(!(rs.getString("Vorname") == null)){
 //					Contact k = new Contact(rs.getString("Firmenname"), rs.getString("Vorname"), rs.getString("Nachname")
 //							,rs.getString("Titel"),rs.getString("Geburtsdatum"));
 					k = new Contact(null, rs.getString("Vorname"), rs.getString("Nachname")
@@ -280,7 +274,6 @@ public class Dataaccesslayer {
 			Article a = new Article(rs.getInt("ID"), rs.getString("Bezeichnung"), rs.getDouble("PreisNetto"));
 			articles.add(a);
 		}
-
 		return articles;
 	}
 
@@ -330,5 +323,49 @@ public class Dataaccesslayer {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public ObservableList<Contact> findFirm(Vector<Parameter> parms) {
+		//nur Firma
+		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
+		Connection conn = connectDB("ErpDB");
+		
+		ResultSet rs = null;
+		ResultSet rs1 = null;
+		PreparedStatement cmd;
+		Contact k;
+		try {
+			//String sql = "SELECT * FROM Kontakt WHERE Firmenname LIKE ('%' || ? || '%')";
+			System.out.println("parms0: " + parms.get(0).getStringParameter());
+			String sql = "SELECT * FROM Kontakt WHERE Firmenname = ?";
+			cmd = conn.prepareStatement(sql);
+			cmd.setString(1, parms.get(0).getStringParameter());
+			rs = cmd.executeQuery();
+			
+			while(rs.next()) {
+				
+				int AdressID = rs.getInt("Adresse");
+				
+				//Kontakt ist eine Firma
+				if(rs.getString("Vorname").equals(null)){
+					k = new Contact(rs.getString("UID"),rs.getString("Firmenname"));
+					kontakte.add(k);
+					
+					sql = "SELECT * FROM Adresse WHERE ID = ?";
+					cmd = conn.prepareStatement(sql);
+					cmd.setInt(1, AdressID);
+					rs1 = cmd.executeQuery();
+					while(rs.next()) {
+						k.setAdresse(rs1.getString("Straße"), rs1.getString("PLZ"), rs1.getString("Ort"), rs1.getString("Land"));
+					}
+					k.setId(rs.getInt("ID"));
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return kontakte;
 	}
 }

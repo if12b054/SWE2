@@ -39,6 +39,10 @@ public class Businesslayer {
 		return d.getArticles();
 	}
 
+	public ObservableList<Contact> findFirm(Vector<Parameter> parms) {
+		return d.findFirm(parms);
+	}
+
 
 
 }

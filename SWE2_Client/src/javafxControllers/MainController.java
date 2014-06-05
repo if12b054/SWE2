@@ -46,8 +46,8 @@ public class MainController extends AbstractController {
 	@FXML private RadioButton radioFirm;
 	
 	/* Allgmein benörigte Daten */
-	private MainContactModel contactModel;
-	private MainInvoiceModel invoiceModel;
+	public MainContactModel contactModel;
+	public MainInvoiceModel invoiceModel;
 	private Proxy proxy;
 	boolean isError = true; //because no input in beginning -> is an error
 	private Image checkMark, noCheckMark, emptyImg;
@@ -146,7 +146,6 @@ public class MainController extends AbstractController {
 		tfPriceFrom.setPromptText("Von");
 		tfPriceTill.setPromptText("Bis");
 		tfContact.setPromptText("Kontakt");
-		radioFirm.setSelected(true);
 		
 		tfFirstName.addEventHandler(KeyEvent.KEY_PRESSED, contactHandler);
 		tfLastName.addEventHandler(KeyEvent.KEY_PRESSED, contactHandler);
