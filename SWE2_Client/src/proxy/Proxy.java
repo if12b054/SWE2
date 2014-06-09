@@ -23,9 +23,13 @@ import businessobjects.InvoiceLine;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+
+
 public class Proxy {
 	public static final int SOCKET_NUMBER = 11111;
 	public static Socket socket = null;
+	private SerializerClient serializer;
+	private DeserializerClient deserializer;
 	
 	public static boolean serverConnection() {
 		try {
@@ -49,15 +53,17 @@ public class Proxy {
 		ObservableList<Contact> contacts = FXCollections.observableArrayList();
 		Vector<Parameter> searchParms = new Vector<Parameter>();
 		searchParms.add(new Parameter(firm));
+		serializer = new SerializerClient();
+		deserializer = new DeserializerClient();
 		
 		String action = "find/Firm";
-		String xml = serializeKontaktSearch(searchParms);
+		String xml = serializer.serializeKontaktSearch(searchParms);
 		sendMessage(action, xml);
 		
 		try {
 			String xml2;
 			xml2 = readMessage();
-			contacts = deserializeKontaktSearch(xml2);
+			contacts = deserializer.deserializeKontaktSearch(xml2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -72,16 +78,23 @@ public class Proxy {
 	 * @return
 	 */
 	public ObservableList<Contact> findPerson(String person) {
-		Contact contact = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
-		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
 		ObservableList<Contact> contacts = FXCollections.observableArrayList();
-		contacts.add(contact);
+		Vector<Parameter> searchParms = new Vector<Parameter>();
+		searchParms.add(new Parameter(person));
+		serializer = new SerializerClient();
+		deserializer = new DeserializerClient();
 		
-		Contact contact2 = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
-		contacts.add(contact2);
+		String action = "find/Person";
+		String xml = serializer.serializeKontaktSearch(searchParms);
+		sendMessage(action, xml);
 		
-		String action = "just so server doesn't throw socketexception...";
-		sendMessage(action, "some xml here");
+		try {
+			String xml2;
+			xml2 = readMessage();
+			contacts = deserializer.deserializeKontaktSearch(xml2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return contacts;
 	}
@@ -95,14 +108,16 @@ public class Proxy {
 	public ObservableList<Article> getArticles() {
 		ObservableList<Article> articles = FXCollections.observableArrayList();
 		String action = "get/Artikel";
+		serializer = new SerializerClient();
+		deserializer = new DeserializerClient();
 
-		String xml = serializeArtikelSearch(articles);
+		String xml = serializer.serializeArtikelSearch(articles);
 		sendMessage(action, xml);
 		
 		try {
 			String xml2;
 			xml2 = readMessage();
-			articles = deserializeArtikelSearch(xml2);
+			articles = deserializer.deserializeArtikelSearch(xml2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -118,6 +133,7 @@ public class Proxy {
 	 */
 	public void upsertContact(Contact k) {
 		String action;
+		serializer = new SerializerClient();
 		if(k.getId() != -1) {
 			//EDIT contact
 			action = "update/Kontakt";
@@ -127,27 +143,19 @@ public class Proxy {
 			action = "insert/Kontakt";
 			System.out.println("inserting contact!");
 		}
-		String xml = serializeKontakt(k);
+		String xml = serializer.serializeKontakt(k);
 		sendMessage(action, xml);
-		
 	}
 	
 	/**
 	 * same as insertKontakt, just with Rechnung, except no update possible
 	 * @param r		Rechnung-Object to be inserted in database
 	 */
-	public int insertInvoice(Invoice r) {
-		System.out.println("Sending Rechnung-data to server.");
+	public void insertInvoice(Invoice r) {
+		serializer = new SerializerClient();
 		String action = "insert/Rechnung";
-		String xml = serializeRechnung(r);
+		String xml = serializer.serializeRechnung(r);
 		sendMessage(action, xml);
-		
-		System.out.println("inserting Recite with date: " + r.datumProperty().get());
-		
-		action = "just so server doesn't throw socketexception...";
-		sendMessage(action, "some xml here");
-		
-		return 0;
 	}
 	
 	
@@ -159,13 +167,15 @@ public class Proxy {
 	public ObservableList<Contact> searchKontakt(Vector<Parameter> searchParms) {
 		String action = "search/Kontakt";
 		ObservableList<Contact> kontakte = FXCollections.observableArrayList();
+		serializer = new SerializerClient();
+		deserializer = new DeserializerClient();
 	
 		try {
-			String xml = serializeKontaktSearch(searchParms);
+			String xml = serializer.serializeKontaktSearch(searchParms);
 			sendMessage(action, xml);
 			
 			String xml2 = readMessage();
-			kontakte = deserializeKontaktSearch(xml2);
+			kontakte = deserializer.deserializeKontaktSearch(xml2);
 			socket.close();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -191,6 +201,9 @@ public class Proxy {
 	public ObservableList<Invoice> searchRechnung(Vector<Parameter> searchParms) {
 		String action = "search/Rechnung";
 		ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
+		
+		serializer = new SerializerClient();
+		deserializer = new DeserializerClient();
 		
 		System.out.println("Searching for Rechnung: ");
 		System.out.println("VonDatum: " + searchParms.get(0).getDateParameter());
@@ -228,22 +241,6 @@ public class Proxy {
 		/* TEST-ENDE */
 		
 		return rechnungen;
-	}
-	
-	public String serializeKontakt(Contact k) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(Contact.class);
-		//xstream.alias("kontakt", Kontakt.class);
-		String xml = xstream.toXML(k);
-		return xml;
-	}
-	
-	public String serializeKontaktSearch(Vector<Parameter> searchParms) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(Contact.class);
-		//xstream.alias("kontakt", Kontakt.class);
-		String xml = xstream.toXML(searchParms);
-		return xml;
 	}
 	
 	public void sendMessage(String action, String xml) {
@@ -286,57 +283,10 @@ public class Proxy {
 		while(!(line = bufferedReader.readLine()).equals("EOF")) {
 			if(line.equals("EOF"))break;
 			buff.append(line);
-		}
-		
-		//bufferedReader.close();	
+		}	
 			
 		String content = buff.toString();
 		xml = content;
 		return xml;
-	}
-	
-	public ObservableList<Contact> deserializeKontaktSearch(String xml) {
-		XStream xstream = new XStream();
-		xstream.processAnnotations(Contact.class);
-		ObservableList<Contact> k = (ObservableList<Contact>) xstream.fromXML(xml);
-		return k;
-	}
-	
-	public ObservableList<Invoice> deserializeRechnungSearch(String xml) {
-		XStream xstream = new XStream();
-		xstream.processAnnotations(Contact.class);
-		ObservableList<Invoice> r = (ObservableList<Invoice>) xstream.fromXML(xml);
-		return r;
-	}
-	
-	public String serializeRechnungSearch(Vector<Parameter> searchParms) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(Invoice.class);
-		//xstream.alias("kontakt", Kontakt.class);
-		String xml = xstream.toXML(searchParms);
-		return xml;
-	}
-	
-	public String serializeRechnung(Invoice r) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(Invoice.class);
-		//xstream.alias("kontakt", Kontakt.class);
-		String xml = xstream.toXML(r);
-		return xml;
-	}
-	
-	public ObservableList<Article> deserializeArtikelSearch(String xml) {
-		XStream xstream = new XStream();
-		xstream.processAnnotations(Contact.class);
-		ObservableList<Article> a = (ObservableList<Article>) xstream.fromXML(xml);
-		return a;
-	}
-	
-	public String serializeArtikelSearch(ObservableList<Article> articles) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(Article.class);
-		//xstream.alias("kontakt", Kontakt.class);
-		String xml = xstream.toXML(articles);
-		return xml;
-	}
+	}	
 }

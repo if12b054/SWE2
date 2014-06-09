@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import proxy.DeserializerClient;
+import proxy.SerializerClient;
 import utils.Parameter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +21,7 @@ import businesslayer.Businesslayer;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
+import businessobjects.InvoiceData;
 import businessobjects.InvoiceLine;
 
 import com.sun.glass.ui.Platform;
@@ -34,6 +37,9 @@ public class Handler implements Runnable{
 	private Vector<Parameter> parms;
 	private String xml;
 	
+	private SerializerServer serializer;
+	private DeserializerServer deserializer;
+	
 	public Handler(Socket client) {
 	 	this.client = client;
 	}
@@ -41,6 +47,8 @@ public class Handler implements Runnable{
 	@Override
 	public void run() {
 		try {
+			serializer = new SerializerServer();
+			deserializer = new DeserializerServer();
 			
 			readMessage(client);
 			System.out.println("rl: " + _requestLine);
@@ -59,7 +67,7 @@ public class Handler implements Runnable{
 			case "insert/Kontakt":
 				if(_xml != null) {
 					System.out.println("Inserting Contact!");
-					Contact k = deserializeKontakt(_xml);			
+					Contact k = deserializer.deserializeKontakt(_xml);			
 					try {
 						b.insertKontakt(k);
 					} catch (SQLException e) {
@@ -70,26 +78,28 @@ public class Handler implements Runnable{
 			case "update/Kontakt":
 				if(_xml != null) {
 					System.out.println("Updating Contact!");
-					Contact k = deserializeKontakt(_xml);			
+					Contact k = deserializer.deserializeKontakt(_xml);			
 					b.updateKontakt(k);
 				}
 				break;
 			case "search/Rechnung":
 				ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
-				parms = deserializeVector(_xml);
+				parms = deserializer.deserializeVector(_xml);
 				//rechnungen = b.searchRechnung(parms);
 				break;
 			case "search/Kontakt":
-				parms = deserializeVector(_xml);
+				parms = deserializer.deserializeVector(_xml);
 				
 				kontakte = b.searchContact(parms);				
-				xml = serializeKontaktSearch(kontakte);
+				xml = serializer.serializeKontaktSearch(kontakte);
 				sendMessage(xml,client);
 				client.close();
 				break;
 			case "insert/Rechnung":
+				System.out.println("WAMBO");
 				if(_xml != null) {
-					Invoice r = deserializeRechnung(_xml);			
+					InvoiceData r = deserializer.deserializeRechnung(_xml);	
+					System.out.println("WAMBO");
 					try {
 						b.insertRechnung(r);
 					} catch (SQLException e) {
@@ -100,14 +110,21 @@ public class Handler implements Runnable{
 			case "get/Artikel":
 				ObservableList<Article> articles = FXCollections.observableArrayList();
 				articles = b.getArticles();				
-				xml = serializeGetArticle(articles);
+				xml = serializer.serializeGetArticle(articles);
 				sendMessage(xml,client);
 				client.close();
 				break;
 			case "find/Firm":
-				parms = deserializeVector(_xml);
+				parms = deserializer.deserializeVector(_xml);
 				kontakte = b.findFirm(parms);				
-				xml = serializeKontaktSearch(kontakte);
+				xml = serializer.serializeKontaktSearch(kontakte);
+				sendMessage(xml,client);
+				client.close();
+				break;
+			case "find/Person":
+				parms = deserializer.deserializeVector(_xml);
+				kontakte = b.findPerson(parms);				
+				xml = serializer.serializeKontaktSearch(kontakte);
 				sendMessage(xml,client);
 				client.close();
 				break;
@@ -118,6 +135,12 @@ public class Handler implements Runnable{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String parseHeader(String head) {
+		String[] splitArray;
+		splitArray = head.split(" ");
+		return splitArray[3];
 	}
 
 	public void readMessage(Socket socket) throws IOException {
@@ -166,47 +189,8 @@ public class Handler implements Runnable{
 		}
 	}
 	
-	public String serializeKontaktSearch(ObservableList<Contact> k) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(Contact.class);
-		//xstream.alias("kontakt", Kontakt.class);
-		String xml = xstream.toXML(k);
-		return xml;
-	}
+
 	
-	public Contact deserializeKontakt(String xml) {
-		XStream xstream = new XStream();
-		xstream.processAnnotations(Contact.class);
-		Contact k = (Contact)xstream.fromXML(xml);
-		return k;
-	}
-	
-	public Vector<Parameter> deserializeVector(String xml) {
-		XStream xstream = new XStream();
-		xstream.processAnnotations(Vector.class);
-		Vector<Parameter> v = (Vector<Parameter>)xstream.fromXML(xml);
-		return v;
-	}
-	
-	public String parseHeader(String head) {
-		String[] splitArray;
-		splitArray = head.split(" ");
-		return splitArray[3];
-	}
-	
-	public Invoice deserializeRechnung(String xml) {
-		XStream xstream = new XStream();
-		xstream.processAnnotations(Invoice.class);
-		Invoice r = (Invoice)xstream.fromXML(xml);
-		return r;
-	}
-	
-	public String serializeGetArticle(ObservableList<Article> a) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(Article.class);
-		//xstream.alias("kontakt", Kontakt.class);
-		String xml = xstream.toXML(a);
-		return xml;
-	}
+
 }
 

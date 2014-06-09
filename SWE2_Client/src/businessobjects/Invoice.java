@@ -1,16 +1,12 @@
 package businessobjects;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.FloatProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -22,9 +18,12 @@ public class Invoice extends AbstractObject{
 	
 	/* date stuff */
 	private Date todayDate, dueDate;
+
+
 	private StringProperty todayDateStr = new SimpleStringProperty();
 	private StringProperty dueDateStr = new SimpleStringProperty();
-	
+
+
 	/* invoice data */
 	private ObservableList<InvoiceLine> invoiceLines;
 	private DoubleProperty amount = new SimpleDoubleProperty();
@@ -67,6 +66,7 @@ public class Invoice extends AbstractObject{
 		for (InvoiceLine r : invoiceLines) {
 			amount.set(amount.get()+r.getBrutto());
 		}
+		
 	}
 	
 	public final DoubleProperty amountProperty() {
@@ -140,7 +140,7 @@ public class Invoice extends AbstractObject{
 	}
 
 	public ObservableList<InvoiceLine> getInvoiceLines() {
-		return invoiceLines;
+		return (ObservableList<InvoiceLine>) invoiceLines;
 	}
 
 	public void setInvoiceLines(ObservableList<InvoiceLine> invoiceLines) {
@@ -166,4 +166,41 @@ public class Invoice extends AbstractObject{
 	public String getContactString() {
 		return contactString.get();
 	}
+	
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public Date getTodayDate() {
+		return todayDate;
+	}
+	
+	public InvoiceData generateInvoiceData(){
+		InvoiceData iD = new InvoiceData();
+		ArrayList<InvoiceLineData> list = new ArrayList<>();
+		
+		iD.setId(this.id);
+		iD.setContact(this.contact.generateContactData());
+		iD.setTodayDate(this.todayDateStr.get());
+		iD.setDueDate(this.dueDateStr.get());
+		
+		for(InvoiceLine il: invoiceLines){
+			if(il != null){
+				list.add(il.generateInvoiceLineData());
+			}
+		}
+		
+		iD.setInvoiceLines(list);
+		iD.setAmount(this.amount.get());
+		iD.setContactString(this.contactString.get());
+		iD.setComment(this.comment);
+		iD.setMessage(this.message);
+		iD.setDelAdress(this.delAdress);
+		iD.setInvAdress(this.invAdress);
+		iD.setMWSt(this.MWSt);
+		
+		return iD;
+	}
+	
+	
 }

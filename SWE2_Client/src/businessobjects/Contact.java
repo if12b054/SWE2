@@ -163,4 +163,29 @@ public class Contact extends AbstractObject{
 	public void setFirmaRef(Contact firmaRef) {
 		this.firmaRef = firmaRef;
 	}
+	
+	public ContactData generateContactData(){
+		ContactData cD = new ContactData();
+		
+		cD.setId(this.id);
+		cD.setTyp(this.typ.get());
+		cD.setTitel(this.titel.get());
+		cD.setVorname(this.vorname.get());
+		cD.setNachname(this.nachname.get());
+		cD.setGeburtstag(this.geburtsdatum.get());
+		
+		if(firmaRef != null)cD.setFirmaId(this.firmaRef.firma.get());
+		
+		cD.setUid(this.uid.get());
+		cD.setFirma(this.firma.get());
+		
+		String[] adress = new String[4];
+		for(int i = 0; i < this.adresse.size(); i++) {
+			adress[i] = this.adresse.get(i);
+		}
+		cD.setAdresse(adress);
+		cD.setAdresseProperty(this.adresseProperty.get());		
+		
+		return cD;
+	}
 }

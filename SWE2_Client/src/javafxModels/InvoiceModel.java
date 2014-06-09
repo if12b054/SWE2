@@ -109,8 +109,8 @@ public class InvoiceModel implements Subject{
 			Adress delAdress = new Adress(delStreet.get(), Integer.parseInt(delPostCode.get()), delCity.get(), delCountry.get());
 			curInvoice = new Invoice(invoiceLines, Double.parseDouble(MWSt.get()), curDate, dp.getSelectedDate(), contactReference, message.get(), comment.get(), invAdress, delAdress);
 			if(Proxy.serverConnection()) {
-				int invoiceID = controller.getParent().getProxy().insertInvoice(curInvoice);
-				curInvoice.setId(invoiceID);
+				controller.getParent().getProxy().insertInvoice(curInvoice);
+				//curInvoice.setId(invoiceID);
 				controller.setEditMode();
 			} else {
 				controller.showErrorDialog("Connection Error. Server might not be reachable.");

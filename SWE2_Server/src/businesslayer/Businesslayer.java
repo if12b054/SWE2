@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import businessobjects.Article;
 import businessobjects.Contact;
 import businessobjects.Invoice;
+import businessobjects.InvoiceData;
 import businessobjects.InvoiceLine;
 import dataaccesslayer.Dataaccesslayer;
 
@@ -23,7 +24,7 @@ public class Businesslayer {
 		d.updateKontakt(k);
 	}
 	
-	public void insertRechnung(Invoice r) throws SQLException {
+	public void insertRechnung(InvoiceData r) throws SQLException {
 		d.insertRechnung(r);
 	}
 	
@@ -41,6 +42,10 @@ public class Businesslayer {
 
 	public ObservableList<Contact> findFirm(Vector<Parameter> parms) {
 		return d.findFirm(parms);
+	}
+
+	public ObservableList<Contact> findPerson(Vector<Parameter> parms) {
+		return d.findPerson(parms);
 	}
 
 

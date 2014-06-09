@@ -103,4 +103,20 @@ public class InvoiceLine extends AbstractObject implements Observer {
 	public void update(double newMWSt) {
 		brutto.set(Math.round((article.getPrice()*menge.get()*(newMWSt+1))*100.0)/100.0);
 	}
+	
+	public InvoiceLineData generateInvoiceLineData(){
+		InvoiceLineData iL = new InvoiceLineData();
+		
+		iL.setIdNumber(this.idNumber);
+		iL.setMenge(this.menge.get());
+		iL.setStueckPreis(this.stueckPreis.get());
+		iL.setBrutto(this.brutto.get());
+		iL.setNetto(this.netto.get());
+		iL.setArticle(this.article);
+		iL.setArticleName(this.articleName.get());
+		iL.setMWSt(this.MWSt);
+		
+		return iL;
+	}
+	
 }
