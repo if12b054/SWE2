@@ -169,7 +169,7 @@ public class InvoiceModel implements Subject{
 			controller.setImgContactValid(controller.getParent().getNoCheckMark());
 		} else if(results.size() == 1) {
 			//one Contact found
-			contactReference = results.get(0);
+			setContactReference(results.get(0));
 			controller.setImgContactValid(controller.getParent().getCheckMark());
 		} else {
 			//multiple Contacts found

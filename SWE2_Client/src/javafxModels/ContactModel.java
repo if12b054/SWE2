@@ -121,7 +121,7 @@ public class ContactModel {
 			vorname.set(contact.getVorname());
 			nachname.set(contact.getNachname());
 			geburtsdatum.set(contact.getGeburtsdatum());
-			firma.set(contact.getFirma());
+			firma.set(contact.getFirmaRef().getFirma());
 			firmReference = contact.getFirmaRef();
 			break;
 		case "Firma":

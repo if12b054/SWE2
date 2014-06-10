@@ -54,7 +54,10 @@ public class Contact extends AbstractObject{
 	}
 	
 	public final StringProperty firmaProperty() {
-		return firma;
+		if(firma != null)
+			return firma;
+		else
+			return firmaRef.firmaProperty();
 	}
 	
 	public final StringProperty uidProperty() {

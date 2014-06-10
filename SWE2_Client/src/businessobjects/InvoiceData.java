@@ -18,6 +18,7 @@ public class InvoiceData extends AbstractObject{
 	private String message, comment;
 	private Adress invAdress, delAdress;
 	private double MWSt;
+	private double netto, brutto;
 	
 	public InvoiceData(){
 		
@@ -94,6 +95,22 @@ public class InvoiceData extends AbstractObject{
 	}
 	public void setMWSt(double mWSt) {
 		MWSt = mWSt;
+	}
+
+	public double getNetto() {
+		return netto;
+	}
+
+	public void setNetto(double netto) {
+		this.netto = netto;
+	}
+
+	public double getBrutto() {
+		return brutto;
+	}
+
+	public void setBrutto(double brutto) {
+		this.brutto = brutto;
 	}
 
 }

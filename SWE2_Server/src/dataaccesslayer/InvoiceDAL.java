@@ -69,8 +69,8 @@ public class InvoiceDAL {
 		cmdInvoice.setString(4, r.getComment());
 		cmdInvoice.setString(5, r.getMessage());
 		cmdInvoice.setDouble(6, r.getMWSt());
-		cmdInvoice.setInt(7, 0);
-		cmdInvoice.setInt(8, 0);
+		cmdInvoice.setDouble(7, r.getNetto());
+		cmdInvoice.setDouble(8, r.getBrutto());
 		cmdInvoice.setInt(9, invAdressFK);
 		cmdInvoice.setInt(10, delAdressFK);
 		cmdInvoice.execute();
