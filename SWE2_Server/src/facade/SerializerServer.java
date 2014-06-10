@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import utils.Parameter;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import businessobjects.Article;
 import businessobjects.Contact;
@@ -32,8 +33,15 @@ public class SerializerServer {
 	}
 	
 	public String serializeRechnung(ArrayList<Invoice> rechnungen) {
-		XStream xstream = new XStream(new StaxDriver());
-
-		return xstream.toXML(rechnungen);
+		XStream xstream = new XStream(new DomDriver());
+		xstream.processAnnotations(Invoice.class);
+		
+		ObservableList<Invoice> temp  = FXCollections.observableArrayList();
+		
+		for(Invoice in: rechnungen){
+			temp.add(in);
+		}
+		
+		return xstream.toXML(temp);
 	}
 }

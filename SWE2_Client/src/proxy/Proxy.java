@@ -211,15 +211,6 @@ public class Proxy {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		/*
-		System.out.println("Searching for Rechnung: ");
-		System.out.println("VonDatum: " + searchParms.get(0).getDateParameter());
-		System.out.println("BisDatum: " + searchParms.get(1).getDateParameter());
-		System.out.println("VonPreis: " + searchParms.get(2).getStringParameter());
-		System.out.println("BisPreis: " + searchParms.get(3).getStringParameter());
-		System.out.println("Kontakt: " + searchParms.get(4).getStringParameter());*/
-		
-
 		
 		return rechnungen;
 	}

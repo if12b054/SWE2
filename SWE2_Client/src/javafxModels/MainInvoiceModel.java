@@ -24,6 +24,7 @@ public class MainInvoiceModel {
 	private MainController controller;
 	private DatePicker dpFrom, dpTill;
 	private Contact contactReference = null;
+	Double contactId = null;
 	
 	/* Invoice Page: */
 	private StringProperty priceFrom = new SimpleStringProperty();
@@ -77,13 +78,15 @@ public class MainInvoiceModel {
 	public void searchInvoices() {
 		ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
 		
+		
+		
 		/* get search parms from TextFields */
 		Vector<Parameter> searchParms = new Vector<Parameter>();
 		searchParms.addElement(new Parameter(dpFrom.getSelectedDate()));
 		searchParms.addElement(new Parameter(dpTill.getSelectedDate()));
 		searchParms.addElement(new Parameter(priceFrom.getValue()));
 		searchParms.addElement(new Parameter(priceTill.getValue()));
-		searchParms.addElement(new Parameter(contactString.get()));
+		searchParms.addElement(new Parameter(contactId));
 		
 		/* get Rechnung objects from server according to searchParms */
 		rechnungen = controller.getProxy().searchRechnung(searchParms);
@@ -97,8 +100,10 @@ public class MainInvoiceModel {
 		this.contactReference = contact;
 		if(!contactReference.getType().equals("Person")) {
 			contactString.set(contact.getFirma());
+		    this.contactId = (double) contact.getId();
 		} else {
 			contactString.set(contact.getVorname() + ", " + contact.getNachname());
+			this.contactId = (double) contact.getId();
 		}
 		controller.setImgContactValid(controller.getCheckMark());
 	}

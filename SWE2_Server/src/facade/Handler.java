@@ -88,6 +88,9 @@ public class Handler implements Runnable{
 				
 				rechnungen = b.searchRechnung(parms);
 				xml = serializer.serializeRechnung(rechnungen);
+				
+				sendMessage(xml,client);
+				client.close();
 				break;
 			case "search/Kontakt":
 				parms = deserializer.deserializeVector(_xml);
