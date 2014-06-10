@@ -106,6 +106,7 @@ public class MainController extends AbstractController {
 		tfPriceTill.textProperty().bindBidirectional(invoiceModel.priceTillProperty());
 		tfContact.textProperty().bindBidirectional(invoiceModel.contactProperty());
 		radioFirm.selectedProperty().bindBidirectional(invoiceModel.searchFirmProperty());
+		radioFirm.setSelected(true);
 		
 		tableContacts.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    @Override

@@ -90,7 +90,7 @@ public class Invoice extends AbstractObject{
 		return todayDateStr;
 	}
 	
-	public final StringProperty faelligkeitProperty() {
+	public final StringProperty dueDateProperty() {
 		return dueDateStr;
 	}
 

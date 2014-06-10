@@ -35,7 +35,7 @@ public class InvoicePDF {
 
   	public InvoicePDF(Invoice invoice) {
 	  InvoicePDF.invoice = invoice;
-	  FILE = "./invoices/Invoice_" + invoice.datumProperty().get() + "_" + Integer.toString(invoice.getId()) + ".pdf";
+	  FILE = "../Invoice_" + invoice.datumProperty().get() + "_" + Integer.toString(invoice.getId()) + ".pdf";
     try {
       Document document = new Document();
       PdfWriter.getInstance(document, new FileOutputStream(FILE));
