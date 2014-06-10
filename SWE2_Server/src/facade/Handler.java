@@ -60,6 +60,7 @@ public class Handler implements Runnable{
 			System.out.println("Action: " + action);
 			
 			ObservableList<Contact> kontakte = FXCollections.observableArrayList();
+			ArrayList<Invoice> rechnungen = new ArrayList<Invoice>();
 			String xml;
 			
 			switch(action) 
@@ -83,9 +84,10 @@ public class Handler implements Runnable{
 				}
 				break;
 			case "search/Rechnung":
-				ObservableList<Invoice> rechnungen = FXCollections.observableArrayList();
 				parms = deserializer.deserializeVector(_xml);
-				//rechnungen = b.searchRechnung(parms);
+				
+				rechnungen = b.searchRechnung(parms);
+				xml = serializer.serializeRechnung(rechnungen);
 				break;
 			case "search/Kontakt":
 				parms = deserializer.deserializeVector(_xml);
@@ -96,10 +98,8 @@ public class Handler implements Runnable{
 				client.close();
 				break;
 			case "insert/Rechnung":
-				System.out.println("WAMBO");
 				if(_xml != null) {
 					InvoiceData r = deserializer.deserializeRechnung(_xml);	
-					System.out.println("WAMBO");
 					try {
 						b.insertRechnung(r);
 					} catch (SQLException e) {

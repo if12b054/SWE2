@@ -83,7 +83,7 @@ public class MainInvoiceModel {
 		searchParms.addElement(new Parameter(dpTill.getSelectedDate()));
 		searchParms.addElement(new Parameter(priceFrom.getValue()));
 		searchParms.addElement(new Parameter(priceTill.getValue()));
-		searchParms.addElement(new Parameter(contactString.getValue()));
+		searchParms.addElement(new Parameter(contactString.get()));
 		
 		/* get Rechnung objects from server according to searchParms */
 		rechnungen = controller.getProxy().searchRechnung(searchParms);

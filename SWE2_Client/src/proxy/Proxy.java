@@ -183,12 +183,6 @@ public class Proxy {
 			e.printStackTrace();
 		}
 		
-		/* test while adress is not returned proeprly! 
-		String vorname="Bart", nachname="Simpson";
-		Contact testKontakt = new Contact(null, vorname, nachname, "Herr", "10-10-2012");
-		testKontakt.setAdresse("Hauptgasse", "12345", "Wieeen", "Austria!");
-		kontakte.add(testKontakt);*/
-		
 		return kontakte;
 	}
 	
@@ -205,40 +199,27 @@ public class Proxy {
 		serializer = new SerializerClient();
 		deserializer = new DeserializerClient();
 		
+		try {
+			String xml = serializer.serializeRechnungSearch(searchParms);
+			sendMessage(action, xml);
+			
+			String xml2 = readMessage();
+			rechnungen = deserializer.deserializeRechnungSearch(xml2);
+			socket.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		/*
 		System.out.println("Searching for Rechnung: ");
 		System.out.println("VonDatum: " + searchParms.get(0).getDateParameter());
 		System.out.println("BisDatum: " + searchParms.get(1).getDateParameter());
 		System.out.println("VonPreis: " + searchParms.get(2).getStringParameter());
 		System.out.println("BisPreis: " + searchParms.get(3).getStringParameter());
-		System.out.println("Kontakt: " + searchParms.get(4).getStringParameter());
-//		try {
-//			Socket socket = new Socket("127.0.0.1",11111);
-//			String xml = serializeRechnungSearch(searchParms);
-//
-//			sendMessage(action, xml, socket);
-//			
-//			String xml2 = readMessage(socket);
-//			rechnungen = deserializeRechnungSearch(xml2);
-//			
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-		action = "just so server doesn't throw socketexception...";
-		sendMessage(action, "some xml here");
-		Contact contact = new Contact(null, "sddsaas", "asaddssad", "sss", "10.01.1999");
-		contact.setAdresse("Hauptallee", "12345", "Wien", "Österreich");
+		System.out.println("Kontakt: " + searchParms.get(4).getStringParameter());*/
 		
-		/* TEST */
-		System.out.println("WORKING..");
-		ObservableList<InvoiceLine> testRechnungszeilen = FXCollections.observableArrayList();
-		testRechnungszeilen.add(new InvoiceLine(new Article(6, "Artikel", 12.3), 13, 0.20));
-		String nachricht="Deree", kommentar="Könnt wichtig sein...";
-		rechnungen.add(new Invoice(testRechnungszeilen, 0.25, new Date(), new Date(), contact, nachricht, kommentar, 
-				new Adress("streeeet", 11221, "cityyy", "countryyyyyyy"), 
-				new Adress("strettt", 12345, "cityyy", "countryyyyyyy")));
-		/* TEST-ENDE */
+
 		
 		return rechnungen;
 	}

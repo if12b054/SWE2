@@ -71,14 +71,14 @@ public class Dataaccesslayer {
 		i.insertRechnung(r, conn);
 	}
 	
-	public ArrayList<InvoiceLine> searchRechnung(Vector<Parameter> parms) {
-		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
+	public ArrayList<Invoice> searchRechnung(Vector<Parameter> parms) {
+		ArrayList<Invoice> invoices = new ArrayList<Invoice>();
 		Connection conn = connectDB("ErpDB");
 		InvoiceDAL i = new InvoiceDAL();
 		
-		searchAll = i.searchRechnung(parms, conn);
+		invoices = i.searchRechnung(parms, conn);
 		
-		return searchAll;
+		return invoices;
 	}
 
 	public ObservableList<Article> getArticles() throws SQLException {

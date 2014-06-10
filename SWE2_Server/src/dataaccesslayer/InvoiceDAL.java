@@ -1,6 +1,7 @@
 package dataaccesslayer;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +11,11 @@ import java.util.List;
 import java.util.Vector;
 
 import utils.Parameter;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import businessobjects.Adress;
+import businessobjects.Article;
+import businessobjects.Contact;
 import businessobjects.Invoice;
 import businessobjects.InvoiceData;
 import businessobjects.InvoiceLine;
@@ -86,24 +91,147 @@ public class InvoiceDAL {
         }
 	}
 	
-	public ArrayList<InvoiceLine> searchRechnung(Vector<Parameter> parms, Connection conn) {
-		ArrayList<InvoiceLine> searchAll = new ArrayList<InvoiceLine>();
-		ResultSet rd;
+	public ArrayList<Invoice> searchRechnung(Vector<Parameter> parms, Connection conn) {
+		ArrayList<Invoice> invoices = new ArrayList<Invoice>();
+		ResultSet rs = null;
+		ResultSet rsContact = null;
+		
+		System.out.println("1");
 		
 		try {
-			String sql = "SELECT * FROM Kontakt";
-			PreparedStatement cmd = conn.prepareStatement(sql);
-			rd = cmd.executeQuery();
+			//Von Datum gesetzt 
+			if(!(parms.get(0).getDateParameter()==null)){
+				//Bis Datum gesetzt
+				if(!(parms.get(1).getDateParameter()==null)){
+					System.out.println("2");
+					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum < ? AND Datum > ?";
+					PreparedStatement cmdDatum = conn.prepareStatement(sqlDatum);
+					cmdDatum.setDate(1,(Date) parms.get(0).getDateParameter());
+					cmdDatum.setDate(2,(Date) parms.get(1).getDateParameter());
+					rs = cmdDatum.executeQuery();
+				}
+			}
 			
-			while(rd.next()) {
-				//Rechnungszeile rm = new Rechnungszeile();
+			//Von Preis gesetzt
+			if(!(parms.get(2).getStringParameter() == null)){
+				//Bis Preis gesetzt
+				if(!(parms.get(3).getStringParameter() == null)){
+					System.out.println("3");
+					String sqlPrice = "SELECT * FROM Rechnung WHERE Brutto > ? AND Brutto < ?";
+					PreparedStatement cmdPrice = conn.prepareStatement(sqlPrice);
+					cmdPrice.setDouble(1, Double.parseDouble(parms.get(2).getStringParameter()));
+					cmdPrice.setDouble(2, Double.parseDouble(parms.get(3).getStringParameter()));
+					rs = cmdPrice.executeQuery();
+				}
+			}
+			
+			if(!(parms.get(4).getStringParameter()==null)){
+				System.out.println("4");
+				String sqlPrice = "SELECT * FROM Rechnung WHERE Kunde_ID = ?";
+				PreparedStatement cmdPrice = conn.prepareStatement(sqlPrice);
+				cmdPrice.setString(1, parms.get(4).getStringParameter());
+				rs = cmdPrice.executeQuery();
+			}
+			
+			System.out.println("5");
+			while(rs.next()) {
+				System.out.println("6");
+				ObservableList<InvoiceLine> ilArray = FXCollections.observableArrayList();
 				
-				String zeile = rd.getString("");
+				ResultSet rsDelAdress = null;
+				Adress delAdress = null;
+				String sqlDelAdress = "SELECT FROM Adresse WHERE ID = ?";
+				PreparedStatement cmdDelAdress = conn.prepareStatement(sqlDelAdress, Statement.RETURN_GENERATED_KEYS);
+				cmdDelAdress.setString(1, rs.getString("Lieferadresse"));
+				rsDelAdress = cmdDelAdress.executeQuery();				
+				
+				if(rsDelAdress.next())delAdress = new Adress(rsDelAdress.getString("Straﬂe"), rsDelAdress.getInt("PLZ"),
+						rsDelAdress.getString("Stadt"), rsDelAdress.getString("Land"));
+				
+				ResultSet rsInvAdress = null;
+				Adress invAdress = null;
+				String sqlInvAdress = "SELECT FROM Adresse WHERE ID = ?";
+				PreparedStatement cmdInvAdress = conn.prepareStatement(sqlInvAdress, Statement.RETURN_GENERATED_KEYS);
+				cmdInvAdress.setString(1, rs.getString("Rechnungsadresse"));
+				rsInvAdress = cmdInvAdress.executeQuery();
+				
+				if(rsInvAdress.next())invAdress = new Adress(rsInvAdress.getString("Straﬂe"), rsInvAdress.getInt("PLZ"),
+						rsInvAdress.getString("Stadt"), rsInvAdress.getString("Land"));			
+				
+				ResultSet rsInvLines = null;
+				String sqlInvLines = "SELECT FROM Rechnungszeilen WHERE Rechnung_ID = ?";
+				PreparedStatement cmdInvLines = conn.prepareStatement(sqlInvLines, Statement.RETURN_GENERATED_KEYS);
+				cmdInvLines.setString(1, rs.getString("ID"));
+				rsInvLines = cmdInvLines.executeQuery();
+				
+				while(rsInvLines.next()){
+					
+					ResultSet rsArticle = null;
+					String sqlArticle = "SELECT FROM Artikel WHERE ID = ?";
+					PreparedStatement cmdArticle = conn.prepareStatement(sqlArticle, Statement.RETURN_GENERATED_KEYS);
+					cmdArticle.setString(1, rsInvLines.getString("Artikel_ID"));
+					rsArticle = cmdArticle.executeQuery();
+					
+					Article ar = new Article(rsArticle.getInt("ID"), rsArticle.getString("Bezeichnung"), rsArticle.getDouble("PreisNetto"));
+					
+					InvoiceLine line = new InvoiceLine(ar, rsArticle.getInt("Menge"), rs.getDouble("MWSt"));
+					
+					ilArray.add(line);
+				}
+				
+				if(rsContact == null) {
+					String sqlPrice = "SELECT * FROM Rechnung WHERE Kunde_ID = ?";
+					PreparedStatement cmdPrice = conn.prepareStatement(sqlPrice);
+					cmdPrice.setString(1, rs.getString("Kunde_ID"));
+					rsContact = cmdPrice.executeQuery();
+				}
+				
+				Contact k = null;
+				ResultSet rsAdressContact;
+				
+				while(rsContact.next()) {		
+					int AdressID = rsContact.getInt("Adresse");
+					
+					//Kontakt ist eine Firma
+					if(!(rsContact.getString("UID") == null)){
+						k = new Contact(rsContact.getString("UID"),rsContact.getString("Firmenname"));
+						
+						String sql = "SELECT * FROM Adresse WHERE ID = ?";
+						PreparedStatement cmd = conn.prepareStatement(sql);
+						cmd.setInt(1, AdressID);
+						rsAdressContact = cmd.executeQuery();
+						while(rsAdressContact.next()) {
+							k.setAdresse(rsAdressContact.getString("Straﬂe"), rsAdressContact.getString("PLZ"), rsAdressContact.getString("Ort"), rsAdressContact.getString("Land"));
+						}
+						k.setId(rsContact.getInt("ID"));
+					}//Kontakt ein Mensch
+					
+					if(!(rsContact.getString("Vorname") == null)){
+//						Contact k = new Contact(rsContact.getString("Firmenname"), rsContact.getString("Vorname"), rsContact.getString("Nachname")
+//								,rsContact.getString("Titel"),rsContact.getString("Geburtsdatum"));
+						k = new Contact(null, rsContact.getString("Vorname"), rsContact.getString("Nachname")
+								,rsContact.getString("Titel"),rsContact.getString("Geburtsdatum"));
+						
+						String sql = "SELECT * FROM Adresse WHERE ID = ?";
+						PreparedStatement cmd = conn.prepareStatement(sql);
+						cmd.setInt(1, AdressID);
+						rsAdressContact = cmd.executeQuery();
+						while(rsAdressContact.next()) {
+							k.setAdresse(rsAdressContact.getString("Straﬂe"), rsAdressContact.getString("PLZ"), rsAdressContact.getString("Ort"), rsAdressContact.getString("Land"));
+						}
+						k.setId(rsContact.getInt("ID"));
+					}
+				}
+
+				Invoice in = new Invoice(ilArray, rs.getDouble("MWSt"), rs.getDate("Datum"), rs.getDate("F‰lligkeit"),
+						k, rs.getString("Nachricht"), rs.getString("Kommentar"), invAdress, delAdress);
+				
+				invoices.add(in);
 			}	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return searchAll;
+		return invoices;
 	}
 	
 }

@@ -1,11 +1,17 @@
 package facade;
 
+import java.util.ArrayList;
+import java.util.Vector;
+
+import utils.Parameter;
 import javafx.collections.ObservableList;
 import businessobjects.Article;
 import businessobjects.Contact;
+import businessobjects.Invoice;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 public class SerializerServer {
 	
@@ -23,5 +29,11 @@ public class SerializerServer {
 		//xstream.alias("kontakt", Kontakt.class);
 		String xml = xstream.toXML(a);
 		return xml;
+	}
+	
+	public String serializeRechnung(ArrayList<Invoice> rechnungen) {
+		XStream xstream = new XStream(new StaxDriver());
+
+		return xstream.toXML(rechnungen);
 	}
 }

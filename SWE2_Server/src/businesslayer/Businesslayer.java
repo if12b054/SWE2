@@ -32,7 +32,7 @@ public class Businesslayer {
 		return d.searchContact(parms);
 	}
 
-	public ArrayList<InvoiceLine> searchRechnung(Vector<Parameter> parms) {
+	public ArrayList<Invoice> searchRechnung(Vector<Parameter> parms) {
 		return d.searchRechnung(parms);
 	}
 
