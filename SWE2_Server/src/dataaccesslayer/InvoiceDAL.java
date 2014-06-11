@@ -100,10 +100,13 @@ public class InvoiceDAL {
 			
 			//Von Datum gesetzt + Bis Datum gesetzt
 			if(!(parms.get(0).getDateParameter()==null) && !(parms.get(1).getDateParameter()==null)){
-					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum < ? AND Datum > ?";
+					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum > ? AND Datum < ?";
 					PreparedStatement cmdDatum = conn.prepareStatement(sqlDatum);
-					cmdDatum.setDate(1,(Date) parms.get(0).getDateParameter());
-					cmdDatum.setDate(2,(Date) parms.get(1).getDateParameter());
+					java.sql.Date parm0sql = new java.sql.Date (parms.get(0).getDateParameter().getTime());
+					java.sql.Date parm1sql = new java.sql.Date (parms.get(1).getDateParameter().getTime());
+					
+					cmdDatum.setDate(1, parm0sql);
+					cmdDatum.setDate(2, parm1sql);
 					rs = cmdDatum.executeQuery();
 			}
 			
@@ -111,7 +114,8 @@ public class InvoiceDAL {
 			if(!(parms.get(0).getDateParameter()==null) && (parms.get(1).getDateParameter()==null)){
 					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum > ?";
 					PreparedStatement cmdDatum = conn.prepareStatement(sqlDatum);
-					cmdDatum.setDate(1,(Date) parms.get(0).getDateParameter());
+					java.sql.Date parm0sql = new java.sql.Date (parms.get(0).getDateParameter().getTime());
+					cmdDatum.setDate(1,parm0sql);
 					rs = cmdDatum.executeQuery();
 			}
 			
@@ -119,7 +123,8 @@ public class InvoiceDAL {
 			if((parms.get(0).getDateParameter()==null) && !(parms.get(1).getDateParameter()==null)){
 					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum < ?";
 					PreparedStatement cmdDatum = conn.prepareStatement(sqlDatum);
-					cmdDatum.setDate(1,(Date) parms.get(0).getDateParameter());
+					java.sql.Date parm1sql = new java.sql.Date (parms.get(1).getDateParameter().getTime());
+					cmdDatum.setDate(1,parm1sql);
 					rs = cmdDatum.executeQuery();
 			}
 			
@@ -127,8 +132,25 @@ public class InvoiceDAL {
 			if(!(parms.get(2).getStringParameter() == null) && !(parms.get(3).getStringParameter() == null)){
 					String sqlPrice = "SELECT * FROM Rechnung WHERE Brutto > ? AND Brutto < ?";
 					PreparedStatement cmdPrice = conn.prepareStatement(sqlPrice);
+					
 					cmdPrice.setDouble(1, Double.parseDouble(parms.get(2).getStringParameter()));
 					cmdPrice.setDouble(2, Double.parseDouble(parms.get(3).getStringParameter()));
+					rs = cmdPrice.executeQuery();
+			}
+			
+			//Nur Von Preis gesetzt
+			if(!(parms.get(2).getStringParameter() == null) && (parms.get(3).getStringParameter() == null)){
+					String sqlPrice = "SELECT * FROM Rechnung WHERE Brutto > ?";
+					PreparedStatement cmdPrice = conn.prepareStatement(sqlPrice);
+					cmdPrice.setDouble(1, Double.parseDouble(parms.get(2).getStringParameter()));
+					rs = cmdPrice.executeQuery();
+			}
+			
+			//Nur Bis Preis gesetzt
+			if((parms.get(2).getStringParameter() == null) && !(parms.get(3).getStringParameter() == null)){
+					String sqlPrice = "SELECT * FROM Rechnung WHERE Brutto < ?";
+					PreparedStatement cmdPrice = conn.prepareStatement(sqlPrice);
+					cmdPrice.setDouble(1, Double.parseDouble(parms.get(3).getStringParameter()));
 					rs = cmdPrice.executeQuery();
 			}
 			
