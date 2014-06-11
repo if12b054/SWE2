@@ -64,8 +64,8 @@ public class InvoiceDAL {
 		
 		PreparedStatement cmdInvoice = conn.prepareStatement(sqlInvoice, Statement.RETURN_GENERATED_KEYS);
 		cmdInvoice.setInt(1, r.getContact().getId()); 
-		cmdInvoice.setString(2, null);
-		cmdInvoice.setString(3, null);
+		cmdInvoice.setString(2, r.getTodayDate());
+		cmdInvoice.setString(3, r.getDueDate());
 		cmdInvoice.setString(4, r.getComment());
 		cmdInvoice.setString(5, r.getMessage());
 		cmdInvoice.setDouble(6, r.getMWSt());
@@ -97,28 +97,39 @@ public class InvoiceDAL {
 		ResultSet rsContact = null;
 		
 		try {
-			//Von Datum gesetzt 
-			if(!(parms.get(0).getDateParameter()==null)){
-				//Bis Datum gesetzt
-				if(!(parms.get(1).getDateParameter()==null)){
+			
+			//Von Datum gesetzt + Bis Datum gesetzt
+			if(!(parms.get(0).getDateParameter()==null) && !(parms.get(1).getDateParameter()==null)){
 					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum < ? AND Datum > ?";
 					PreparedStatement cmdDatum = conn.prepareStatement(sqlDatum);
 					cmdDatum.setDate(1,(Date) parms.get(0).getDateParameter());
 					cmdDatum.setDate(2,(Date) parms.get(1).getDateParameter());
 					rs = cmdDatum.executeQuery();
-				}
 			}
 			
-			//Von Preis gesetzt
-			if(!(parms.get(2).getStringParameter() == null)){
-				//Bis Preis gesetzt
-				if(!(parms.get(3).getStringParameter() == null)){
+			//Nur Von Datum gesetzt
+			if(!(parms.get(0).getDateParameter()==null) && (parms.get(1).getDateParameter()==null)){
+					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum > ?";
+					PreparedStatement cmdDatum = conn.prepareStatement(sqlDatum);
+					cmdDatum.setDate(1,(Date) parms.get(0).getDateParameter());
+					rs = cmdDatum.executeQuery();
+			}
+			
+			//Nur Bis Datum  gesetzt
+			if((parms.get(0).getDateParameter()==null) && !(parms.get(1).getDateParameter()==null)){
+					String sqlDatum = "SELECT * FROM Rechnung WHERE Datum < ?";
+					PreparedStatement cmdDatum = conn.prepareStatement(sqlDatum);
+					cmdDatum.setDate(1,(Date) parms.get(0).getDateParameter());
+					rs = cmdDatum.executeQuery();
+			}
+			
+			//Von Preis gesetzt + Bis Preis gesetzt
+			if(!(parms.get(2).getStringParameter() == null) && !(parms.get(3).getStringParameter() == null)){
 					String sqlPrice = "SELECT * FROM Rechnung WHERE Brutto > ? AND Brutto < ?";
 					PreparedStatement cmdPrice = conn.prepareStatement(sqlPrice);
 					cmdPrice.setDouble(1, Double.parseDouble(parms.get(2).getStringParameter()));
 					cmdPrice.setDouble(2, Double.parseDouble(parms.get(3).getStringParameter()));
 					rs = cmdPrice.executeQuery();
-				}
 			}
 			
 			if(!(parms.get(4).getDoubleParameter() == 0)){
@@ -208,8 +219,6 @@ public class InvoiceDAL {
 					}//Kontakt ein Mensch
 					
 					if(!(rsContactSearch.getString("Vorname") == null)){
-//						Contact k = new Contact(rsContactSearch.getString("Firmenname"), rsContactSearch.getString("Vorname"), rsContactSearch.getString("Nachname")
-//								,rsContactSearch.getString("Titel"),rsContactSearch.getString("Geburtsdatum"));
 						k = new Contact(null, rsContactSearch.getString("Vorname"), rsContactSearch.getString("Nachname")
 								,rsContactSearch.getString("Titel"),rsContactSearch.getString("Geburtsdatum"));
 						
@@ -224,8 +233,7 @@ public class InvoiceDAL {
 					}
 				}
 				
-				//TODO: Datum fixen, rs.getDate("Datum"),  rs.getDate("Fälligkeit")
-				Invoice in = new Invoice(ilArray, rs.getDouble("MWSt"), null, null,
+				Invoice in = new Invoice(ilArray, rs.getDouble("MWSt"), rs.getDate("Datum"), rs.getDate("Fälligkeit"),
 						k, rs.getString("Nachricht"), rs.getString("Kommentar"), invAdress, delAdress);
 				
 				invoices.add(in);

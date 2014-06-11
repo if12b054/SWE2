@@ -177,7 +177,7 @@ public class Contact extends AbstractObject{
 		cD.setNachname(this.nachname.get());
 		cD.setGeburtstag(this.geburtsdatum.get());
 		
-		if(firmaRef != null)cD.setFirmaId(this.firmaRef.firma.get());
+		if(firmaRef != null)cD.setFirmaId(Double.parseDouble(this.firmaRef.firma.get()));
 		
 		cD.setUid(this.uid.get());
 		cD.setFirma(this.firma.get());

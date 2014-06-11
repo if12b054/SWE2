@@ -86,6 +86,7 @@ public class MainInvoiceModel {
 		searchParms.addElement(new Parameter(dpTill.getSelectedDate()));
 		searchParms.addElement(new Parameter(priceFrom.getValue()));
 		searchParms.addElement(new Parameter(priceTill.getValue()));
+		if(contactId == null) contactId = (double) 0;
 		searchParms.addElement(new Parameter(contactId));
 		
 		/* get Rechnung objects from server according to searchParms */

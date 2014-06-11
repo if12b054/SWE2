@@ -24,8 +24,8 @@ import businessobjects.InvoiceLine;
 
 public class Dataaccesslayer {
 	
-//	final String PCName = "Schlepptop\\SQLEXPRESS"; //Roman
-	final String PCName = "ULTRABOOK\\SQLEXPRESS"; //Victor
+	final String PCName = "Schlepptop\\SQLEXPRESS"; //Roman
+//	final String PCName = "ULTRABOOK\\SQLEXPRESS"; //Victor
 	
 	public Connection connectDB(String dbName) {
 		try {
