@@ -66,7 +66,6 @@ public class ContactModel {
 		} else if(results.size() == 1) {
 			//one Contact found
 			setContactReference(results.get(0));
-			controller.setImgContactValid(controller.getParent().getCheckMark());
 		} else {
 			//multiple Contacts found
 			//open new dialog
@@ -308,7 +307,7 @@ public class ContactModel {
 		@Override
 		public void changed(ObservableValue<? extends String> observable,
 				String oldValue, String newValue) {
-			if(!settingReference) {
+			if(settingReference) {
 				firmReference = null;
 				controller.setImgContactValid(controller.getParent().getNoCheckMark());
 			}
