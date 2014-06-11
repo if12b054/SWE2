@@ -14,9 +14,13 @@ import businessobjects.InvoiceData;
 import businessobjects.InvoiceLine;
 import businessobjects.InvoiceLineData;
 import dataaccesslayer.Dataaccesslayer;
+import fakelayer.FakeLayer;
 
 public class Businesslayer {
 	Dataaccesslayer d = new Dataaccesslayer();
+	FakeLayer f = new FakeLayer();
+	
+	private boolean fakelayer = true;
 	
 	public void insertKontakt(Contact k) throws SQLException {
 		d.insertKontakt(k);
@@ -51,25 +55,53 @@ public class Businesslayer {
 	}
 
 	public ObservableList<Contact> searchContact(Vector<Parameter> parms) {
-		return d.searchContact(parms);
+		
+		if(fakelayer == false){
+			return d.searchContact(parms);
+		}
+		else{
+			return f.searchContact(parms);
+		}
+	
 	}
 
 	public ArrayList<Invoice> searchRechnung(Vector<Parameter> parms) {
-		return d.searchRechnung(parms);
+		
+		if(fakelayer == false){
+			return d.searchRechnung(parms);
+		}
+		else{
+			return f.searchRechnung(parms);
+		}
 	}
 
 	public ObservableList<Article> getArticles() throws SQLException {
-		return d.getArticles();
+		
+		if(fakelayer == false){
+			return d.getArticles();
+		}
+		else{
+			return f.getArticles();
+		}
 	}
 
 	public ObservableList<Contact> findFirm(Vector<Parameter> parms) {
-		return d.findFirm(parms);
+		
+		if(fakelayer == false){
+			return d.findFirm(parms);
+		}
+		else{
+			return f.findFirm(parms);
+		}
 	}
 
 	public ObservableList<Contact> findPerson(Vector<Parameter> parms) {
-		return d.findPerson(parms);
+		
+		if(fakelayer == false){
+			return d.findFirm(parms);
+		}
+		else{
+			return f.findPerson(parms);
+		}
 	}
-
-
-
 }

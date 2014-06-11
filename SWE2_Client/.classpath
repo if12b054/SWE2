@@ -34,6 +34,7 @@
 	<classpathentry kind="lib" path="lib/xstream-hibernate-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/javafx-datepicker-0.0.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/Roman/workspace/SWE2_Client/lib/itext-5.5.1/itextpdf-5.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/itext-5.5.1/itext-pdfa-5.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/itext-5.5.1/itextpdf-5.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
