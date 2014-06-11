@@ -84,10 +84,9 @@ public class ContactController extends AbstractController {
 		} else {
 			showErrorDialog("Connection Error. Server might not be reachable.");
 		}
-		if(Proxy.serverConnection()) {
+		/* do a search right after insert */
+		if(model.curContact != null && Proxy.serverConnection()) {
 			getParent().contactModel.searchKontakts();
-		} else {
-			showErrorDialog("Connection Error. Server might not be reachable.");
 		}
 	}
 	
