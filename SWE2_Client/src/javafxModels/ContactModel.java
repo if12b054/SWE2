@@ -86,7 +86,9 @@ public class ContactModel {
 		if(disableEditFirma.get()) {
 			if(!validPerson())
 				return;
+
 			newContact = new Contact(firmReference, vorname.get(), nachname.get(), titel.get(), geburtsdatum.get());
+			System.out.println("referenz: " + firmReference);
 		}
 		/* contact is firm */
 		else {
@@ -100,6 +102,7 @@ public class ContactModel {
 		if(curContact != null) {
 			newContact.setId(curContact.getId());
 		}
+		
 		curContact = newContact;
 		
 		/* send to proxy */
@@ -292,7 +295,7 @@ public class ContactModel {
 		country.set(null);
 		firmReference = null;
 	}
-	
+
 	/* listener */
 	private ChangeListener<String> canEditListener = new ChangeListener<String>() {
 		@Override

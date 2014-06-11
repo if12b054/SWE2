@@ -33,7 +33,6 @@ public class SerializerClient {
 	
 	public String serializeRechnung(Invoice r) {
 		XStream xstream = new XStream(new StaxDriver());
-
 		return xstream.toXML(r.generateInvoiceData());
 	}
 	

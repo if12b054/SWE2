@@ -10,7 +10,7 @@ public class ContactData {
 	private String vorname;
 	private String nachname;
 	private String geburtsdatum;
-	private String firmaId = null;
+	private double firmaId = 0;
 	
 	private String uid;
 	private String firma;
@@ -54,12 +54,6 @@ public class ContactData {
 	public void setGeburtstag(String geburtsdatum) {
 		this.geburtsdatum = geburtsdatum;
 	}
-	public String getFirmaId() {
-		return firmaId;
-	}
-	public void setFirmaId(String firmaId) {
-		this.firmaId = firmaId;
-	}
 	public String getUid() {
 		return uid;
 	}
@@ -83,6 +77,12 @@ public class ContactData {
 	}
 	public void setAdresseProperty(String adresseProperty) {
 		this.adresseProperty = adresseProperty;
+	}
+	public double getFirmaId() {
+		return firmaId;
+	}
+	public void setFirmaId(double firmaId) {
+		this.firmaId = firmaId;
 	}
 
 

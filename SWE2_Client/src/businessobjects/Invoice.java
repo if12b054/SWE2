@@ -48,21 +48,11 @@ public class Invoice extends AbstractObject{
 		this.contact = contact;
 		this.todayDate = date;
 		this.dueDate = dueDate;
-		if(date == null){
-			todayDateStr.set("n.A.");
-		}
-		else{
-			this.todayDateStr.set(format.format(date));
-		}
 		
-		if(dueDate == null){
-			dueDateStr.set("n.A.");
-		}
-		else{
-			this.dueDateStr.set(format.format(dueDate));
-		}
-	
+		this.todayDateStr.set(format.format(date));
+		this.dueDateStr.set(format.format(dueDate));
 		
+		//todayDateStr.set(todayDate);
 		
 		this.setInvoiceLines(invoiceLines);	
 		if(contact.getType().equals("Person")) {
